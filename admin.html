@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Manager — Christopher Cook Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #0f0f0e;
+      --surface: #1a1a18;
+      --border:  #2a2a27;
+      --fg:      #f0ede8;
+      --fg-mid:  #888480;
+      --accent:  #9b7b5a;
+      --green:   #3ecf8e;
+      --red:     #e05252;
+      --sans:    'Inter', sans-serif;
+      --serif:   'Cormorant Garamond', serif;
+    }
+    body { background: var(--bg); color: var(--fg); font-family: var(--sans); min-height: 100vh; }
+
+    /* ── Login ─────────────────────────────────────────────────── */
+    #login-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .login-card {
+      width: 100%; max-width: 400px;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 48px 40px; border-radius: 4px;
+    }
+    .login-logo {
+      font-family: var(--serif); font-size: 22px; font-style: italic;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .login-sub { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 40px; }
+    label { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-mid); margin-bottom: 8px; }
+    input[type="email"], input[type="password"] {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 14px;
+      padding: 12px 14px; border-radius: 3px; outline: none; margin-bottom: 20px;
+      transition: border-color .2s;
+    }
+    input:focus { border-color: var(--accent); }
+    .btn-primary {
+      width: 100%; background: var(--accent); color: #fff; border: none;
+      font-family: var(--sans); font-size: 12px; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 14px; border-radius: 3px; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .85; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    #login-error { color: var(--red); font-size: 13px; margin-top: 16px; display: none; }
+
+    /* ── App shell ─────────────────────────────────────────────── */
+    #app { display: none; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 600; letter-spacing: .08em; }
+    .topbar-right { display: flex; align-items: center; gap: 24px; }
+    .topbar-user { font-size: 12px; color: var(--fg-mid); }
+    .btn-logout {
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--fg-mid); cursor: pointer; border: 1px solid var(--border);
+      background: none; padding: 7px 16px; border-radius: 3px;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-logout:hover { color: var(--fg); border-color: var(--fg-mid); }
+
+    .main { padding: 48px 40px; max-width: 1400px; margin: 0 auto; }
+
+    /* ── Section headings ─────────────────────────────────────── */
+    .section { margin-bottom: 60px; }
+    .section-title {
+      font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent); font-weight: 600; margin-bottom: 6px;
+    }
+    .section-desc { font-size: 13px; color: var(--fg-mid); margin-bottom: 24px; }
+
+    /* ── Slot grid ─────────────────────────────────────────────── */
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .slot-grid.wide {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+
+    /* ── Slot card ─────────────────────────────────────────────── */
+    .slot-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden; cursor: pointer;
+      transition: border-color .2s, transform .15s;
+      position: relative;
+    }
+    .slot-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .slot-card.dragover { border-color: var(--green); border-style: dashed; }
+    .slot-card.uploading { pointer-events: none; opacity: .7; }
+
+    .slot-preview {
+      width: 100%; aspect-ratio: 3/2;
+      background: #222220;
+      position: relative; overflow: hidden;
+    }
+    .slot-preview.portrait { aspect-ratio: 2/3; }
+    .slot-preview.wide-hero { aspect-ratio: 16/7; }
+
+    .slot-preview img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .4s;
+    }
+    .slot-card:hover .slot-preview img { transform: scale(1.04); }
+
+    .slot-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; color: var(--fg-mid);
+    }
+    .slot-placeholder svg { opacity: .4; }
+    .slot-placeholder span { font-size: 11px; letter-spacing: .05em; opacity: .5; }
+
+    .slot-upload-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.55);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+    }
+    .slot-card:hover .slot-upload-overlay { opacity: 1; }
+    .slot-upload-overlay span {
+      font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+      font-weight: 600; color: #fff;
+      border: 1px solid rgba(255,255,255,.6); padding: 8px 18px; border-radius: 2px;
+    }
+
+    .slot-progress {
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      background: var(--green); width: 0%; transition: width .3s;
+    }
+
+    .slot-info {
+      padding: 12px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .slot-label { font-size: 12px; font-weight: 500; }
+    .slot-badge {
+      font-size: 10px; letter-spacing: .08em; padding: 3px 8px;
+      border-radius: 20px; font-weight: 500;
+    }
+    .slot-badge.filled { background: rgba(62,207,142,.12); color: var(--green); }
+    .slot-badge.empty  { background: rgba(136,132,128,.1); color: var(--fg-mid); }
+
+    .slot-actions {
+      padding: 0 14px 12px;
+      display: flex; gap: 8px;
+    }
+    .slot-actions button {
+      font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 2px; cursor: pointer; font-family: var(--sans);
+      transition: opacity .2s;
+    }
+    .slot-actions button:hover { opacity: .7; }
+    .btn-remove {
+      background: rgba(224,82,82,.12); color: var(--red); border: 1px solid rgba(224,82,82,.2);
+    }
+    .btn-replace {
+      background: rgba(155,123,90,.12); color: var(--accent); border: 1px solid rgba(155,123,90,.2);
+    }
+
+    /* Hidden file input */
+    .file-input { display: none; }
+
+    /* ── Toast ─────────────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 32px; right: 32px; z-index: 1000;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 14px 20px; border-radius: 4px;
+      font-size: 13px; display: flex; align-items: center; gap: 10px;
+      transform: translateY(80px); opacity: 0;
+      transition: transform .3s, opacity .3s;
+      max-width: 320px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-left: 3px solid var(--green); }
+    #toast.error   { border-left: 3px solid var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Christopher Cook</div>
+    <p class="login-sub">Image Manager · Sign in to continue</p>
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+    <button class="btn-primary" id="login-btn">Sign In</button>
+    <p id="login-error"></p>
+  </div>
+</div>
+
+<!-- ═══ APP ══════════════════════════════════════════════════════ -->
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-brand">Image Manager</span>
+    <div class="topbar-right">
+      <span class="topbar-user" id="user-email"></span>
+      <button class="btn-logout" id="logout-btn">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- Hero -->
+    <div class="section">
+      <p class="section-title">Hero Slideshow</p>
+      <p class="section-desc">3 full-width background images that rotate on the homepage.</p>
+      <div class="slot-grid wide" id="slots-hero"></div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="section">
+      <p class="section-title">Gallery Strip</p>
+      <p class="section-desc">6 images in the auto-scrolling horizontal gallery.</p>
+      <div class="slot-grid" id="slots-gallery"></div>
+    </div>
+
+    <!-- Portfolio -->
+    <div class="section">
+      <p class="section-title">Portfolio Grid</p>
+      <p class="section-desc">3 featured portfolio images with hover captions.</p>
+      <div class="slot-grid" id="slots-portfolio"></div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="section">
+      <p class="section-title">Testimonial Photos</p>
+      <p class="section-desc">One photo per client testimonial card.</p>
+      <div class="slot-grid" id="slots-testimonials"></div>
+    </div>
+
+    <!-- About -->
+    <div class="section">
+      <p class="section-title">About / Bio Portrait</p>
+      <p class="section-desc">Portrait photo in the "Behind the Lens" section.</p>
+      <div class="slot-grid" id="slots-about"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Hidden file input (reused for all slots) -->
+<input type="file" class="file-input" id="file-input" accept="image/*" />
+
+<script>
+  // ─── CONFIG — replace these with your project values ─────────
+  const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+  const BUCKET            = 'site-images';
+  // ─────────────────────────────────────────────────────────────
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Slot definitions
+  const SLOTS = {
+    hero:         ['hero-1','hero-2','hero-3'],
+    gallery:      ['gallery-1','gallery-2','gallery-3','gallery-4','gallery-5','gallery-6'],
+    portfolio:    ['portfolio-1','portfolio-2','portfolio-3'],
+    testimonials: ['testimonial-1','testimonial-2','testimonial-3'],
+    about:        ['about-portrait'],
+  };
+
+  const SLOT_LABELS = {
+    'hero-1': 'Hero Slide 1', 'hero-2': 'Hero Slide 2', 'hero-3': 'Hero Slide 3',
+    'gallery-1': 'Gallery 1', 'gallery-2': 'Gallery 2', 'gallery-3': 'Gallery 3',
+    'gallery-4': 'Gallery 4', 'gallery-5': 'Gallery 5', 'gallery-6': 'Gallery 6',
+    'portfolio-1': 'Portfolio — Main', 'portfolio-2': 'Portfolio — Right Top', 'portfolio-3': 'Portfolio — Right Bottom',
+    'testimonial-1': 'Testimonial 1', 'testimonial-2': 'Testimonial 2', 'testimonial-3': 'Testimonial 3',
+    'about-portrait': 'Bio Portrait',
+  };
+
+  // In-memory image data  { slot -> { url, storage_path } }
+  let imageData = {};
+  let activeSlot = null;
+
+  // ── Auth ──────────────────────────────────────────────────────
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) showApp(session.user);
+  }
+
+  document.getElementById('login-btn').addEventListener('click', async () => {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn      = document.getElementById('login-btn');
+    const errEl    = document.getElementById('login-error');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    errEl.style.display = 'none';
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Sign In';
+    } else {
+      showApp(data.user);
+    }
+  });
+
+  document.getElementById('password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('login-btn').click();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  });
+
+  async function showApp(user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+    await loadImages();
+    renderAllSections();
+  }
+
+  // ── Load from Supabase ────────────────────────────────────────
+  async function loadImages() {
+    const { data, error } = await sb.from('site_images').select('*');
+    if (error) { showToast('Failed to load images: ' + error.message, 'error'); return; }
+    imageData = {};
+    (data || []).forEach(row => { imageData[row.slot] = row; });
+  }
+
+  // ── Render ────────────────────────────────────────────────────
+  function renderAllSections() {
+    Object.entries(SLOTS).forEach(([section, slots]) => {
+      const container = document.getElementById('slots-' + section);
+      container.innerHTML = '';
+      slots.forEach(slot => container.appendChild(makeCard(slot)));
+    });
+  }
+
+  function makeCard(slot) {
+    const data  = imageData[slot];
+    const label = SLOT_LABELS[slot] || slot;
+    const isPortrait = slot === 'about-portrait';
+    const isHero     = slot.startsWith('hero');
+
+    const card = document.createElement('div');
+    card.className = 'slot-card';
+    card.dataset.slot = slot;
+
+    const previewClass = isPortrait ? 'portrait' : isHero ? 'wide-hero' : '';
+
+    card.innerHTML = `
+      <div class="slot-preview ${previewClass}">
+        ${data
+          ? `<img src="${data.url}" alt="${label}" />`
+          : `<div class="slot-placeholder">
+               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                 <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                 <polyline points="21 15 16 10 5 21"/>
+               </svg>
+               <span>No image</span>
+             </div>`
+        }
+        <div class="slot-upload-overlay"><span>Upload Image</span></div>
+        <div class="slot-progress"></div>
+      </div>
+      <div class="slot-info">
+        <span class="slot-label">${label}</span>
+        <span class="slot-badge ${data ? 'filled' : 'empty'}">${data ? 'Set' : 'Empty'}</span>
+      </div>
+      ${data ? `<div class="slot-actions">
+        <button class="btn-replace" data-slot="${slot}">Replace</button>
+        <button class="btn-remove"  data-slot="${slot}">Remove</button>
+      </div>` : ''}
+    `;
+
+    // Click to upload
+    card.querySelector('.slot-preview').addEventListener('click', () => triggerUpload(slot));
+    card.querySelector('.slot-upload-overlay')?.addEventListener('click', e => { e.stopPropagation(); triggerUpload(slot); });
+
+    // Replace / Remove buttons
+    card.querySelector('.btn-replace')?.addEventListener('click', e => { e.stopPropagation(); triggerUpload(slot); });
+    card.querySelector('.btn-remove')?.addEventListener('click',  e => { e.stopPropagation(); removeImage(slot); });
+
+    // Drag and drop
+    card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('dragover'); });
+    card.addEventListener('dragleave', ()  => card.classList.remove('dragover'));
+    card.addEventListener('drop', e => {
+      e.preventDefault(); card.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) uploadImage(slot, file);
+    });
+
+    return card;
+  }
+
+  // ── File picker ───────────────────────────────────────────────
+  const fileInput = document.getElementById('file-input');
+
+  function triggerUpload(slot) {
+    activeSlot = slot;
+    fileInput.value = '';
+    fileInput.click();
+  }
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0] && activeSlot) uploadImage(activeSlot, fileInput.files[0]);
+  });
+
+  // ── Upload ────────────────────────────────────────────────────
+  async function uploadImage(slot, file) {
+    if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
+    if (file.size > 20 * 1024 * 1024) { showToast('File must be under 20 MB.', 'error'); return; }
+
+    const card = document.querySelector(`.slot-card[data-slot="${slot}"]`);
+    card.classList.add('uploading');
+    const bar = card.querySelector('.slot-progress');
+    bar.style.width = '20%';
+
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const path = `${slot}/${Date.now()}.${ext}`;
+
+    // Remove old file from storage
+    if (imageData[slot]?.storage_path) {
+      await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
+    }
+
+    bar.style.width = '50%';
+
+    const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, { upsert: true });
+    if (upErr) {
+      card.classList.remove('uploading'); bar.style.width = '0%';
+      showToast('Upload failed: ' + upErr.message, 'error'); return;
+    }
+
+    bar.style.width = '80%';
+
+    const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+    const url = urlData.publicUrl;
+
+    const { error: dbErr } = await sb.from('site_images').upsert({
+      slot, url, storage_path: path, alt: SLOT_LABELS[slot] || slot
+    });
+
+    bar.style.width = '100%';
+
+    if (dbErr) {
+      card.classList.remove('uploading'); bar.style.width = '0%';
+      showToast('DB save failed: ' + dbErr.message, 'error'); return;
+    }
+
+    imageData[slot] = { url, storage_path: path };
+    setTimeout(() => {
+      card.classList.remove('uploading');
+      bar.style.width = '0%';
+      const section = Object.entries(SLOTS).find(([, s]) => s.includes(slot))?.[0];
+      const container = document.getElementById('slots-' + section);
+      const newCard = makeCard(slot);
+      card.replaceWith(newCard);
+    }, 400);
+
+    showToast(`"${SLOT_LABELS[slot]}" updated.`, 'success');
+  }
+
+  // ── Remove ────────────────────────────────────────────────────
+  async function removeImage(slot) {
+    if (!confirm(`Remove the image for "${SLOT_LABELS[slot]}"?`)) return;
+
+    if (imageData[slot]?.storage_path) {
+      await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
+    }
+    await sb.from('site_images').delete().eq('slot', slot);
+
+    delete imageData[slot];
+    const card    = document.querySelector(`.slot-card[data-slot="${slot}"]`);
+    const section = Object.entries(SLOTS).find(([, s]) => s.includes(slot))?.[0];
+    const container = document.getElementById('slots-' + section);
+    card.replaceWith(makeCard(slot));
+    showToast(`"${SLOT_LABELS[slot]}" removed.`, 'success');
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.className = '', 3500);
+  }
+
+  init();
+</script>
+</body>
+</html>
