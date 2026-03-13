@@ -222,6 +222,8 @@
 
   <div class="main">
 
+    <p style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.35;margin-bottom:48px;font-weight:500;">Homepage</p>
+
     <!-- Hero -->
     <div class="section">
       <p class="section-title">Hero Slideshow</p>
@@ -232,29 +234,77 @@
     <!-- Gallery -->
     <div class="section">
       <p class="section-title">Gallery Strip</p>
-      <p class="section-desc">6 images in the auto-scrolling horizontal gallery.</p>
+      <p class="section-desc">6 images in the auto-scrolling horizontal gallery (homepage).</p>
       <div class="slot-grid" id="slots-gallery"></div>
     </div>
 
-    <!-- Portfolio -->
+    <!-- Portfolio (homepage) -->
     <div class="section">
-      <p class="section-title">Portfolio Grid</p>
-      <p class="section-desc">3 featured portfolio images with hover captions.</p>
+      <p class="section-title">Homepage Portfolio Grid</p>
+      <p class="section-desc">3 featured portfolio images with hover captions on homepage.</p>
       <div class="slot-grid" id="slots-portfolio"></div>
     </div>
 
     <!-- Testimonials -->
     <div class="section">
       <p class="section-title">Testimonial Photos</p>
-      <p class="section-desc">One photo per client testimonial card.</p>
+      <p class="section-desc">One photo per client testimonial card (homepage).</p>
       <div class="slot-grid" id="slots-testimonials"></div>
     </div>
 
-    <!-- About -->
+    <!-- About portrait -->
     <div class="section">
       <p class="section-title">About / Bio Portrait</p>
-      <p class="section-desc">Portrait photo in the "Behind the Lens" section.</p>
+      <p class="section-desc">Portrait photo in the "Behind the Lens" section (homepage).</p>
       <div class="slot-grid" id="slots-about"></div>
+    </div>
+
+    <p style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.35;margin-bottom:48px;font-weight:500;margin-top:32px;">About Page</p>
+
+    <div class="section">
+      <p class="section-title">About Gallery</p>
+      <p class="section-desc">3 staggered/composed images at the top of the About page.</p>
+      <div class="slot-grid" id="slots-about-gallery"></div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">About — Full Page Splits</p>
+      <p class="section-desc">3 large split-section images + 1 CTA background on the About page.</p>
+      <div class="slot-grid" id="slots-about-splits"></div>
+    </div>
+
+    <p style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.35;margin-bottom:48px;font-weight:500;margin-top:32px;">Portfolio Page</p>
+
+    <div class="section">
+      <p class="section-title">Portfolio Gallery Grid</p>
+      <p class="section-desc">12 images in the masonry grid on the Portfolio page.</p>
+      <div class="slot-grid" id="slots-portfolio-gallery"></div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">Portfolio — Featured Showcase</p>
+      <p class="section-desc">4 large featured story images on the Portfolio page.</p>
+      <div class="slot-grid" id="slots-portfolio-featured"></div>
+    </div>
+
+    <p style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.35;margin-bottom:48px;font-weight:500;margin-top:32px;">Services Page</p>
+
+    <div class="section">
+      <p class="section-title">Services — Hero &amp; "Known For"</p>
+      <p class="section-desc">Hero background + 3 column images at the top of the Services page.</p>
+      <div class="slot-grid wide" id="slots-services-top"></div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">Services — Package Details</p>
+      <p class="section-desc">3 large images for the Wedding Day, Full Weekend, and Destination service sections.</p>
+      <div class="slot-grid" id="slots-services-detail"></div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">Services — À La Carte</p>
+      <p class="section-desc">3 images for the Engagement, Editorial, and Film add-on cards.</p>
+      <div class="slot-grid" id="slots-services-alacarte"></div>
     </div>
 
   </div>
@@ -276,22 +326,40 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Slot definitions
+  // Slot definitions — keyed to HTML container IDs
   const SLOTS = {
-    hero:         ['hero-1','hero-2','hero-3'],
-    gallery:      ['gallery-1','gallery-2','gallery-3','gallery-4','gallery-5','gallery-6'],
-    portfolio:    ['portfolio-1','portfolio-2','portfolio-3'],
-    testimonials: ['testimonial-1','testimonial-2','testimonial-3'],
-    about:        ['about-portrait'],
+    hero:                   ['hero-1','hero-2','hero-3'],
+    gallery:                ['gallery-1','gallery-2','gallery-3','gallery-4','gallery-5','gallery-6'],
+    portfolio:              ['portfolio-1','portfolio-2','portfolio-3'],
+    testimonials:           ['testimonial-1','testimonial-2','testimonial-3'],
+    about:                  ['about-portrait'],
+    'about-gallery':        ['about-gallery-1','about-gallery-2','about-gallery-3'],
+    'about-splits':         ['about-dark-img','about-light-img','about-story-img','about-cta-bg'],
+    'portfolio-gallery':    ['portfolio-gallery-1','portfolio-gallery-2','portfolio-gallery-3','portfolio-gallery-4','portfolio-gallery-5','portfolio-gallery-6','portfolio-gallery-7','portfolio-gallery-8','portfolio-gallery-9','portfolio-gallery-10','portfolio-gallery-11','portfolio-gallery-12'],
+    'portfolio-featured':   ['portfolio-featured-1','portfolio-featured-2','portfolio-featured-3','portfolio-featured-4'],
+    'services-top':         ['services-hero-bg','services-known-1','services-known-2','services-known-3'],
+    'services-detail':      ['services-detail-1','services-detail-2','services-detail-3'],
+    'services-alacarte':    ['services-alacarte-1','services-alacarte-2','services-alacarte-3'],
   };
 
   const SLOT_LABELS = {
-    'hero-1': 'Hero Slide 1', 'hero-2': 'Hero Slide 2', 'hero-3': 'Hero Slide 3',
-    'gallery-1': 'Gallery 1', 'gallery-2': 'Gallery 2', 'gallery-3': 'Gallery 3',
-    'gallery-4': 'Gallery 4', 'gallery-5': 'Gallery 5', 'gallery-6': 'Gallery 6',
-    'portfolio-1': 'Portfolio — Main', 'portfolio-2': 'Portfolio — Right Top', 'portfolio-3': 'Portfolio — Right Bottom',
-    'testimonial-1': 'Testimonial 1', 'testimonial-2': 'Testimonial 2', 'testimonial-3': 'Testimonial 3',
-    'about-portrait': 'Bio Portrait',
+    'hero-1':'Hero Slide 1','hero-2':'Hero Slide 2','hero-3':'Hero Slide 3',
+    'gallery-1':'Gallery 1','gallery-2':'Gallery 2','gallery-3':'Gallery 3',
+    'gallery-4':'Gallery 4','gallery-5':'Gallery 5','gallery-6':'Gallery 6',
+    'portfolio-1':'Homepage Portfolio — Main','portfolio-2':'Homepage Portfolio — Right Top','portfolio-3':'Homepage Portfolio — Right Bottom',
+    'testimonial-1':'Testimonial 1','testimonial-2':'Testimonial 2','testimonial-3':'Testimonial 3',
+    'about-portrait':'Bio Portrait',
+    'about-gallery-1':'About Gallery 1','about-gallery-2':'About Gallery 2','about-gallery-3':'About Gallery 3',
+    'about-dark-img':'About — Dark Split','about-light-img':'About — Light Split','about-story-img':'About — Story Split','about-cta-bg':'About — CTA Background',
+    'portfolio-gallery-1':'Portfolio Gallery 1','portfolio-gallery-2':'Portfolio Gallery 2','portfolio-gallery-3':'Portfolio Gallery 3',
+    'portfolio-gallery-4':'Portfolio Gallery 4','portfolio-gallery-5':'Portfolio Gallery 5','portfolio-gallery-6':'Portfolio Gallery 6',
+    'portfolio-gallery-7':'Portfolio Gallery 7','portfolio-gallery-8':'Portfolio Gallery 8','portfolio-gallery-9':'Portfolio Gallery 9',
+    'portfolio-gallery-10':'Portfolio Gallery 10','portfolio-gallery-11':'Portfolio Gallery 11','portfolio-gallery-12':'Portfolio Gallery 12',
+    'portfolio-featured-1':'Featured — Amangiri','portfolio-featured-2':'Featured — Amalfi Coast','portfolio-featured-3':'Featured — Jackson Hole','portfolio-featured-4':'Featured — Charleston',
+    'services-hero-bg':'Services Hero Background',
+    'services-known-1':'Known For — Wedding Coverage','services-known-2':'Known For — Destination','services-known-3':'Known For — Film & Hybrid',
+    'services-detail-1':'Service Detail — Wedding Day','services-detail-2':'Service Detail — Full Weekend','services-detail-3':'Service Detail — Destination',
+    'services-alacarte-1':'À La Carte — Engagement','services-alacarte-2':'À La Carte — Editorial','services-alacarte-3':'À La Carte — Film',
   };
 
   // In-memory image data  { slot -> { url, storage_path } }

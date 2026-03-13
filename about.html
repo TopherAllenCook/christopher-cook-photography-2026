@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Christopher Cook Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ─── Page Hero ─────────────────────────────────────────── */
+    .page-hero {
+      padding: 180px 80px 100px;
+      text-align: center;
+      background: var(--page-bg);
+    }
+    .page-hero-eyebrow {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .page-hero-title {
+      font-family: var(--serif); font-size: clamp(60px, 8vw, 120px);
+      font-weight: 300; line-height: 1.0; letter-spacing: -.01em;
+    }
+    .page-hero-title em { font-style: italic; }
+    .page-hero-sub {
+      font-family: var(--sans); font-size: 12px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--page-fg-mid); margin-top: 28px; font-weight: 300;
+    }
+
+    /* ─── Staggered Gallery ─────────────────────────────────── */
+    .stag-gallery {
+      position: relative; height: 640px; overflow: hidden;
+      margin: 0 80px 0;
+    }
+    .stag-img {
+      position: absolute; overflow: hidden;
+    }
+    .stag-img-placeholder { width: 100%; height: 100%; }
+    .stag-img-1 { width: 42%; height: 88%; top: 6%; left: 0; z-index: 1; }
+    .stag-img-1 .stag-img-placeholder { background: linear-gradient(160deg, #cfc3b0 0%, #b5a99c 100%); }
+    .stag-img-2 { width: 36%; height: 70%; top: 0; left: 36%; z-index: 3; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+    .stag-img-2 .stag-img-placeholder { background: linear-gradient(160deg, #d6ccbf 0%, #c4bbb0 100%); }
+    .stag-img-3 { width: 30%; height: 60%; top: 30%; right: 0; z-index: 2; }
+    .stag-img-3 .stag-img-placeholder { background: linear-gradient(160deg, #c8beb5 0%, #b8afa8 100%); }
+
+    /* ─── Bio Split ─────────────────────────────────────────── */
+    .bio-split {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px;
+      max-width: 1400px; margin: 0 auto; padding: 100px 80px;
+      align-items: center;
+    }
+    .bio-split-right {
+      display: flex; flex-direction: column; gap: 40px;
+      align-items: flex-start;
+    }
+    .bio-aside-quote {
+      font-family: var(--serif); font-size: 20px; font-style: italic;
+      font-weight: 300; line-height: 1.6; color: var(--page-fg-mid);
+      border-left: 2px solid var(--accent); padding-left: 24px;
+    }
+
+    /* ─── Double Quotes ─────────────────────────────────────── */
+    .double-quotes {
+      background: var(--page-bg);
+      border-top: 1px solid var(--page-border);
+      border-bottom: 1px solid var(--page-border);
+      padding: 80px;
+    }
+    .double-quotes-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    }
+    .dq-item { padding: 0 20px; }
+    .dq-mark { font-family: var(--serif); font-size: 72px; line-height: .7; color: var(--accent); opacity: .3; margin-bottom: 20px; }
+    .dq-text { font-family: var(--serif); font-size: clamp(20px,2vw,28px); font-style: italic; font-weight: 300; line-height: 1.55; color: var(--page-fg); margin-bottom: 24px; }
+    .dq-author { font-family: var(--sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; font-weight: 500; color: var(--page-fg-mid); }
+
+    /* ─── Split Section (reusable) ──────────────────────────── */
+    .split-section {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 700px;
+    }
+    .split-section.reverse .split-img  { order: 2; }
+    .split-section.reverse .split-text { order: 1; }
+    .split-img { overflow: hidden; position: relative; }
+    .split-img-placeholder { width: 100%; height: 100%; }
+    .split-text {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px;
+    }
+    .split-section.dark { background: var(--forest); color: var(--cream); }
+    .split-section.light { background: var(--page-bg); }
+    .split-section.dark .section-body { color: rgba(249,249,245,.7); }
+
+    .split-large-heading {
+      font-family: var(--serif); font-size: clamp(44px, 5.5vw, 88px);
+      font-weight: 300; line-height: 1.05; margin-bottom: 32px;
+    }
+    .split-large-heading em { font-style: italic; }
+
+    /* ─── Favorites ─────────────────────────────────────────── */
+    .favorites {
+      background: var(--dark); color: var(--cream);
+      padding: 100px 80px;
+    }
+    .favorites-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+    }
+    .favorites-list { display: flex; flex-direction: column; gap: 0; }
+    .fav-item {
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding: 24px 0; border-bottom: 1px solid rgba(249,249,245,.1);
+    }
+    .fav-item:first-child { border-top: 1px solid rgba(249,249,245,.1); }
+    .fav-label { font-family: var(--sans); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; font-weight: 500; opacity: .4; }
+    .fav-value { font-family: var(--serif); font-size: 17px; font-style: italic; font-weight: 300; opacity: .85; }
+    .favorites-quote {
+      font-family: var(--serif); font-size: clamp(26px, 2.5vw, 38px); font-style: italic;
+      font-weight: 300; line-height: 1.5; opacity: .7;
+      padding-top: 8px;
+    }
+    .favorites-quote-attr { font-family: var(--sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: .35; margin-top: 28px; }
+
+    /* ─── Large Testimonial ─────────────────────────────────── */
+    .large-quote-section {
+      padding: 120px 80px;
+      background: var(--page-bg);
+      text-align: center;
+    }
+    .large-quote-text {
+      font-family: var(--serif); font-size: clamp(24px, 2.8vw, 42px); font-style: italic;
+      font-weight: 300; line-height: 1.5; max-width: 940px; margin: 0 auto 32px;
+      color: var(--page-fg);
+    }
+    .large-quote-attr { font-family: var(--sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-fg-mid); }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .page-hero { padding: 140px 28px 80px; }
+      .stag-gallery { margin: 0 28px; height: 480px; }
+      .stag-img-1 { width: 55%; }
+      .stag-img-2 { width: 48%; left: 30%; }
+      .stag-img-3 { display: none; }
+      .bio-split { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
+      .double-quotes { padding: 60px 28px; }
+      .double-quotes-inner { grid-template-columns: 1fr; gap: 48px; }
+      .split-section { grid-template-columns: 1fr; min-height: auto; }
+      .split-section.reverse .split-img  { order: 0; }
+      .split-section.reverse .split-text { order: 1; }
+      .split-img { height: 400px; }
+      .split-text { padding: 60px 28px; }
+      .favorites { padding: 80px 28px; }
+      .favorites-inner { grid-template-columns: 1fr; gap: 60px; }
+      .large-quote-section { padding: 80px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═════════════════════════════════════════════════ -->
+  <nav class="nav nav-dark" id="mainNav">
+    <a href="index.html" class="nav-logo">Christopher Cook Photography</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="#">Journal</a></li>
+    </ul>
+    <a href="services.html#inquire" class="nav-inquire">Inquire</a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-overlay-close" id="overlayClose">✕</button>
+    <ul class="nav-overlay-links">
+      <li><a href="index.html"    onclick="closeOverlay()">Home</a></li>
+      <li><a href="about.html"    onclick="closeOverlay()">About</a></li>
+      <li><a href="portfolio.html" onclick="closeOverlay()">Portfolio</a></li>
+      <li><a href="services.html" onclick="closeOverlay()">Services</a></li>
+      <li><a href="#">Journal</a></li>
+      <li><a href="services.html#inquire" onclick="closeOverlay()">Inquire</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ═══ PAGE HERO ════════════════════════════════════════════ -->
+  <section class="page-hero">
+    <p class="page-hero-eyebrow">The Photographer</p>
+    <h1 class="page-hero-title">About<br /><em>Christopher</em></h1>
+    <p class="page-hero-sub">Park City, Utah &nbsp;·&nbsp; Destinations Worldwide</p>
+  </section>
+
+
+  <!-- ═══ STAGGERED GALLERY ════════════════════════════════════ -->
+  <div class="stag-gallery">
+    <div class="stag-img stag-img-1">
+      <div class="stag-img-placeholder" data-slot="about-gallery-1"></div>
+    </div>
+    <div class="stag-img stag-img-2">
+      <div class="stag-img-placeholder" data-slot="about-gallery-2"></div>
+    </div>
+    <div class="stag-img stag-img-3">
+      <div class="stag-img-placeholder" data-slot="about-gallery-3"></div>
+    </div>
+  </div>
+
+
+  <!-- ═══ BIO SPLIT ════════════════════════════════════════════ -->
+  <div class="bio-split">
+    <div>
+      <p class="section-eyebrow">About Christopher</p>
+      <h2 class="section-heading">Feel deeply seen.<br /><em>Live beautifully</em><br />in every frame.</h2>
+      <div class="section-rule"></div>
+      <p class="section-body">Christopher Cook is a Park City-based wedding photographer specializing in cinematic, editorial imagery. He blends the sophistication of fashion photography with the warmth and texture of the West.</p>
+      <p class="section-body">Serving Park City, Salt Lake City, Jackson Hole, Charleston, Boston, Paris, Italy, and destinations worldwide, Christopher brings the eye of an editorial photographer and the patience of a craftsman to every engagement.</p>
+      <p class="section-body">Every photograph is guided by emotion, crafted to feel effortless, refined, and unmistakably yours.</p>
+      <a href="services.html" class="btn btn-dark" style="margin-top:8px;">Work With Me</a>
+    </div>
+    <div class="bio-split-right">
+      <p class="bio-aside-quote">"Timeless, cinematic imagery for couples who move through the world with intention and style."</p>
+      <div style="width:100%;height:360px;overflow:hidden;">
+        <div style="width:100%;height:100%;background:linear-gradient(145deg,#d4c5b5 0%,#c4b5a5 100%);" data-slot="about-gallery-2"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══ DOUBLE TESTIMONIALS ══════════════════════════════════ -->
+  <div class="double-quotes">
+    <div class="double-quotes-inner">
+      <div class="dq-item">
+        <div class="dq-mark">"</div>
+        <p class="dq-text">Honestly, 'pictures' doesn't do them justice — they are breathtaking art. We look at them and are immediately transported back to that day.</p>
+        <p class="dq-author">— Emma &amp; James, Park City</p>
+      </div>
+      <div class="dq-item">
+        <div class="dq-mark">"</div>
+        <p class="dq-text">These aren't just photos; they're art, brimming with love and joy. Every image tells our story in a way we could never have imagined.</p>
+        <p class="dq-author">— Claire &amp; Marcus, Charleston</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══ DARK SPLIT — Where Light Meets Emotion ═══════════════ -->
+  <div class="split-section dark">
+    <div class="split-img">
+      <div class="stag-img-placeholder" style="background:linear-gradient(145deg,#2a3025 0%,#1a2018 100%);" data-slot="about-dark-img"></div>
+    </div>
+    <div class="split-text">
+      <p class="section-eyebrow" style="color:var(--accent);">The Aesthetic</p>
+      <h2 class="split-large-heading">Where<br /><em>light meets</em><br />emotion</h2>
+      <div class="section-rule"></div>
+      <p class="section-body">Every frame is composed with the eye of an editorial photographer — light studied before it falls, moments anticipated before they surface. The result is a body of work that feels both cinematic and deeply intimate.</p>
+      <p class="section-body">A hybrid of medium-format film and digital capture, Christopher's imagery carries the grain, tonality, and timelessness of analog photography with the reliability and resolution of modern technique.</p>
+      <a href="portfolio.html" class="btn btn-light" style="margin-top:8px;">View the Work</a>
+    </div>
+  </div>
+
+
+  <!-- ═══ LIGHT SPLIT — The Philosophy ════════════════════════ -->
+  <div class="split-section light reverse">
+    <div class="split-img">
+      <div class="stag-img-placeholder" style="background:linear-gradient(145deg,#ddd4c6 0%,#c9bfb3 100%);" data-slot="about-light-img"></div>
+    </div>
+    <div class="split-text">
+      <p class="section-eyebrow">The Philosophy</p>
+      <h2 class="split-large-heading">Crafted<br /><em>with</em><br />intention</h2>
+      <div class="section-rule"></div>
+      <p class="section-body">Christopher's approach is rooted in restraint — the belief that the best wedding photographs don't announce themselves. They simply exist, quietly holding the truth of a moment that mattered.</p>
+      <p class="section-body">No forced posing. No performance for the camera. Just the real texture of your day, rendered with care and an editorial eye that has been refined across hundreds of weddings.</p>
+    </div>
+  </div>
+
+
+  <!-- ═══ STORY SPLIT ══════════════════════════════════════════ -->
+  <div class="split-section dark">
+    <div class="split-img">
+      <div class="stag-img-placeholder" style="background:linear-gradient(145deg,#1e2c22 0%,#141c12 100%);" data-slot="about-story-img"></div>
+    </div>
+    <div class="split-text">
+      <p class="section-eyebrow" style="color:var(--accent);">How It Started</p>
+      <h2 class="split-large-heading"><em>The craft</em><br />behind<br />the lens</h2>
+      <div class="section-rule"></div>
+      <p class="section-body">Christopher's path to wedding photography came through editorial and commercial work — a background that instilled habits of precision, patience, and visual storytelling that most wedding photographers never develop.</p>
+      <p class="section-body">Based in Park City with easy access to Utah's most extraordinary landscapes, he built a practice around couples who value artistry as much as coverage — and who want images that will matter as much in 40 years as they do the morning they're delivered.</p>
+      <a href="services.html" class="btn btn-light" style="margin-top:8px;">See Services</a>
+    </div>
+  </div>
+
+
+  <!-- ═══ A FEW FAVORITES ══════════════════════════════════════ -->
+  <div class="favorites">
+    <div class="favorites-inner">
+      <div>
+        <p class="section-eyebrow" style="color:var(--accent);margin-bottom:40px;">A Few Favorites</p>
+        <div class="favorites-list">
+          <div class="fav-item">
+            <span class="fav-label">Destination</span>
+            <span class="fav-value">Amalfi Coast, Italy</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Season</span>
+            <span class="fav-value">Golden Autumn</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Moment</span>
+            <span class="fav-value">The First Look</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Film Stock</span>
+            <span class="fav-value">Kodak Portra 400</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Venue</span>
+            <span class="fav-value">Amangiri, Utah</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Light</span>
+            <span class="fav-value">Magic Hour</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Camera</span>
+            <span class="fav-value">Hasselblad 500CM</span>
+          </div>
+          <div class="fav-item">
+            <span class="fav-label">Based In</span>
+            <span class="fav-value">Park City, Utah</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="favorites-quote">"I want your photographs to feel the way your wedding day felt — not what it looked like, but what it meant."</p>
+        <p class="favorites-quote-attr">— Christopher Cook</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══ LARGE TESTIMONIAL ════════════════════════════════════ -->
+  <div class="large-quote-section">
+    <p class="large-quote-text">"We were blown away. Each one is a stunning work of art. Christopher has a gift for capturing what a moment truly feels like, not just what it looks like."</p>
+    <p class="large-quote-attr">— Sofia &amp; Luca, Amalfi Coast</p>
+  </div>
+
+
+  <!-- ═══ CTA ══════════════════════════════════════════════════ -->
+  <section class="cta" id="inquire">
+    <div class="cta-bg" data-slot="about-cta-bg"></div>
+    <div class="cta-overlay"></div>
+    <div class="cta-content">
+      <p class="cta-eyebrow">Ready to Begin</p>
+      <h2 class="cta-heading">Let's create something<br /><em>iconic together</em></h2>
+      <a href="services.html" class="btn btn-light">View Services &amp; Invest</a>
+    </div>
+  </section>
+
+
+  <!-- ═══ MARQUEE ══════════════════════════════════════════════ -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+
+  <!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Christopher Cook Photography</p>
+        <p class="footer-tagline">"Timeless imagery that feels effortless today and iconic forever."</p>
+        <div class="footer-social">
+          <a href="#">Instagram</a>
+          <a href="#">Pinterest</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Navigate</p>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="#">Journal</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Services</p>
+        <ul>
+          <li><a href="services.html">Wedding Coverage</a></li>
+          <li><a href="services.html">Full Weekend</a></li>
+          <li><a href="services.html">Elopements</a></li>
+          <li><a href="services.html">Engagements</a></li>
+          <li><a href="services.html">Film Collections</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-col-contact">
+        <p class="footer-col-title">Contact</p>
+        <p>Park City, Utah<br />Destinations Worldwide</p>
+        <p>hello@christophercook.co</p>
+        <a href="services.html#inquire" class="btn btn-light" style="display:inline-block;font-size:10px;padding:12px 28px;margin-top:8px;">Inquire Now</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Christopher Allen Luxury Productions LLC &nbsp;·&nbsp; Utah Wedding Photographer</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    initFadeIn('.bio-split, .double-quotes, .split-section, .favorites, .large-quote-section, .cta-content');
+  </script>
+</body>
+</html>

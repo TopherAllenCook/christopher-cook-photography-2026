@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — Christopher Cook Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ─── Page Hero ─────────────────────────────────────────── */
+    .page-hero {
+      padding: 180px 80px 80px;
+      text-align: center;
+      background: var(--page-bg);
+    }
+    .page-hero-eyebrow { font-family: var(--sans); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 24px; }
+    .page-hero-title { font-family: var(--serif); font-size: clamp(60px,8vw,120px); font-weight: 300; line-height: 1.0; letter-spacing: -.01em; }
+    .page-hero-title em { font-style: italic; }
+    .page-hero-sub { font-family: var(--sans); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--page-fg-mid); margin-top: 28px; font-weight: 300; }
+
+    /* ─── Category Filter ───────────────────────────────────── */
+    .category-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 40px 80px 64px; flex-wrap: wrap;
+    }
+    .cat-pill {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; font-weight: 500;
+      padding: 10px 24px; border: 1px solid var(--page-border);
+      color: var(--page-fg-mid); cursor: pointer; transition: all .2s;
+      border-radius: 2px;
+    }
+    .cat-pill:hover, .cat-pill.active {
+      background: var(--page-fg); color: var(--page-bg); border-color: var(--page-fg);
+    }
+
+    /* ─── Masonry Grid ──────────────────────────────────────── */
+    .masonry-outer { padding: 0 80px 0; max-width: 1600px; margin: 0 auto; }
+    .masonry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .masonry-item {
+      overflow: hidden; cursor: pointer; position: relative;
+    }
+    .masonry-item:hover .masonry-placeholder { transform: scale(1.04); }
+    .masonry-placeholder {
+      width: 100%; height: 100%; transition: transform .7s ease;
+    }
+    /* Heights */
+    .mh-tall   { height: 520px; }
+    .mh-mid    { height: 420px; }
+    .mh-short  { height: 340px; }
+
+    /* Placeholder gradients */
+    .mg1  { background: linear-gradient(160deg,#cfc3b0 0%,#bfb3a0 100%); }
+    .mg2  { background: linear-gradient(160deg,#d6ccbf 0%,#c4bbb0 100%); }
+    .mg3  { background: linear-gradient(160deg,#c8beb5 0%,#b8afa8 100%); }
+    .mg4  { background: linear-gradient(160deg,#ddd4c6 0%,#c9bfb3 100%); }
+    .mg5  { background: linear-gradient(160deg,#c5bdb8 0%,#b3aba6 100%); }
+    .mg6  { background: linear-gradient(160deg,#d0c8be 0%,#bfb8b0 100%); }
+    .mg7  { background: linear-gradient(160deg,#d4c8b8 0%,#c4b8a8 100%); }
+    .mg8  { background: linear-gradient(160deg,#cec4b8 0%,#beb5a8 100%); }
+    .mg9  { background: linear-gradient(160deg,#c8bfb8 0%,#b8b0a8 100%); }
+    .mg10 { background: linear-gradient(160deg,#d8cfc4 0%,#c8c0b5 100%); }
+    .mg11 { background: linear-gradient(160deg,#ccbfb5 0%,#bcb0a5 100%); }
+    .mg12 { background: linear-gradient(160deg,#e0d5c8 0%,#cfc5b8 100%); }
+
+    /* ─── Mid Testimonial ───────────────────────────────────── */
+    .mid-quote {
+      padding: 100px 80px; text-align: center;
+      border-top: 1px solid var(--page-border);
+      border-bottom: 1px solid var(--page-border);
+      margin-top: 8px;
+    }
+    .mid-quote-text {
+      font-family: var(--serif); font-size: clamp(22px,2.5vw,36px); font-style: italic;
+      font-weight: 300; line-height: 1.55; max-width: 820px; margin: 0 auto 28px;
+    }
+    .mid-quote-attr { font-family: var(--sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-fg-mid); }
+
+    /* ─── Featured Showcase ─────────────────────────────────── */
+    .featured-section { padding: 100px 80px 80px; max-width: 1600px; margin: 0 auto; }
+    .featured-eyebrow { font-family: var(--sans); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 20px; }
+    .featured-heading { font-family: var(--serif); font-size: clamp(34px,3vw,52px); font-weight: 300; line-height: 1.15; margin-bottom: 56px; }
+    .featured-heading em { font-style: italic; }
+    .featured-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      grid-template-rows: 520px 520px; gap: 8px;
+    }
+    .featured-item { position: relative; overflow: hidden; cursor: pointer; }
+    .featured-placeholder { width: 100%; height: 100%; transition: transform .7s ease; }
+    .featured-item:hover .featured-placeholder { transform: scale(1.04); }
+    .featured-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 40px 32px 32px;
+      background: linear-gradient(to top, rgba(7,7,7,.75) 0%, transparent 100%);
+      transform: translateY(12px); opacity: 0;
+      transition: transform .4s, opacity .4s;
+    }
+    .featured-item:hover .featured-caption { transform: translateY(0); opacity: 1; }
+    .feat-place { font-family: var(--serif); font-size: 24px; font-style: italic; font-weight: 300; color: var(--cream); }
+    .feat-type  { font-family: var(--sans); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(249,249,245,.65); margin-top: 6px; }
+
+    .featured-fp1 { background: linear-gradient(145deg,#cfc3b0 0%,#bfb3a0 100%); }
+    .featured-fp2 { background: linear-gradient(145deg,#c8beb5 0%,#b8afa8 100%); }
+    .featured-fp3 { background: linear-gradient(145deg,#d2c8bc 0%,#c0b8ae 100%); }
+    .featured-fp4 { background: linear-gradient(145deg,#d8d0c4 0%,#c8c0b5 100%); }
+
+    .view-all-wrap { text-align: center; padding: 64px 0 20px; }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .page-hero { padding: 140px 28px 60px; }
+      .category-strip { padding: 32px 28px 48px; }
+      .masonry-outer { padding: 0 28px; }
+      .masonry-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .featured-section { padding: 80px 28px 60px; }
+      .featured-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .featured-item { height: 360px; }
+      .mid-quote { padding: 80px 28px; }
+    }
+    @media (max-width: 640px) {
+      .masonry-grid { grid-template-columns: 1fr; }
+      .mh-tall, .mh-mid, .mh-short { height: 320px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═════════════════════════════════════════════════ -->
+  <nav class="nav nav-dark" id="mainNav">
+    <a href="index.html" class="nav-logo">Christopher Cook Photography</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="#">Journal</a></li>
+    </ul>
+    <a href="services.html#inquire" class="nav-inquire">Inquire</a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-overlay-close" id="overlayClose">✕</button>
+    <ul class="nav-overlay-links">
+      <li><a href="index.html"     onclick="closeOverlay()">Home</a></li>
+      <li><a href="about.html"     onclick="closeOverlay()">About</a></li>
+      <li><a href="portfolio.html" onclick="closeOverlay()">Portfolio</a></li>
+      <li><a href="services.html"  onclick="closeOverlay()">Services</a></li>
+      <li><a href="#">Journal</a></li>
+      <li><a href="services.html#inquire" onclick="closeOverlay()">Inquire</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ═══ PAGE HERO ════════════════════════════════════════════ -->
+  <section class="page-hero">
+    <p class="page-hero-eyebrow">Portfolio</p>
+    <h1 class="page-hero-title"><em>The</em><br />Work</h1>
+    <p class="page-hero-sub">Park City · Utah · Destinations Worldwide</p>
+  </section>
+
+
+  <!-- ═══ CATEGORY FILTER ══════════════════════════════════════ -->
+  <div class="category-strip">
+    <span class="cat-pill active">All</span>
+    <span class="cat-pill">Weddings</span>
+    <span class="cat-pill">Elopements</span>
+    <span class="cat-pill">Destinations</span>
+    <span class="cat-pill">Engagements</span>
+  </div>
+
+
+  <!-- ═══ MASONRY GRID ═════════════════════════════════════════ -->
+  <div class="masonry-outer">
+    <div class="masonry-grid">
+      <div class="masonry-item mh-tall">  <div class="masonry-placeholder mg1"  data-slot="portfolio-gallery-1"></div></div>
+      <div class="masonry-item mh-short"> <div class="masonry-placeholder mg2"  data-slot="portfolio-gallery-2"></div></div>
+      <div class="masonry-item mh-mid">   <div class="masonry-placeholder mg3"  data-slot="portfolio-gallery-3"></div></div>
+      <div class="masonry-item mh-mid">   <div class="masonry-placeholder mg4"  data-slot="portfolio-gallery-4"></div></div>
+      <div class="masonry-item mh-tall">  <div class="masonry-placeholder mg5"  data-slot="portfolio-gallery-5"></div></div>
+      <div class="masonry-item mh-short"> <div class="masonry-placeholder mg6"  data-slot="portfolio-gallery-6"></div></div>
+      <div class="masonry-item mh-short"> <div class="masonry-placeholder mg7"  data-slot="portfolio-gallery-7"></div></div>
+      <div class="masonry-item mh-mid">   <div class="masonry-placeholder mg8"  data-slot="portfolio-gallery-8"></div></div>
+      <div class="masonry-item mh-tall">  <div class="masonry-placeholder mg9"  data-slot="portfolio-gallery-9"></div></div>
+      <div class="masonry-item mh-mid">   <div class="masonry-placeholder mg10" data-slot="portfolio-gallery-10"></div></div>
+      <div class="masonry-item mh-tall">  <div class="masonry-placeholder mg11" data-slot="portfolio-gallery-11"></div></div>
+      <div class="masonry-item mh-mid">   <div class="masonry-placeholder mg12" data-slot="portfolio-gallery-12"></div></div>
+    </div>
+  </div>
+
+
+  <!-- ═══ MID TESTIMONIAL ══════════════════════════════════════ -->
+  <div class="mid-quote">
+    <p class="mid-quote-text">"Every image Christopher delivers feels like a scene from a film we forgot we were in."</p>
+    <p class="mid-quote-attr">— Natalie &amp; Reid, Jackson Hole</p>
+  </div>
+
+
+  <!-- ═══ FEATURED SHOWCASE ════════════════════════════════════ -->
+  <div class="featured-section">
+    <p class="featured-eyebrow">Featured Stories</p>
+    <h2 class="featured-heading">Stories worth<br /><em>remembering</em></h2>
+    <div class="featured-grid">
+      <div class="featured-item">
+        <div class="featured-placeholder featured-fp1" data-slot="portfolio-featured-1"></div>
+        <div class="featured-caption">
+          <p class="feat-place">Amangiri, Utah</p>
+          <p class="feat-type">Desert Elopement</p>
+        </div>
+      </div>
+      <div class="featured-item">
+        <div class="featured-placeholder featured-fp2" data-slot="portfolio-featured-2"></div>
+        <div class="featured-caption">
+          <p class="feat-place">Amalfi Coast, Italy</p>
+          <p class="feat-type">Destination Wedding</p>
+        </div>
+      </div>
+      <div class="featured-item">
+        <div class="featured-placeholder featured-fp3" data-slot="portfolio-featured-3"></div>
+        <div class="featured-caption">
+          <p class="feat-place">Jackson Hole, Wyoming</p>
+          <p class="feat-type">Mountain Wedding</p>
+        </div>
+      </div>
+      <div class="featured-item">
+        <div class="featured-placeholder featured-fp4" data-slot="portfolio-featured-4"></div>
+        <div class="featured-caption">
+          <p class="feat-place">Charleston, South Carolina</p>
+          <p class="feat-type">Garden Wedding</p>
+        </div>
+      </div>
+    </div>
+    <div class="view-all-wrap">
+      <a href="services.html" class="btn btn-dark">Start Your Story</a>
+    </div>
+  </div>
+
+
+  <!-- ═══ CTA ══════════════════════════════════════════════════ -->
+  <section class="cta">
+    <div class="cta-bg"></div>
+    <div class="cta-overlay"></div>
+    <div class="cta-content">
+      <p class="cta-eyebrow">Ready to Create</p>
+      <h2 class="cta-heading">Ready to create<br /><em>your story?</em></h2>
+      <a href="mailto:hello@christophercook.co" class="btn btn-light">Begin Your Inquiry</a>
+    </div>
+  </section>
+
+
+  <!-- ═══ MARQUEE ══════════════════════════════════════════════ -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+
+  <!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Christopher Cook Photography</p>
+        <p class="footer-tagline">"Timeless imagery that feels effortless today and iconic forever."</p>
+        <div class="footer-social">
+          <a href="#">Instagram</a>
+          <a href="#">Pinterest</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Navigate</p>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="#">Journal</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Services</p>
+        <ul>
+          <li><a href="services.html">Wedding Coverage</a></li>
+          <li><a href="services.html">Full Weekend</a></li>
+          <li><a href="services.html">Elopements</a></li>
+          <li><a href="services.html">Engagements</a></li>
+          <li><a href="services.html">Film Collections</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-col-contact">
+        <p class="footer-col-title">Contact</p>
+        <p>Park City, Utah<br />Destinations Worldwide</p>
+        <p>hello@christophercook.co</p>
+        <a href="services.html#inquire" class="btn btn-light" style="display:inline-block;font-size:10px;padding:12px 28px;margin-top:8px;">Inquire Now</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Christopher Allen Luxury Productions LLC &nbsp;·&nbsp; Utah Wedding Photographer</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    initFadeIn('.mid-quote, .featured-section, .cta-content');
+
+    // Category filter (visual only for now)
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
