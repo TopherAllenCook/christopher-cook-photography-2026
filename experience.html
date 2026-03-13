@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Experience — Christopher Cook Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ─── Experience Hero ────────────────────────────────────── */
+    .exp-hero {
+      position: relative; height: 65vh; min-height: 520px;
+      display: flex; align-items: flex-end; overflow: hidden;
+    }
+    .exp-hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(145deg, #1a1512 0%, #2a2018 60%, #1e1c18 100%);
+    }
+    .exp-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(7,7,7,.72) 0%, rgba(7,7,7,.2) 55%, transparent 100%);
+    }
+    .exp-hero-content {
+      position: relative; z-index: 2;
+      padding: 0 80px 80px;
+    }
+    .exp-hero-eyebrow {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 20px;
+    }
+    .exp-hero-title {
+      font-family: var(--serif); font-size: clamp(56px, 8vw, 120px);
+      font-weight: 300; line-height: .95; letter-spacing: -.01em; color: var(--cream);
+    }
+    .exp-hero-title em { font-style: italic; }
+
+    /* ─── Personal Note ──────────────────────────────────────── */
+    .personal-note {
+      padding: 120px 80px;
+      text-align: center;
+      background: var(--page-bg);
+      border-bottom: 1px solid var(--page-border);
+    }
+    .personal-note-eyebrow {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 36px;
+    }
+    .personal-note-text {
+      font-family: var(--serif); font-size: clamp(20px, 2vw, 30px);
+      font-style: italic; font-weight: 300; line-height: 1.7;
+      max-width: 820px; margin: 0 auto 40px; color: var(--page-fg);
+    }
+    .personal-note-sig {
+      font-family: var(--serif); font-size: 22px; font-style: italic;
+      font-weight: 300; color: var(--accent); display: block;
+    }
+
+    /* ─── Portrait Split ─────────────────────────────────────── */
+    .portrait-split {
+      display: grid; grid-template-columns: 1fr 1.15fr;
+      min-height: 700px;
+    }
+    .portrait-img { height: 700px; overflow: hidden; position: relative; }
+    .portrait-img-inner {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #cfc3b0 0%, #bfb3a0 100%);
+    }
+    .portrait-text {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px; background: var(--page-bg);
+    }
+
+    /* ─── What You'll Feel (numbered splits) ─────────────────── */
+    .feel-section {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 640px;
+    }
+    .feel-section.reverse .feel-img  { order: 2; }
+    .feel-section.reverse .feel-text { order: 1; }
+    .feel-img { height: 640px; overflow: hidden; }
+    .feel-img-inner { width: 100%; height: 100%; }
+    .feel-text {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px; position: relative; overflow: hidden;
+    }
+    .feel-section.dark   { background: var(--dark);   color: var(--cream); }
+    .feel-section.light  { background: var(--page-bg); }
+    .feel-section.forest { background: var(--forest); color: var(--cream); }
+    .feel-section.dark   .section-body { color: rgba(249,249,245,.68); }
+    .feel-section.forest .section-body { color: rgba(249,249,245,.68); }
+    .feel-num {
+      font-family: var(--serif); font-size: clamp(120px, 18vw, 220px);
+      font-weight: 300; line-height: 1; color: currentColor; opacity: .06;
+      position: absolute; bottom: -20px; right: 40px; pointer-events: none;
+      user-select: none;
+    }
+    .feel-heading {
+      font-family: var(--serif); font-size: clamp(40px, 4.5vw, 72px);
+      font-weight: 300; line-height: 1.05; margin-bottom: 32px;
+    }
+    .feel-heading em { font-style: italic; }
+    .feel-eyebrow {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 20px;
+    }
+
+    /* ─── Client Stories ─────────────────────────────────────── */
+    .stories-section {
+      background: var(--dark); color: var(--cream);
+      padding: 100px 80px;
+    }
+    .stories-header { max-width: 1400px; margin: 0 auto 64px; }
+    .stories-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; max-width: 1400px; margin: 0 auto;
+    }
+    .story-card {
+      padding: 48px 40px;
+      background: rgba(249,249,245,.04);
+      border: 1px solid rgba(249,249,245,.08);
+      display: flex; flex-direction: column;
+    }
+    .story-mark {
+      font-family: var(--serif); font-size: 64px; line-height: .65;
+      color: var(--accent); opacity: .35; margin-bottom: 24px;
+    }
+    .story-text {
+      font-family: var(--serif); font-size: 19px; font-style: italic;
+      font-weight: 300; line-height: 1.65; flex: 1; margin-bottom: 32px;
+    }
+    .story-author {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; font-weight: 500; opacity: .4;
+    }
+
+    /* ─── The Process ────────────────────────────────────────── */
+    .process-section {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 660px;
+    }
+    .process-section.reverse .process-img  { order: 2; }
+    .process-section.reverse .process-text { order: 1; }
+    .process-img { height: 660px; overflow: hidden; }
+    .process-img-inner { width: 100%; height: 100%; }
+    .process-text {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px;
+    }
+    .process-section.dark   { background: var(--dark);   color: var(--cream); }
+    .process-section.light  { background: var(--page-bg); }
+    .process-section.forest { background: var(--forest); color: var(--cream); }
+    .process-section.dark   .section-body,
+    .process-section.forest .section-body { color: rgba(249,249,245,.68); }
+    .process-section.light  .section-body { color: var(--page-fg-mid); }
+    .process-step-num {
+      font-family: var(--serif); font-size: 13px; font-style: italic;
+      opacity: .4; margin-bottom: 12px;
+    }
+    .process-heading {
+      font-family: var(--serif); font-size: clamp(32px, 3.5vw, 58px);
+      font-weight: 300; line-height: 1.1; margin-bottom: 8px;
+    }
+    .process-heading em { font-style: italic; }
+    .process-rule { width: 48px; height: 1px; background: var(--accent); margin: 24px 0; }
+
+    /* ─── What to Expect ─────────────────────────────────────── */
+    .expect-section {
+      padding: 100px 80px;
+      background: var(--page-bg);
+    }
+    .expect-header { max-width: 1200px; margin: 0 auto 64px; }
+    .expect-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      max-width: 1200px; margin: 0 auto;
+      border-top: 1px solid var(--page-border);
+      border-left: 1px solid var(--page-border);
+    }
+    .expect-item {
+      padding: 56px 48px;
+      border-right: 1px solid var(--page-border);
+      border-bottom: 1px solid var(--page-border);
+    }
+    .expect-num {
+      font-family: var(--serif); font-size: 48px; font-weight: 300;
+      line-height: 1; color: var(--accent); opacity: .3; margin-bottom: 20px;
+    }
+    .expect-heading {
+      font-family: var(--serif); font-size: clamp(22px, 2vw, 32px);
+      font-weight: 300; line-height: 1.2; margin-bottom: 16px;
+    }
+    .expect-heading em { font-style: italic; }
+    .expect-body {
+      font-size: 14px; line-height: 1.85; font-weight: 300;
+      color: var(--page-fg-mid);
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .exp-hero-content { padding: 0 28px 60px; }
+      .personal-note { padding: 80px 28px; }
+      .portrait-split { grid-template-columns: 1fr; }
+      .portrait-img { height: 480px; }
+      .feel-section { grid-template-columns: 1fr; min-height: auto; }
+      .feel-section.reverse .feel-img  { order: 0; }
+      .feel-section.reverse .feel-text { order: 1; }
+      .feel-img { height: 380px; }
+      .feel-text { padding: 60px 28px; }
+      .feel-num { font-size: 120px; bottom: -10px; right: 20px; }
+      .stories-section { padding: 80px 28px; }
+      .stories-grid { grid-template-columns: 1fr; }
+      .process-section { grid-template-columns: 1fr; min-height: auto; }
+      .process-section.reverse .process-img  { order: 0; }
+      .process-section.reverse .process-text { order: 1; }
+      .process-img { height: 360px; }
+      .process-text { padding: 60px 28px; }
+      .expect-section { padding: 80px 28px; }
+      .expect-grid { grid-template-columns: 1fr; border-left: none; }
+      .expect-item { border-left: 1px solid var(--page-border); padding: 40px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═════════════════════════════════════════════════ -->
+  <nav class="nav" id="mainNav">
+    <a href="index.html" class="nav-logo">Christopher Cook Photography</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="experience.html" class="active">Experience</a></li>
+    </ul>
+    <a href="services.html#inquire" class="nav-inquire">Inquire</a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-overlay-close" id="overlayClose">✕</button>
+    <ul class="nav-overlay-links">
+      <li><a href="index.html"      onclick="closeOverlay()">Home</a></li>
+      <li><a href="about.html"      onclick="closeOverlay()">About</a></li>
+      <li><a href="portfolio.html"  onclick="closeOverlay()">Portfolio</a></li>
+      <li><a href="services.html"   onclick="closeOverlay()">Services</a></li>
+      <li><a href="experience.html" onclick="closeOverlay()">Experience</a></li>
+      <li><a href="services.html#inquire" onclick="closeOverlay()">Inquire</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ═══ HERO ════════════════════════════════════════════════ -->
+  <section class="exp-hero">
+    <div class="exp-hero-bg" data-slot="experience-hero-bg"></div>
+    <div class="exp-hero-overlay"></div>
+    <div class="exp-hero-content">
+      <p class="exp-hero-eyebrow">What It's Like</p>
+      <h1 class="exp-hero-title">The<br /><em>Experience</em></h1>
+    </div>
+  </section>
+
+
+  <!-- ═══ PERSONAL NOTE ════════════════════════════════════════ -->
+  <div class="personal-note">
+    <p class="personal-note-eyebrow">A Note from Christopher</p>
+    <p class="personal-note-text">"Every couple deserves to move through their wedding day without once worrying about being photographed. My job isn't to document your wedding — it's to be so present, so still, and so attuned to the light and to you, that you forget I'm there entirely. What you'll receive is not a record of what happened. It's a rendering of what it felt like."</p>
+    <span class="personal-note-sig">— Christopher Cook</span>
+  </div>
+
+
+  <!-- ═══ PORTRAIT SPLIT ═══════════════════════════════════════ -->
+  <div class="portrait-split">
+    <div class="portrait-img">
+      <div class="portrait-img-inner" data-slot="experience-portrait"></div>
+    </div>
+    <div class="portrait-text">
+      <p class="section-eyebrow">The Photographer</p>
+      <h2 class="section-heading">Behind the lens,<br /><em>before the light</em></h2>
+      <div class="section-rule"></div>
+      <p class="section-body">Christopher came to wedding photography through editorial and commercial work — a background that instilled habits of precision, visual storytelling, and light-reading that most photographers never develop.</p>
+      <p class="section-body">He doesn't arrive at a wedding with a checklist. He arrives with a way of seeing — shaped by years of working in environments where the margin for error was zero and the expectation for beauty was absolute.</p>
+      <p class="section-body">What that means for you: every frame is considered, every moment is earned, and your gallery will feel nothing like what you expected — and exactly like what you hoped for.</p>
+    </div>
+  </div>
+
+
+  <!-- ═══ WHAT YOU'LL FEEL ══════════════════════════════════════ -->
+
+  <!-- 01 — Deeply Seen -->
+  <div class="feel-section light">
+    <div class="feel-img">
+      <div class="feel-img-inner" style="background:linear-gradient(145deg,#d4c5b5 0%,#c4b5a5 100%);" data-slot="experience-feel-1"></div>
+    </div>
+    <div class="feel-text">
+      <span class="feel-num" aria-hidden="true">01</span>
+      <p class="feel-eyebrow">What You'll Feel</p>
+      <h2 class="feel-heading">Deeply<br /><em>Seen</em></h2>
+      <div class="section-rule"></div>
+      <p class="section-body">You won't feel posed, performed, or managed. Christopher's approach is rooted in restraint — he observes more than he directs, and trusts that the best moments surface on their own.</p>
+      <p class="section-body">He pays attention to the things that don't announce themselves: the way you touch your partner's hand, the glance you share before walking out the door, the stillness between the vows.</p>
+    </div>
+  </div>
+
+  <!-- 02 — Unhurried -->
+  <div class="feel-section dark reverse">
+    <div class="feel-img">
+      <div class="feel-img-inner" style="background:linear-gradient(145deg,#2a2018 0%,#1a1512 100%);" data-slot="experience-feel-2"></div>
+    </div>
+    <div class="feel-text">
+      <span class="feel-num" aria-hidden="true">02</span>
+      <p class="feel-eyebrow" style="color:var(--accent);">What You'll Feel</p>
+      <h2 class="feel-heading"><em>Unhurried</em><br />through it all</h2>
+      <div class="section-rule"></div>
+      <p class="section-body">Wedding days are long and layered. Christopher moves through yours with patience, reading the rhythm of the room without pushing it. There's no checklist driving the timeline — only attentiveness to the one unfolding in front of him.</p>
+      <p class="section-body">You won't feel rushed through portraits. You won't feel anxious about coverage. You'll simply feel cared for.</p>
+    </div>
+  </div>
+
+  <!-- 03 — Moved -->
+  <div class="feel-section forest">
+    <div class="feel-img">
+      <div class="feel-img-inner" style="background:linear-gradient(145deg,#2a3025 0%,#1a2018 100%);" data-slot="experience-feel-3"></div>
+    </div>
+    <div class="feel-text">
+      <span class="feel-num" aria-hidden="true">03</span>
+      <p class="feel-eyebrow" style="color:var(--accent);">What You'll Feel</p>
+      <h2 class="feel-heading">Genuinely<br /><em>Moved</em></h2>
+      <div class="section-rule"></div>
+      <p class="section-body">When your gallery arrives, you'll find moments you forgot happened — details you didn't notice, glances you didn't know were caught. The images will surprise you.</p>
+      <p class="section-body">Not because they're dramatic or staged. Because they're true. And because seeing your own story rendered with this kind of care is, every time, something people weren't fully prepared for.</p>
+    </div>
+  </div>
+
+
+  <!-- ═══ CLIENT STORIES ═══════════════════════════════════════ -->
+  <div class="stories-section">
+    <div class="stories-header">
+      <p class="section-eyebrow">Client Stories</p>
+      <h2 class="section-heading" style="color:var(--cream);">In their<br /><em>own words</em></h2>
+    </div>
+    <div class="stories-grid">
+      <div class="story-card">
+        <div class="story-mark">"</div>
+        <p class="story-text">Honestly, 'pictures' doesn't do them justice — they are breathtaking art. We look at them and are immediately transported back to that day. Christopher has a gift for capturing what a moment truly feels like, not just what it looks like.</p>
+        <p class="story-author">— Emma &amp; James, Park City</p>
+      </div>
+      <div class="story-card">
+        <div class="story-mark">"</div>
+        <p class="story-text">I kept telling people I wasn't going to cry looking at the photos. I was wrong. Every single image felt like it was pulled directly from my memory of that day — the emotion, the light, the quiet in-between moments. Absolutely extraordinary.</p>
+        <p class="story-author">— Natalie &amp; Reid, Jackson Hole</p>
+      </div>
+      <div class="story-card">
+        <div class="story-mark">"</div>
+        <p class="story-text">These aren't just photos; they're art, brimming with love and joy. Christopher understood what we wanted before we could articulate it. Every image tells our story in a way we could never have imagined.</p>
+        <p class="story-author">— Claire &amp; Marcus, Charleston</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══ THE PROCESS ═══════════════════════════════════════════ -->
+  <div>
+    <div style="padding:80px 80px 0;background:var(--dark);">
+      <p class="section-eyebrow">How It Works</p>
+      <h2 class="section-heading" style="color:var(--cream);max-width:600px;">The process,<br /><em>step by step</em></h2>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="process-section dark">
+      <div class="process-img">
+        <div class="process-img-inner" style="background:linear-gradient(145deg,#1a1512 0%,#2a2018 100%);" data-slot="experience-process-1"></div>
+      </div>
+      <div class="process-text">
+        <p class="process-step-num">Step 01</p>
+        <h2 class="process-heading">Inquiry &amp;<br /><em>Connection</em></h2>
+        <div class="process-rule"></div>
+        <p class="section-body">It starts with a conversation — not a sales call. We want to understand who you are as a couple, what your day looks and feels like, and whether our aesthetics align before either of us commits.</p>
+        <p class="section-body">There's no obligation. We just believe the best working relationships begin with honesty, and the best photographs come from genuine connection.</p>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="process-section light reverse">
+      <div class="process-img">
+        <div class="process-img-inner" style="background:linear-gradient(145deg,#ddd4c6 0%,#c9bfb3 100%);" data-slot="experience-process-2"></div>
+      </div>
+      <div class="process-text">
+        <p class="process-step-num">Step 02</p>
+        <h2 class="process-heading">The Planning<br /><em>Session</em></h2>
+        <div class="process-rule"></div>
+        <p class="section-body">Several weeks before the wedding, we go through your day together in detail — timeline, light, locations, and the moments that matter most to you.</p>
+        <p class="section-body">This isn't a checklist review. It's a creative session where we think through your day as a visual story, so that on the day itself, nothing needs to be figured out on the fly.</p>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="process-section forest">
+      <div class="process-img">
+        <div class="process-img-inner" style="background:linear-gradient(145deg,#1e2c1a 0%,#141c12 100%);" data-slot="experience-process-3"></div>
+      </div>
+      <div class="process-text">
+        <p class="process-step-num">Step 03</p>
+        <h2 class="process-heading">Your<br /><em>Wedding Day</em></h2>
+        <div class="process-rule"></div>
+        <p class="section-body">Present, patient, and precise. Christopher arrives early, moves quietly, and stays focused on the quality of light and the truth of the moment — from your first look until the last dance.</p>
+        <p class="section-body">You'll barely notice him. That's the point. The images are made possible precisely because you forgot he was there.</p>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="process-section dark reverse">
+      <div class="process-img">
+        <div class="process-img-inner" style="background:linear-gradient(145deg,#2a2018 0%,#1a1512 100%);" data-slot="experience-process-4"></div>
+      </div>
+      <div class="process-text">
+        <p class="process-step-num">Step 04</p>
+        <h2 class="process-heading">Gallery<br /><em>Delivery</em></h2>
+        <div class="process-rule"></div>
+        <p class="section-body">Within six weeks, your private online gallery is delivered — fully edited, print-licensed, and curated to tell the story of your day from beginning to end.</p>
+        <p class="section-body">Every image is individually refined. Nothing is bulk-exported. The gallery you receive is the same one Christopher would show in his own portfolio — which means it meets a standard, not just a count.</p>
+        <a href="services.html" class="btn btn-light" style="margin-top:8px;">View Packages</a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══ WHAT TO EXPECT ════════════════════════════════════════ -->
+  <div class="expect-section">
+    <div class="expect-header">
+      <p class="section-eyebrow">The Details</p>
+      <h2 class="section-heading">Four things you<br /><em>can always expect</em></h2>
+    </div>
+    <div class="expect-grid">
+      <div class="expect-item">
+        <p class="expect-num">01</p>
+        <h3 class="expect-heading">Undivided<br /><em>Attention</em></h3>
+        <p class="expect-body">Christopher takes a limited number of weddings each year — intentionally. When you book, you have his full commitment, not a spot in a rotation.</p>
+      </div>
+      <div class="expect-item">
+        <p class="expect-num">02</p>
+        <h3 class="expect-heading">Editorial<br /><em>Direction</em></h3>
+        <p class="expect-body">When portraits call for gentle guidance, Christopher provides it — quietly and with purpose. You'll move through the session feeling natural, not performed.</p>
+      </div>
+      <div class="expect-item">
+        <p class="expect-num">03</p>
+        <h3 class="expect-heading">Film + Digital<br /><em>Hybrid</em></h3>
+        <p class="expect-body">Medium-format film is woven into every wedding — for the grain, the tonality, and the timelessness that only analog can produce. The result is a gallery with true depth.</p>
+      </div>
+      <div class="expect-item">
+        <p class="expect-num">04</p>
+        <h3 class="expect-heading">Heirloom-Grade<br /><em>Delivery</em></h3>
+        <p class="expect-body">Archival digital files delivered at full resolution, print-licensed for life. Optional hand-bound albums crafted by the same artisans trusted by the world's top portrait photographers.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══ CTA ══════════════════════════════════════════════════ -->
+  <section class="cta">
+    <div class="cta-bg" data-slot="experience-cta-bg"></div>
+    <div class="cta-overlay"></div>
+    <div class="cta-content">
+      <p class="cta-eyebrow">Ready to Begin</p>
+      <h2 class="cta-heading">Let's create something<br /><em>worth keeping</em></h2>
+      <a href="services.html" class="btn btn-light">View Services &amp; Invest</a>
+    </div>
+  </section>
+
+
+  <!-- ═══ MARQUEE ══════════════════════════════════════════════ -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+
+  <!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Christopher Cook Photography</p>
+        <p class="footer-tagline">"Timeless imagery that feels effortless today and iconic forever."</p>
+        <div class="footer-social">
+          <a href="#">Instagram</a>
+          <a href="#">Pinterest</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Navigate</p>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="experience.html">Experience</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Services</p>
+        <ul>
+          <li><a href="services.html">Wedding Coverage</a></li>
+          <li><a href="services.html">Full Weekend</a></li>
+          <li><a href="services.html">Elopements</a></li>
+          <li><a href="services.html">Engagements</a></li>
+          <li><a href="services.html">Film Collections</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-col-contact">
+        <p class="footer-col-title">Contact</p>
+        <p>Park City, Utah<br />Destinations Worldwide</p>
+        <p>hello@christophercook.co</p>
+        <a href="services.html#inquire" class="btn btn-light" style="display:inline-block;font-size:10px;padding:12px 28px;margin-top:8px;">Inquire Now</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Christopher Allen Luxury Productions LLC &nbsp;·&nbsp; Utah Wedding Photographer</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    initFadeIn('.personal-note, .portrait-split, .feel-section, .stories-section, .process-section, .expect-section, .cta-content');
+  </script>
+</body>
+</html>
