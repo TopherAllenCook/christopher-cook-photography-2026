@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Christopher Cook Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ─── Page Hero ─────────────────────────────────────────── */
+    .page-hero {
+      padding: 180px 80px 100px;
+      text-align: center;
+      background: var(--page-bg);
+    }
+    .page-hero-eyebrow {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .page-hero-title {
+      font-family: var(--serif); font-size: clamp(60px, 8vw, 120px);
+      font-weight: 300; line-height: 1.0; letter-spacing: -.01em;
+    }
+    .page-hero-title em { font-style: italic; }
+    .page-hero-sub {
+      font-family: var(--sans); font-size: 12px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--page-fg-mid); margin-top: 28px; font-weight: 300;
+    }
+
+    /* ─── Contact Main Split ─────────────────────────────────── */
+    .contact-main {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 900px;
+      border-top: 1px solid var(--page-border);
+    }
+    .contact-img-col {
+      position: relative; overflow: hidden;
+    }
+    .contact-img {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #cfc3b0 0%, #bfb3a0 100%);
+    }
+    .contact-form-col {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px; background: var(--page-bg);
+    }
+    .contact-form-heading {
+      font-family: var(--serif); font-size: clamp(32px, 3vw, 52px);
+      font-weight: 300; line-height: 1.15; margin-bottom: 12px;
+    }
+    .contact-form-heading em { font-style: italic; }
+    .contact-form-sub {
+      font-size: 14px; line-height: 1.8; font-weight: 300;
+      color: var(--page-fg-mid); margin-bottom: 48px; max-width: 440px;
+    }
+
+    /* ─── Form ───────────────────────────────────────────────── */
+    .inquiry-form { display: flex; flex-direction: column; gap: 0; }
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    }
+    .form-field {
+      display: flex; flex-direction: column;
+      border-bottom: 1px solid var(--page-border);
+      padding-bottom: 4px; margin-bottom: 32px;
+    }
+    .form-label {
+      font-family: var(--sans); font-size: 9px; letter-spacing: .25em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      font-family: var(--serif); font-size: 17px; font-style: italic;
+      font-weight: 300; color: var(--page-fg);
+      background: transparent; border: none; outline: none;
+      padding: 0 0 8px; width: 100%; resize: none;
+      -webkit-appearance: none; appearance: none;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--page-fg-mid); opacity: .5;
+    }
+    .form-select {
+      cursor: pointer;
+    }
+    .form-select option {
+      background: var(--page-bg); color: var(--page-fg);
+      font-style: normal; font-family: var(--sans); font-size: 14px;
+    }
+    .form-textarea {
+      min-height: 120px; line-height: 1.7;
+    }
+    .form-submit-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 8px; flex-wrap: wrap; gap: 20px;
+    }
+    .form-note {
+      font-size: 11px; color: var(--page-fg-mid); font-weight: 300;
+      letter-spacing: .05em; max-width: 260px; line-height: 1.6;
+    }
+    .form-status {
+      font-family: var(--serif); font-size: 15px; font-style: italic;
+      font-weight: 300; color: var(--accent); display: none;
+    }
+
+    /* ─── FAQ Section ────────────────────────────────────────── */
+    .faq-section {
+      padding: 100px 80px;
+      background: var(--page-bg);
+      border-top: 1px solid var(--page-border);
+    }
+    .faq-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 100px;
+      align-items: start;
+    }
+    .faq-sidebar {
+      position: sticky; top: 120px;
+    }
+    .faq-sidebar-heading {
+      font-family: var(--serif); font-size: clamp(36px, 3.5vw, 58px);
+      font-weight: 300; line-height: 1.1; margin-bottom: 28px;
+    }
+    .faq-sidebar-heading em { font-style: italic; }
+    .faq-sidebar-body {
+      font-size: 14px; line-height: 1.85; font-weight: 300;
+      color: var(--page-fg-mid); margin-bottom: 32px;
+    }
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item {
+      border-top: 1px solid var(--page-border);
+      padding: 28px 0;
+    }
+    .faq-item:last-child { border-bottom: 1px solid var(--page-border); }
+    .faq-question {
+      font-family: var(--serif); font-size: 19px; font-weight: 300;
+      line-height: 1.4; margin-bottom: 16px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 20px;
+    }
+    .faq-question-text { flex: 1; }
+    .faq-toggle {
+      font-family: var(--serif); font-size: 22px; font-weight: 300;
+      opacity: .4; flex-shrink: 0; transition: transform .3s;
+      user-select: none; line-height: 1;
+    }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); opacity: .7; }
+    .faq-answer {
+      font-size: 14px; line-height: 1.9; font-weight: 300;
+      color: var(--page-fg-mid);
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s ease, padding-top .3s;
+    }
+    .faq-item.open .faq-answer { max-height: 400px; padding-top: 4px; }
+
+    /* ─── Keep Exploring ─────────────────────────────────────── */
+    .explore-section {
+      padding: 100px 80px;
+      background: var(--dark); color: var(--cream);
+      border-top: 1px solid rgba(249,249,245,.06);
+    }
+    .explore-header { margin-bottom: 60px; }
+    .explore-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      max-width: 1400px; margin: 0 auto;
+    }
+    .explore-card {
+      position: relative; overflow: hidden; cursor: pointer;
+      display: block; color: inherit;
+    }
+    .explore-card-img {
+      height: 400px; width: 100%; transition: transform .7s ease;
+    }
+    .explore-card:hover .explore-card-img { transform: scale(1.04); }
+    .ep1 { background: linear-gradient(145deg, #cfc3b0 0%, #bfb3a0 100%); }
+    .ep2 { background: linear-gradient(145deg, #c8beb5 0%, #b8afa8 100%); }
+    .ep3 { background: linear-gradient(145deg, #1e2c1a 0%, #141c12 100%); }
+    .explore-card-body {
+      padding: 28px 0 0;
+    }
+    .explore-card-label {
+      font-family: var(--sans); font-size: 9px; letter-spacing: .25em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .explore-card-title {
+      font-family: var(--serif); font-size: 26px; font-weight: 300;
+      font-style: italic; line-height: 1.2; margin-bottom: 10px;
+    }
+    .explore-card-link {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; font-weight: 500;
+      border-bottom: 1px solid rgba(249,249,245,.35);
+      padding-bottom: 2px; opacity: .55; transition: opacity .2s;
+      display: inline-block;
+    }
+    .explore-card:hover .explore-card-link { opacity: 1; }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .page-hero { padding: 140px 28px 80px; }
+      .contact-main { grid-template-columns: 1fr; min-height: auto; }
+      .contact-img-col { height: 420px; }
+      .contact-form-col { padding: 60px 28px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .faq-section { padding: 80px 28px; }
+      .faq-inner { grid-template-columns: 1fr; gap: 60px; }
+      .faq-sidebar { position: static; }
+      .explore-section { padding: 80px 28px; }
+      .explore-grid { grid-template-columns: 1fr; }
+      .explore-card-img { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═════════════════════════════════════════════════ -->
+  <nav class="nav nav-dark" id="mainNav">
+    <a href="index.html" class="nav-logo">Christopher Cook Photography</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="experience.html">Experience</a></li>
+    </ul>
+    <a href="#inquiry" class="nav-inquire">Inquire</a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-overlay-close" id="overlayClose">✕</button>
+    <ul class="nav-overlay-links">
+      <li><a href="index.html"      onclick="closeOverlay()">Home</a></li>
+      <li><a href="about.html"      onclick="closeOverlay()">About</a></li>
+      <li><a href="portfolio.html"  onclick="closeOverlay()">Portfolio</a></li>
+      <li><a href="services.html"   onclick="closeOverlay()">Services</a></li>
+      <li><a href="experience.html" onclick="closeOverlay()">Experience</a></li>
+      <li><a href="#inquiry"        onclick="closeOverlay()">Inquire</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ═══ PAGE HERO ════════════════════════════════════════════ -->
+  <section class="page-hero">
+    <p class="page-hero-eyebrow">Get in Touch</p>
+    <h1 class="page-hero-title">Let's<br /><em>Begin</em></h1>
+    <p class="page-hero-sub">Park City, Utah &nbsp;·&nbsp; Destinations Worldwide</p>
+  </section>
+
+
+  <!-- ═══ CONTACT SPLIT ════════════════════════════════════════ -->
+  <div class="contact-main" id="inquiry">
+    <div class="contact-img-col">
+      <div class="contact-img" data-slot="contact-img"></div>
+    </div>
+
+    <div class="contact-form-col">
+      <h2 class="contact-form-heading">Tell us about<br /><em>your wedding day</em></h2>
+      <p class="contact-form-sub">We take on a limited number of weddings each year. Reach out early — and tell us everything.</p>
+
+      <!-- Replace YOUR_FORM_ID with your Formspree endpoint once set up -->
+      <form class="inquiry-form" id="inquiryForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="firstName">First Name</label>
+            <input class="form-input" type="text" id="firstName" name="firstName" placeholder="Your first name" required />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="lastName">Last Name</label>
+            <input class="form-input" type="text" id="lastName" name="lastName" placeholder="Your last name" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="email">Email Address</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="your@email.com" required />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="phone">Phone Number</label>
+            <input class="form-input" type="tel" id="phone" name="phone" placeholder="(000) 000-0000" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="weddingDate">Wedding Date</label>
+            <input class="form-input" type="text" id="weddingDate" name="weddingDate" placeholder="Month, Day, Year" />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="venue">Venue &amp; Location</label>
+            <input class="form-input" type="text" id="venue" name="venue" placeholder="Venue name or city" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="referral">How did you find us?</label>
+          <select class="form-select" id="referral" name="referral">
+            <option value="" disabled selected>Select one</option>
+            <option value="instagram">Instagram</option>
+            <option value="pinterest">Pinterest</option>
+            <option value="google">Google Search</option>
+            <option value="referral">Friend or Vendor Referral</option>
+            <option value="wedding-wire">WeddingWire / The Knot</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="message">Tell us about your day</label>
+          <textarea class="form-textarea" id="message" name="message" placeholder="Vision, venue, vibe — share as much as you'd like." rows="5"></textarea>
+        </div>
+
+        <div class="form-submit-row">
+          <div>
+            <button type="submit" class="btn btn-dark">Send Your Inquiry</button>
+            <p class="form-status" id="formStatus">Thank you — we'll be in touch soon.</p>
+          </div>
+          <p class="form-note">We respond to all inquiries within 48 hours. For urgent matters, email <a href="mailto:hello@christophercook.co" style="border-bottom:1px solid currentColor;">hello@christophercook.co</a> directly.</p>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ═══ FAQ ══════════════════════════════════════════════════ -->
+  <section class="faq-section">
+    <div class="faq-inner">
+      <div class="faq-sidebar">
+        <p class="section-eyebrow">FAQ</p>
+        <h2 class="faq-sidebar-heading">Questions<br />we hear<br /><em>most often</em></h2>
+        <p class="faq-sidebar-body">If yours isn't here, reach out — we're always happy to talk through the details before you decide.</p>
+        <a href="mailto:hello@christophercook.co" class="btn btn-dark">Ask a Question</a>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-question">
+            <span class="faq-question-text">How far in advance should I book?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">Most couples book 12–18 months before their wedding date. Popular summer and fall weekends in Park City and destination locations fill quickly — if your date is within the next six months, reach out right away and we'll let you know our availability.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span class="faq-question-text">Do you travel for destination weddings?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">Yes — travel is built into our DNA. We've photographed weddings across Italy, France, Greece, Mexico, and throughout the U.S. Travel expenses (flights, lodging, transport) are billed at cost and included in your custom proposal.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span class="faq-question-text">What does your editing process look like?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">Every image is individually refined — not batch-processed. We work to a consistent aesthetic: natural skin tones, luminous light, timeless tonality. Digital files are delivered alongside any medium-format film scans through a private online gallery.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span class="faq-question-text">How long until we receive our gallery?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">Your full gallery is delivered within six weeks of your wedding date. You'll receive a preview of 10–15 images within 72 hours — something to hold on to while we finalize the full collection.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span class="faq-question-text">Do you offer albums?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">Yes. We offer hand-bound heirloom albums crafted by artisans trusted by the world's top portrait photographers. Albums can be added to any collection and are designed collaboratively — you'll approve every spread before it goes to print.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span class="faq-question-text">Can we meet before booking?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">Absolutely — we encourage it. We offer a no-obligation video call for couples who want to get a feel for working together before committing. Fill out the inquiry form and mention you'd like to connect, and we'll schedule a call.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══ KEEP EXPLORING ════════════════════════════════════════ -->
+  <section class="explore-section">
+    <div class="explore-header">
+      <p class="section-eyebrow">Keep Exploring</p>
+      <h2 class="section-heading" style="color:var(--cream);">More to<br /><em>discover</em></h2>
+    </div>
+    <div class="explore-grid">
+      <a href="portfolio.html" class="explore-card">
+        <div class="explore-card-img ep1" data-slot="contact-explore-1"></div>
+        <div class="explore-card-body">
+          <p class="explore-card-label">Portfolio</p>
+          <p class="explore-card-title">The Work</p>
+          <span class="explore-card-link">View Gallery →</span>
+        </div>
+      </a>
+      <a href="experience.html" class="explore-card">
+        <div class="explore-card-img ep2" data-slot="contact-explore-2"></div>
+        <div class="explore-card-body">
+          <p class="explore-card-label">The Experience</p>
+          <p class="explore-card-title">What It's Like to Work Together</p>
+          <span class="explore-card-link">Learn More →</span>
+        </div>
+      </a>
+      <a href="services.html" class="explore-card">
+        <div class="explore-card-img ep3" data-slot="contact-explore-3"></div>
+        <div class="explore-card-body">
+          <p class="explore-card-label">Services</p>
+          <p class="explore-card-title">Investment &amp; Collections</p>
+          <span class="explore-card-link">View Services →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ═══ MARQUEE ══════════════════════════════════════════════ -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Wedding Photography <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Park City, Utah <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Destinations Worldwide <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Editorial &amp; Cinematic <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Film + Digital Hybrid <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Luxury Wedding Photographer <span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+
+  <!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Christopher Cook Photography</p>
+        <p class="footer-tagline">"Timeless imagery that feels effortless today and iconic forever."</p>
+        <div class="footer-social">
+          <a href="#">Instagram</a>
+          <a href="#">Pinterest</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Navigate</p>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="experience.html">Experience</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Services</p>
+        <ul>
+          <li><a href="services.html">Wedding Coverage</a></li>
+          <li><a href="services.html">Full Weekend</a></li>
+          <li><a href="services.html">Elopements</a></li>
+          <li><a href="services.html">Engagements</a></li>
+          <li><a href="services.html">Film Collections</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-col-contact">
+        <p class="footer-col-title">Contact</p>
+        <p>Park City, Utah<br />Destinations Worldwide</p>
+        <p>hello@christophercook.co</p>
+        <a href="#inquiry" class="btn btn-light" style="display:inline-block;font-size:10px;padding:12px 28px;margin-top:8px;">Inquire Now</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Christopher Allen Luxury Productions LLC &nbsp;·&nbsp; Utah Wedding Photographer</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    initFadeIn('.contact-main, .faq-section, .explore-section');
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-question').addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // Form feedback (for Formspree AJAX submission)
+    const form = document.getElementById('inquiryForm');
+    const status = document.getElementById('formStatus');
+    form.addEventListener('submit', async (e) => {
+      const action = form.getAttribute('action');
+      if (action.includes('YOUR_FORM_ID')) return; // let native submit handle placeholder
+      e.preventDefault();
+      const data = new FormData(form);
+      const res = await fetch(action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        form.reset();
+        status.style.display = 'block';
+        status.textContent = 'Thank you — we\'ll be in touch within 48 hours.';
+      } else {
+        status.style.display = 'block';
+        status.style.color = 'var(--page-fg)';
+        status.textContent = 'Something went wrong. Please email us directly.';
+      }
+    });
+  </script>
+</body>
+</html>
