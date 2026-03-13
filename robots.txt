@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://christophercook.co/sitemap.xml
