@@ -221,7 +221,7 @@
       <input type="password" id="login-password" autocomplete="current-password" />
     </div>
 
-    <button class="btn-primary" id="login-btn">Sign In</button>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
     <p id="login-error"></p>
   </div>
 </div>
@@ -232,7 +232,7 @@
     <span class="topbar-brand">Image Manager</span>
     <div class="topbar-right">
       <span class="topbar-status">● Connected</span>
-      <button class="btn-signout" id="signout-btn">Sign Out</button>
+      <button class="btn-signout" id="signout-btn" onclick="sessionStorage.removeItem('admin_auth');location.reload()">Sign Out</button>
     </div>
   </div>
 
@@ -479,15 +479,6 @@
     document.getElementById('main').style.display = 'block';
     renderAllSections();
   }
-
-  // ── Boot (script is at end of body so DOM is already ready) ──
-  document.getElementById('login-btn').addEventListener('click', doLogin);
-  document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('signout-btn').addEventListener('click', () => {
-    sessionStorage.removeItem('admin_auth');
-    location.reload();
-  });
 
   // Auto-login if session still active
   if (sessionStorage.getItem('admin_auth') === '1') {
