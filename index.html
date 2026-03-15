@@ -602,7 +602,286 @@
       .offerings-grid { grid-template-columns: 1fr; }
       .footer-inner { grid-template-columns: 1fr; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       EDITORIAL SECTIONS (ed-) — Modular · non-conflicting
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* ─── Section A: Approach ─────────────────────────────────────── */
+    .ed-approach {
+      padding: 120px 0 80px;
+      background: var(--page-bg);
+      overflow: hidden;
+    }
+    .ed-approach-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .ed-approach-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 0;
+      row-gap: 0;
+      align-items: start;
+    }
+    /* Image 1: cols 1–5, tall */
+    .ed-approach-img1 {
+      grid-column: 1 / 6;
+      grid-row: 1;
+      height: 680px;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Image 2: cols 8–13, shorter, aligned to bottom of row */
+    .ed-approach-img2 {
+      grid-column: 8 / 13;
+      grid-row: 1;
+      height: 560px;
+      align-self: end;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Inner image elements */
+    .ed-approach-img-inner {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #cfc3b0 0%, #bfb3a0 100%);
+      background-size: cover;
+      background-position: center;
+      transition: transform .9s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+    }
+    .ed-approach-img1:hover .ed-approach-img-inner,
+    .ed-approach-img2:hover .ed-approach-img-inner { transform: scale(1.02); }
+    /* Headline: cols 4–11, same row, floats above images */
+    .ed-approach-headline {
+      grid-column: 3 / 11;
+      grid-row: 1;
+      align-self: center;
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .ed-approach-headline-text {
+      font-family: var(--serif);
+      font-size: clamp(60px, 8vw, 120px);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--page-bg);
+      text-shadow: 0 2px 48px rgba(7,7,7,.22), 0 0 100px rgba(7,7,7,.10);
+      letter-spacing: -.01em;
+    }
+    .ed-approach-headline-text em { font-style: italic; }
+    /* Sub-copy row below grid */
+    .ed-approach-sub {
+      grid-column: 4 / 10;
+      grid-row: 2;
+      text-align: center;
+      padding: 60px 20px 0;
+    }
+    .ed-approach-eyebrow {
+      font-family: var(--sans);
+      font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+      font-weight: 500; color: var(--accent); margin-bottom: 20px;
+    }
+    .ed-approach-body {
+      font-family: var(--serif);
+      font-size: 21px; font-style: italic; font-weight: 300;
+      line-height: 1.7; color: var(--page-fg-mid);
+    }
+
+    /* ─── Section B: Minimalist Testimonial Quote ─────────────────── */
+    .ed-quote {
+      padding: 140px 40px;
+      background: var(--page-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-top: 1px solid var(--page-border);
+    }
+    .ed-quote-label {
+      font-family: var(--sans);
+      font-size: 10px; letter-spacing: .4em; text-transform: uppercase;
+      font-weight: 500; color: var(--accent);
+      margin-bottom: 40px;
+    }
+    .ed-quote-rule {
+      width: 40px; height: 1px;
+      background: var(--accent); opacity: .5;
+      margin-bottom: 48px;
+    }
+    .ed-quote-mark {
+      font-family: var(--serif);
+      font-size: 80px; line-height: .5;
+      color: var(--accent); opacity: .25;
+      margin-bottom: 36px; display: block;
+    }
+    .ed-quote-text {
+      font-family: var(--serif);
+      font-size: clamp(22px, 2.4vw, 36px);
+      font-weight: 300; line-height: 1.65;
+      max-width: 880px;
+      color: var(--page-fg);
+      margin-bottom: 56px;
+    }
+    .ed-quote-text em { font-style: italic; color: var(--accent); }
+    .ed-quote-avatar-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .ed-quote-avatar {
+      width: 58px; height: 58px; border-radius: 50%;
+      overflow: hidden;
+      background: linear-gradient(145deg, #cfc3b0 0%, #bfb3a0 100%);
+      border: 1px solid var(--page-border);
+      flex-shrink: 0;
+    }
+    .ed-quote-avatar-img {
+      width: 100%; height: 100%;
+      background-size: cover; background-position: center;
+    }
+    .ed-quote-author {
+      font-family: var(--sans);
+      font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+      font-weight: 500; opacity: .5; color: var(--page-fg);
+    }
+
+    /* ─── Section C: Explore Gallery ─────────────────────────────── */
+    .ed-explore {
+      padding: 120px 0 160px;
+      background: var(--page-bg);
+      overflow: hidden;
+      position: relative;
+      border-top: 1px solid var(--page-border);
+    }
+    .ed-explore-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .ed-explore-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 72px;
+    }
+    .ed-explore-eyebrow {
+      font-family: var(--sans);
+      font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+      font-weight: 500; color: var(--accent); margin-bottom: 16px;
+    }
+    .ed-explore-title {
+      font-family: var(--serif);
+      font-size: clamp(38px, 4.5vw, 68px);
+      font-weight: 300; line-height: 1.1;
+      color: var(--page-fg);
+    }
+    .ed-explore-title em { font-style: italic; }
+    /* Pill button — fill from center */
+    .ed-btn-pill {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 500;
+      padding: 15px 44px;
+      border: 1px solid var(--page-fg);
+      border-radius: 50px;
+      color: var(--page-fg);
+      position: relative;
+      overflow: hidden;
+      transition: color .55s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 1;
+      flex-shrink: 0;
+      margin-left: 40px;
+    }
+    .ed-btn-pill::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 300%; aspect-ratio: 1;
+      background: var(--page-fg);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform .6s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: -1;
+    }
+    .ed-btn-pill:hover::before { transform: translate(-50%, -50%) scale(1); }
+    .ed-btn-pill:hover { color: var(--page-bg); }
+    /* Decorative background word */
+    .ed-explore-deco {
+      position: absolute;
+      bottom: 60px; left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--caps);
+      font-size: clamp(90px, 13vw, 220px);
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--page-fg);
+      opacity: .04;
+      pointer-events: none;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 0;
+    }
+    /* 12-col masonry grid */
+    .ed-explore-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 16px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+    .ed-explore-item {
+      overflow: hidden;
+      position: relative;
+    }
+    .ed-explore-item1 { grid-column: 1 / 6;  height: 620px; }
+    .ed-explore-item2 { grid-column: 6 / 9;  height: 480px; margin-top: 100px; }
+    .ed-explore-item3 { grid-column: 9 / 13; height: 540px; margin-top: 40px; }
+    .ed-explore-img {
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform .9s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+    }
+    .ed-explore-img1-bg { background: linear-gradient(145deg, #cfc3b0 0%, #bfb3a0 100%); }
+    .ed-explore-img2-bg { background: linear-gradient(145deg, #c8c0b8 0%, #b8b0a8 100%); }
+    .ed-explore-img3-bg { background: linear-gradient(145deg, #d2c8bc 0%, #c0b8ae 100%); }
+    .ed-explore-item:hover .ed-explore-img { transform: scale(1.02); }
+
+    /* ─── Editorial Responsive ─────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .ed-approach-inner,
+      .ed-explore-inner { padding: 0 28px; }
+      .ed-approach { padding: 80px 0; }
+      .ed-explore { padding: 80px 0 100px; }
+      .ed-quote { padding: 100px 28px; }
+      .ed-approach-grid { grid-template-columns: 1fr; }
+      .ed-approach-img1 { grid-column: 1; grid-row: 1; height: 60vw; }
+      .ed-approach-img2 { grid-column: 1; grid-row: 2; height: 50vw; align-self: auto; margin-top: 12px; }
+      .ed-approach-headline { grid-column: 1; grid-row: 1; }
+      .ed-approach-sub { grid-column: 1; grid-row: 3; padding: 40px 28px 0; }
+      .ed-explore-header { flex-direction: column; align-items: flex-start; gap: 28px; }
+      .ed-btn-pill { margin-left: 0; }
+      .ed-explore-grid { grid-template-columns: 1fr 1fr; column-gap: 12px; }
+      .ed-explore-item1 { grid-column: 1 / 2; height: 320px; }
+      .ed-explore-item2 { grid-column: 2 / 3; height: 280px; margin-top: 0; }
+      .ed-explore-item3 { grid-column: 1 / 3; height: 280px; margin-top: 12px; }
+    }
+    @media (max-width: 640px) {
+      .ed-approach-headline-text { font-size: clamp(40px, 14vw, 60px); }
+      .ed-explore-grid { grid-template-columns: 1fr; }
+      .ed-explore-item1,
+      .ed-explore-item2,
+      .ed-explore-item3 { grid-column: 1; height: 280px; margin-top: 0; }
+    }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 </head>
 <body>
 
@@ -871,6 +1150,94 @@
   </section>
 
 
+  <!-- ═══ ED: APPROACH ══════════════════════════════════════════════
+       CONTENT: swap .ed-approach-headline-text, .ed-approach-body,
+                and data-slot="ed-approach-1" / "ed-approach-2"
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="ed-approach">
+    <div class="ed-approach-inner">
+      <div class="ed-approach-grid">
+
+        <!-- Image 1: cols 1–5, tall -->
+        <div class="ed-approach-img1">
+          <div class="ed-approach-img-inner" data-slot="ed-approach-1"></div>
+        </div>
+
+        <!-- Image 2: cols 8–12, shorter, aligned to bottom -->
+        <div class="ed-approach-img2">
+          <div class="ed-approach-img-inner" data-slot="ed-approach-2"></div>
+        </div>
+
+        <!-- Headline: overlaps both images via z-index -->
+        <div class="ed-approach-headline">
+          <h2 class="ed-approach-headline-text">The<br /><em>Approach</em></h2>
+        </div>
+
+        <!-- Sub-copy row (below grid) -->
+        <div class="ed-approach-sub">
+          <p class="ed-approach-eyebrow">How We Work</p>
+          <p class="ed-approach-body">"Every frame is earned — light studied before it falls,<br />emotion anticipated before it surfaces."</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══ ED: QUOTE ══════════════════════════════════════════════════
+       CONTENT: swap .ed-quote-text, .ed-quote-author,
+                and data-slot="ed-quote-avatar"
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="ed-quote">
+    <p class="ed-quote-label">Kind Words</p>
+    <div class="ed-quote-rule"></div>
+    <span class="ed-quote-mark" aria-hidden="true">"</span>
+    <blockquote class="ed-quote-text">
+      Working with Christopher was the single best decision we made for our wedding.
+      His presence was <em>quiet and unhurried</em>, his eye was <em>extraordinary</em>,
+      and what he delivered left us completely speechless.
+    </blockquote>
+    <div class="ed-quote-avatar-wrap">
+      <div class="ed-quote-avatar">
+        <div class="ed-quote-avatar-img" data-slot="ed-quote-avatar"></div>
+      </div>
+      <p class="ed-quote-author">— Natalie &amp; Ethan &nbsp;·&nbsp; Jackson Hole, Wyoming</p>
+    </div>
+  </section>
+
+
+  <!-- ═══ ED: EXPLORE GALLERY ════════════════════════════════════════
+       CONTENT: swap .ed-explore-title, .ed-explore-deco text,
+                and data-slot="ed-explore-1/2/3"
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="ed-explore">
+    <div class="ed-explore-deco" aria-hidden="true">Stories</div>
+    <div class="ed-explore-inner">
+
+      <div class="ed-explore-header">
+        <div>
+          <p class="ed-explore-eyebrow">The Portfolio</p>
+          <h2 class="ed-explore-title">Explore the<br /><em>work</em></h2>
+        </div>
+        <a href="portfolio.html" class="ed-btn-pill">Browse</a>
+      </div>
+
+      <div class="ed-explore-grid">
+        <div class="ed-explore-item ed-explore-item1" data-ed-parallax>
+          <div class="ed-explore-img ed-explore-img1-bg" data-slot="ed-explore-1"></div>
+        </div>
+        <div class="ed-explore-item ed-explore-item2" data-ed-parallax>
+          <div class="ed-explore-img ed-explore-img2-bg" data-slot="ed-explore-2"></div>
+        </div>
+        <div class="ed-explore-item ed-explore-item3" data-ed-parallax>
+          <div class="ed-explore-img ed-explore-img3-bg" data-slot="ed-explore-3"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
   <!-- ═══ CTA ══════════════════════════════════════════════════════ -->
   <section id="inquire" class="cta">
     <div class="cta-bg"></div>
@@ -1037,5 +1404,137 @@
 
   </script>
   <script src="shared.js"></script>
+
+  <!-- ─── Editorial Section Animations ──────────────────────────── -->
+  <script>
+  (function () {
+    var EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
+
+    function initEditorialGSAP() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* ── Approach images ──────────────────────────────────────── */
+      gsap.fromTo(
+        ['.ed-approach-img1', '.ed-approach-img2'],
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1, y: 0, duration: 1.3,
+          ease: 'power3.out', stagger: 0.2,
+          scrollTrigger: { trigger: '.ed-approach', start: 'top 82%' }
+        }
+      );
+      gsap.fromTo(
+        ['.ed-approach-headline', '.ed-approach-sub'],
+        { opacity: 0, y: 44 },
+        {
+          opacity: 1, y: 0, duration: 1.1,
+          ease: 'power3.out', stagger: 0.18,
+          scrollTrigger: { trigger: '.ed-approach', start: 'top 75%' }
+        }
+      );
+
+      /* ── Approach parallax ────────────────────────────────────── */
+      gsap.to('.ed-approach-img1 .ed-approach-img-inner', {
+        yPercent: -7, ease: 'none',
+        scrollTrigger: { trigger: '.ed-approach', start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+      gsap.to('.ed-approach-img2 .ed-approach-img-inner', {
+        yPercent: -11, ease: 'none',
+        scrollTrigger: { trigger: '.ed-approach', start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+
+      /* ── Quote section ────────────────────────────────────────── */
+      gsap.fromTo(
+        ['.ed-quote-label', '.ed-quote-rule', '.ed-quote-mark', '.ed-quote-text', '.ed-quote-avatar-wrap'],
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1, y: 0, duration: 1.2,
+          ease: 'power3.out', stagger: 0.13,
+          scrollTrigger: { trigger: '.ed-quote', start: 'top 80%' }
+        }
+      );
+
+      /* ── Explore header ───────────────────────────────────────── */
+      gsap.fromTo(
+        ['.ed-explore-header > div', '.ed-btn-pill'],
+        { opacity: 0, y: 44 },
+        {
+          opacity: 1, y: 0, duration: 1.1,
+          ease: 'power3.out', stagger: 0.15,
+          scrollTrigger: { trigger: '.ed-explore', start: 'top 80%' }
+        }
+      );
+
+      /* ── Explore grid: stagger 0.2s ───────────────────────────── */
+      gsap.fromTo(
+        ['.ed-explore-item1', '.ed-explore-item2', '.ed-explore-item3'],
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1, y: 0, duration: 1.3,
+          ease: 'power3.out', stagger: 0.2,
+          scrollTrigger: { trigger: '.ed-explore-grid', start: 'top 85%' }
+        }
+      );
+
+      /* ── Explore image parallax ───────────────────────────────── */
+      document.querySelectorAll('[data-ed-parallax] .ed-explore-img').forEach(function (img) {
+        gsap.to(img, {
+          yPercent: -9, ease: 'none',
+          scrollTrigger: {
+            trigger: img.parentElement,
+            start: 'top bottom', end: 'bottom top',
+            scrub: true
+          }
+        });
+      });
+    }
+
+    /* ── IO fallback (no GSAP) ─────────────────────────────────── */
+    function initEditorialIO() {
+      var groups = [
+        ['.ed-approach-img1', '.ed-approach-img2'],
+        ['.ed-approach-headline', '.ed-approach-sub'],
+        ['.ed-quote-label', '.ed-quote-rule', '.ed-quote-mark', '.ed-quote-text', '.ed-quote-avatar-wrap'],
+        ['.ed-explore-header > div', '.ed-btn-pill'],
+        ['.ed-explore-item1', '.ed-explore-item2', '.ed-explore-item3']
+      ];
+
+      groups.forEach(function (group) {
+        var els = group.map(function (sel) { return document.querySelector(sel); }).filter(Boolean);
+        if (!els.length) return;
+
+        // Set initial state
+        els.forEach(function (el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(60px)';
+        });
+
+        // Trigger from the first visible element
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            els.forEach(function (el, i) {
+              el.style.transition = 'opacity 1.2s ' + EASE + ' ' + (i * 0.2) + 's, transform 1.2s ' + EASE + ' ' + (i * 0.2) + 's';
+              el.style.opacity = '1';
+              el.style.transform = 'translateY(0)';
+            });
+            io.disconnect();
+          });
+        }, { rootMargin: '0px 0px -60px 0px' });
+
+        io.observe(els[0]);
+      });
+    }
+
+    /* ── Boot when DOM + GSAP ready ───────────────────────────── */
+    window.addEventListener('load', function () {
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        initEditorialGSAP();
+      } else {
+        initEditorialIO();
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
