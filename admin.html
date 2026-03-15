@@ -714,34 +714,26 @@
     'contact':                 ['contact-img','contact-explore-1','contact-explore-2','contact-explore-3'],
   };
 
-  const SLOT_LABELS = {
-    'hero-1':'Hero Slide 1','hero-2':'Hero Slide 2','hero-3':'Hero Slide 3',
-    'gallery-1':'Gallery 1','gallery-2':'Gallery 2','gallery-3':'Gallery 3',
-    'gallery-4':'Gallery 4','gallery-5':'Gallery 5','gallery-6':'Gallery 6',
-    'portfolio-1':'Portfolio — Main','portfolio-2':'Portfolio — Right Top','portfolio-3':'Portfolio — Right Bottom',
-    'testimonial-1':'Testimonial 1','testimonial-2':'Testimonial 2','testimonial-3':'Testimonial 3',
-    'about-portrait':'Bio Portrait',
+  // Compute readable label from slot key; manual overrides for non-obvious names
+  const LABEL_OVERRIDES = {
+    'about-portrait':'Bio Portrait','ed-quote-avatar':'Quote Avatar',
     'ed-approach-1':'Approach — Left (tall)','ed-approach-2':'Approach — Right (short)',
-    'ed-explore-1':'Explore Gallery 1 (tall)','ed-explore-2':'Explore Gallery 2','ed-explore-3':'Explore Gallery 3',
-    'ed-quote-avatar':'Quote Avatar',
-    'about-gallery-1':'About Gallery 1','about-gallery-2':'About Gallery 2','about-gallery-3':'About Gallery 3',
-    'about-dark-img':'About — Dark Split','about-light-img':'About — Light Split','about-story-img':'About — Story Split','about-cta-bg':'About — CTA Background',
-    'about-bio-img':'About — Bio Portrait',
+    'ed-explore-1':'Explore 1 (tall)','about-dark-img':'About — Dark Split',
+    'about-light-img':'About — Light Split','about-story-img':'About — Story Split',
+    'about-cta-bg':'About — CTA BG','about-bio-img':'About — Bio Portrait',
     'portfolio-hero-bg':'Portfolio Hero BG','portfolio-cta-bg':'Portfolio CTA BG',
-    'portfolio-gallery-1':'Portfolio 1','portfolio-gallery-2':'Portfolio 2','portfolio-gallery-3':'Portfolio 3',
-    'portfolio-gallery-4':'Portfolio 4','portfolio-gallery-5':'Portfolio 5','portfolio-gallery-6':'Portfolio 6',
-    'portfolio-gallery-7':'Portfolio 7','portfolio-gallery-8':'Portfolio 8','portfolio-gallery-9':'Portfolio 9',
-    'portfolio-gallery-10':'Portfolio 10','portfolio-gallery-11':'Portfolio 11','portfolio-gallery-12':'Portfolio 12',
-    'portfolio-featured-1':'Featured 1','portfolio-featured-2':'Featured 2','portfolio-featured-3':'Featured 3','portfolio-featured-4':'Featured 4',
-    'services-hero-bg':'Services Hero BG',
+    'services-hero-bg':'Services Hero BG','experience-hero-bg':'Experience Hero BG',
+    'experience-cta-bg':'Experience CTA BG','experience-portrait':'Photographer Portrait',
     'services-known-1':'Known For — Wedding','services-known-2':'Known For — Destination','services-known-3':'Known For — Film',
     'services-detail-1':'Detail — Wedding Day','services-detail-2':'Detail — Full Weekend','services-detail-3':'Detail — Destination',
     'services-alacarte-1':'À La Carte — Engagement','services-alacarte-2':'À La Carte — Editorial','services-alacarte-3':'À La Carte — Film',
-    'experience-hero-bg':'Experience Hero BG','experience-portrait':'Photographer Portrait','experience-cta-bg':'Experience CTA BG',
     'experience-feel-1':'Feel — Deeply Seen','experience-feel-2':'Feel — Unhurried','experience-feel-3':'Feel — Moved',
-    'experience-process-1':'Process — Inquiry','experience-process-2':'Process — Planning','experience-process-3':'Process — Wedding Day','experience-process-4':'Process — Delivery',
+    'experience-process-3':'Process — Wedding Day','experience-process-4':'Process — Delivery',
     'contact-img':'Contact — Main','contact-explore-1':'Explore — Portfolio','contact-explore-2':'Explore — Experience','contact-explore-3':'Explore — Services',
   };
+  function slotLabel(slot) {
+    return LABEL_OVERRIDES[slot] || slot.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  }
 
   // All slots flat
   const ALL_SLOTS = Object.values(SLOTS).flat();
@@ -759,6 +751,17 @@
   let pendingHeroType = null;
   let orphanPaths     = [];
   let activeTab       = 'settings';
+  const renderedTabs  = new Set();
+
+  // Tab → slot groups mapping (drives lazy rendering)
+  const TAB_SLOT_GROUPS = {
+    homepage:   ['hero','gallery','portfolio','testimonials','about','editorial-approach','editorial-explore','editorial-quote'],
+    about:      ['about-gallery','about-splits','about-bio'],
+    portfolio:  ['portfolio-hero','portfolio-gallery','portfolio-featured'],
+    services:   ['services-top','services-detail','services-alacarte'],
+    experience: ['experience-top','experience-feel','experience-process'],
+    contact:    ['contact'],
+  };
 
   // Storage browser state
   let storageImages  = [];
@@ -776,7 +779,18 @@
     const idx = tabNames.indexOf(tab);
     if (idx !== -1) btns[idx].classList.add('active');
     activeTab = tab;
-    if (tab === 'storage' && !storageLoaded) loadStorageTab();
+    if (tab === 'storage' && !storageLoaded) { loadStorageTab(); return; }
+    if (TAB_SLOT_GROUPS[tab] && !renderedTabs.has(tab)) renderTabContent(tab);
+  }
+
+  function renderTabContent(tab) {
+    (TAB_SLOT_GROUPS[tab] || []).forEach(section => {
+      const container = document.getElementById('slots-' + section);
+      if (!container) return;
+      container.innerHTML = '';
+      (SLOTS[section] || []).forEach(slot => container.appendChild(makeCard(slot)));
+    });
+    renderedTabs.add(tab);
   }
 
   // ── Login ───────────────────────────────────────────────────────
@@ -811,7 +825,7 @@
     document.querySelectorAll('.tab-panel').forEach(p => {
       if (p.id !== 'panel-settings') p.style.display = '';
     });
-    renderAllSections();
+    renderTabContent('homepage'); // only render the default landing tab
     highlightHeroType(heroType);
     updateTabBadges();
   }
@@ -917,12 +931,16 @@
   }
 
   // ── Render ──────────────────────────────────────────────────────
+  // Re-render all already-rendered tabs (used after publish/discard)
   function renderAllSections() {
-    Object.entries(SLOTS).forEach(([section, slots]) => {
-      const container = document.getElementById('slots-' + section);
-      if (!container) return;
-      container.innerHTML = '';
-      slots.forEach(slot => container.appendChild(makeCard(slot)));
+    renderedTabs.forEach(tab => {
+      const groups = TAB_SLOT_GROUPS[tab] || [];
+      groups.forEach(section => {
+        const container = document.getElementById('slots-' + section);
+        if (!container) return;
+        container.innerHTML = '';
+        (SLOTS[section] || []).forEach(slot => container.appendChild(makeCard(slot)));
+      });
     });
   }
 
@@ -932,7 +950,7 @@
     const isUpload  = !!pendingUploads[slot];
     const isFocal   = !!pendingFocal[slot];
     const isPending = isRemoval || isUpload || isFocal;
-    const label     = SLOT_LABELS[slot] || slot;
+    const label     = slotLabel(slot);
     const isPortrait = slot.includes('portrait') || slot.includes('avatar');
     const isHero     = slot.startsWith('hero');
     const fx = data?.focal_x ?? 50;
@@ -1053,7 +1071,7 @@
     delete pendingRemovals[slot];
     updatePublishBtn();
     setTimeout(() => { card.classList.remove('uploading'); bar.style.width = '0%'; card.replaceWith(makeCard(slot)); }, 300);
-    showToast(`"${SLOT_LABELS[slot]}" staged — publish to go live.`, 'info');
+    showToast(`"${slotLabel(slot)}" staged — publish to go live.`, 'info');
     storageLoaded = false; // invalidate storage cache after new upload
   }
 
@@ -1066,7 +1084,7 @@
     } else {
       preSelectAssignSlot(slot);
     }
-    showToast(`Browse the library and click "Assign" to set "${SLOT_LABELS[slot]}".`, 'info');
+    showToast(`Browse the library and click "Assign" to set "${slotLabel(slot)}".`, 'info');
   }
 
   function preSelectAssignSlot(slot) {
@@ -1090,10 +1108,17 @@
 
       storageImages = [];
 
+      // Helper: get full URL (for assigning) and thumb URL (for grid preview)
+      function getUrls(path) {
+        const { data: full } = sb.storage.from(BUCKET).getPublicUrl(path);
+        const { data: thumb } = sb.storage.from(BUCKET).getPublicUrl(path, { transform: { width: 320, quality: 65 } });
+        return { url: full.publicUrl, thumb: thumb.publicUrl };
+      }
+
       // Files at root (no subfolder)
       files.forEach(file => {
-        const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(file.name);
-        storageImages.push({ path: file.name, url: urlData.publicUrl, folder: '(root)', filename: file.name, updated: file.updated_at });
+        const { url, thumb } = getUrls(file.name);
+        storageImages.push({ path: file.name, url, thumb, folder: '(root)', filename: file.name, updated: file.updated_at });
       });
 
       // Files in subfolders (slots)
@@ -1101,8 +1126,8 @@
         const { data: subFiles } = await sb.storage.from(BUCKET).list(folder.name, { limit: 500 });
         (subFiles || []).filter(f => f.metadata).forEach(file => {
           const path = `${folder.name}/${file.name}`;
-          const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
-          storageImages.push({ path, url: urlData.publicUrl, folder: folder.name, filename: file.name, updated: file.updated_at });
+          const { url, thumb } = getUrls(path);
+          storageImages.push({ path, url, thumb, folder: folder.name, filename: file.name, updated: file.updated_at });
         });
       }));
 
@@ -1118,7 +1143,7 @@
       // Populate assign slot selector
       const sel = document.getElementById('assign-select-el');
       sel.innerHTML = '<option value="">— select a slot —</option>' +
-        ALL_SLOTS.map(s => `<option value="${s}">${SLOT_LABELS[s] || s}</option>`).join('');
+        ALL_SLOTS.map(s => `<option value="${s}">${slotLabel(s)}</option>`).join('');
 
       storageLoaded = true;
       renderStorageGrid(storageImages);
@@ -1130,23 +1155,26 @@
     }
   }
 
-  function renderStorageGrid(images) {
+  const PAGE_SIZE = 60;
+  function renderStorageGrid(images, page = 0) {
     const grid = document.getElementById('storage-grid');
-    grid.innerHTML = '';
+    if (page === 0) grid.innerHTML = '';
 
     if (!images || !images.length) {
       grid.innerHTML = '<p style="color:var(--fg-mid);padding:40px 0">No images found.</p>';
       return;
     }
 
-    images.forEach(img => {
+    const slice = images.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+    const frag = document.createDocumentFragment();
+    slice.forEach(img => {
       const card = document.createElement('div');
       card.className = 'storage-card';
       card.innerHTML = `
         <div class="storage-card-preview">
-          <img src="${img.url}" loading="lazy" alt="${img.filename}" />
+          <img src="${img.thumb || img.url}" loading="lazy" alt="${img.filename}" />
           <div class="storage-card-overlay">
-            <button onclick="openAssignModal('${img.path}', '${img.url}')">Assign to Slot</button>
+            <button onclick="openAssignModal('${img.path}','${img.url}')">Assign to Slot</button>
           </div>
         </div>
         <div class="storage-card-info">
@@ -1154,8 +1182,24 @@
           <div class="storage-card-name">${img.filename}</div>
         </div>
       `;
-      grid.appendChild(card);
+      frag.appendChild(card);
     });
+
+    // Remove any existing load-more button
+    const existing = grid.querySelector('.load-more-btn');
+    if (existing) existing.remove();
+
+    grid.appendChild(frag);
+
+    const shown = (page + 1) * PAGE_SIZE;
+    if (shown < images.length) {
+      const btn = document.createElement('button');
+      btn.className = 'load-more-btn';
+      btn.style.cssText = 'grid-column:1/-1;padding:14px;background:var(--surface);border:1px solid var(--border);color:var(--fg-mid);cursor:pointer;border-radius:3px;font-family:var(--sans);font-size:12px;letter-spacing:.08em;';
+      btn.textContent = `Load more (${images.length - shown} remaining)`;
+      btn.onclick = () => { btn.remove(); renderStorageGrid(images, page + 1); };
+      grid.appendChild(btn);
+    }
   }
 
   function filterStorage() {
@@ -1211,20 +1255,20 @@
     const card = document.querySelector(`.slot-card[data-slot="${slot}"]`);
     if (card) card.replaceWith(makeCard(slot));
 
-    showToast(`Assigned to "${SLOT_LABELS[slot]}" — publish to go live.`, 'info');
+    showToast(`Assigned to "${slotLabel(slot)}" — publish to go live.`, 'info');
     closeAssignModal();
   }
 
   // ── Stage removal ────────────────────────────────────────────────
   function stageRemoval(slot) {
-    if (!confirm(`Stage "${SLOT_LABELS[slot]}" for removal?`)) return;
+    if (!confirm(`Stage "${slotLabel(slot)}" for removal?`)) return;
     const storagePath = pendingUploads[slot]?.storage_path || imageData[slot]?.storage_path;
     pendingRemovals[slot] = { storage_path: storagePath };
     delete pendingUploads[slot];
     delete pendingFocal[slot];
     updatePublishBtn();
     document.querySelector(`.slot-card[data-slot="${slot}"]`)?.replaceWith(makeCard(slot));
-    showToast(`"${SLOT_LABELS[slot]}" staged for removal.`, 'info');
+    showToast(`"${slotLabel(slot)}" staged for removal.`, 'info');
   }
 
   // ── Undo ─────────────────────────────────────────────────────────
@@ -1245,7 +1289,7 @@
     if (!data) return;
     focalSlot = slot;
     focalX = data.focal_x ?? 50; focalY = data.focal_y ?? 50; focalZoom = data.zoom ?? 100;
-    document.getElementById('focal-title').textContent = 'Set Position — ' + (SLOT_LABELS[slot] || slot);
+    document.getElementById('focal-title').textContent = 'Set Position — ' + (slotLabel(slot));
     document.getElementById('focal-img').src = data.url;
     document.getElementById('focal-zoom').value = focalZoom;
     document.getElementById('focal-zoom-val').textContent = focalZoom + '%';
