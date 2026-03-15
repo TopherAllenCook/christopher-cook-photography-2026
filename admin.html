@@ -24,40 +24,33 @@
     }
     body { background: var(--bg); color: var(--fg); font-family: var(--sans); min-height: 100vh; }
 
-    /* ── Setup / credential screen ────────────────────────────── */
-    #setup-screen {
+    /* ── Login screen ──────────────────────────────────────────── */
+    #login-screen {
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 24px;
     }
-    .setup-card {
-      width: 100%; max-width: 480px;
+    .login-card {
+      width: 100%; max-width: 420px;
       background: var(--surface); border: 1px solid var(--border);
       padding: 48px 40px; border-radius: 4px;
     }
-    .setup-logo {
-      font-family: var(--serif); font-size: 22px; font-style: italic;
-      color: var(--accent); margin-bottom: 6px;
+    .login-logo {
+      font-family: var(--serif); font-size: 24px; font-style: italic;
+      color: var(--accent); margin-bottom: 4px;
     }
-    .setup-sub { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 32px; }
-    .setup-note {
-      font-size: 12px; color: var(--fg-mid); line-height: 1.6;
-      background: rgba(155,123,90,.08); border: 1px solid rgba(155,123,90,.2);
-      padding: 14px 16px; border-radius: 3px; margin-bottom: 28px;
-    }
-    .setup-note strong { color: var(--accent); font-weight: 600; }
+    .login-sub { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 36px; }
     label {
       display: block; font-size: 11px; letter-spacing: .12em;
       text-transform: uppercase; color: var(--fg-mid); margin-bottom: 7px;
     }
     .field { margin-bottom: 20px; }
-    input[type="text"], input[type="password"] {
+    input[type="email"], input[type="password"] {
       width: 100%; background: var(--bg); border: 1px solid var(--border);
       color: var(--fg); font-family: var(--sans); font-size: 13px;
       padding: 11px 14px; border-radius: 3px; outline: none;
       transition: border-color .2s;
     }
     input:focus { border-color: var(--accent); }
-    .input-hint { font-size: 11px; color: var(--fg-mid); margin-top: 6px; }
     .btn-primary {
       width: 100%; background: var(--accent); color: #fff; border: none;
       font-family: var(--sans); font-size: 12px; font-weight: 600;
@@ -67,7 +60,7 @@
     }
     .btn-primary:hover { opacity: .85; }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-    #setup-error { color: var(--red); font-size: 13px; margin-top: 14px; display: none; }
+    #login-error { color: var(--red); font-size: 13px; margin-top: 14px; display: none; }
 
     /* ── App shell ─────────────────────────────────────────────── */
     #app { display: none; }
@@ -212,32 +205,24 @@
 </head>
 <body>
 
-<!-- ═══ SETUP / CREDENTIAL SCREEN ════════════════════════════════ -->
-<div id="setup-screen">
-  <div class="setup-card">
-    <div class="setup-logo">Christopher Cook</div>
-    <p class="setup-sub">Image Manager · Enter your Supabase credentials</p>
+<!-- ═══ LOGIN SCREEN ═════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Christopher Cook</div>
+    <p class="login-sub">Image Manager · Sign in to continue</p>
 
-    <div class="setup-note">
-      <strong>Where to find these:</strong><br />
-      Go to <strong>supabase.com → your project → Settings → API</strong>.<br />
-      Use the <strong>service_role</strong> secret key (not the anon key) — it bypasses upload restrictions.<br /><br />
-      Credentials are stored in your browser session only and cleared when you close the tab.
+    <div class="field">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
     </div>
 
     <div class="field">
-      <label for="sb-url">Supabase Project URL</label>
-      <input type="text" id="sb-url" placeholder="https://xxxxxxxxxxxx.supabase.co" autocomplete="off" spellcheck="false" />
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" autocomplete="current-password" />
     </div>
 
-    <div class="field">
-      <label for="sb-key">Service Role Secret Key</label>
-      <input type="password" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5c…" autocomplete="off" spellcheck="false" />
-      <p class="input-hint">Starts with "eyJ" — found under API → service_role</p>
-    </div>
-
-    <button class="btn-primary" id="connect-btn">Connect &amp; Load Images</button>
-    <p id="setup-error"></p>
+    <button class="btn-primary" id="login-btn">Sign In</button>
+    <p id="login-error"></p>
   </div>
 </div>
 
@@ -246,8 +231,8 @@
   <div class="topbar">
     <span class="topbar-brand">Image Manager</span>
     <div class="topbar-right">
-      <span class="topbar-status" id="topbar-url"></span>
-      <button class="btn-signout" id="signout-btn">Clear &amp; Sign Out</button>
+      <span class="topbar-status">● Connected</span>
+      <button class="btn-signout" id="signout-btn">Sign Out</button>
     </div>
   </div>
 
@@ -382,7 +367,11 @@
 <input type="file" class="file-input" id="file-input" accept="image/*" />
 
 <script>
-  const BUCKET = 'site-images';
+  const BUCKET       = 'site-images';
+  const SB_URL       = 'https://qxdtidacdmkdueudjkiu.supabase.co';
+  const SB_KEY       = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzU1MTU2MSwiZXhwIjoyMDg5MTI3NTYxfQ.1Cyl11ZB0A9pL7l-3kmOnvSSUY6EkKXbfOv20sGjdhs';
+  const ADMIN_EMAIL  = 'hello@christophercook.co';
+  const ADMIN_PASS   = 'LeoColterLaney91!';
 
   const SLOTS = {
     'hero':               ['hero-1','hero-2','hero-3'],
@@ -435,73 +424,56 @@
   let imageData  = {};
   let activeSlot = null;
 
-  // ── Connect ───────────────────────────────────────────────────
-  document.getElementById('connect-btn').addEventListener('click', async () => {
-    const urlVal = document.getElementById('sb-url').value.trim().replace(/\/$/, '');
-    const keyVal = document.getElementById('sb-key').value.trim();
-    const errEl  = document.getElementById('setup-error');
-    const btn    = document.getElementById('connect-btn');
+  // ── Login ─────────────────────────────────────────────────────
+  function doLogin() {
+    const email    = document.getElementById('login-email').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value;
+    const errEl    = document.getElementById('login-error');
+    const btn      = document.getElementById('login-btn');
 
     errEl.style.display = 'none';
-    if (!urlVal || !keyVal) {
-      errEl.textContent = 'Please fill in both fields.';
-      errEl.style.display = 'block'; return;
-    }
-    if (!urlVal.startsWith('https://')) {
-      errEl.textContent = 'URL must start with https://';
-      errEl.style.display = 'block'; return;
+
+    if (email !== ADMIN_EMAIL.toLowerCase() || password !== ADMIN_PASS) {
+      errEl.textContent = 'Incorrect email or password.';
+      errEl.style.display = 'block';
+      return;
     }
 
-    btn.disabled = true; btn.textContent = 'Connecting…';
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    sessionStorage.setItem('admin_auth', '1');
 
-    try {
-      const { createClient } = supabase;
-      sb = createClient(urlVal, keyVal);
+    sb = supabase.createClient(SB_URL, SB_KEY);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
 
-      // Test connection
-      const { error } = await sb.from('site_images').select('slot').limit(1);
-      if (error) throw error;
-
-      // Store in sessionStorage so refresh doesn't ask again
-      sessionStorage.setItem('sb_url', urlVal);
-      sessionStorage.setItem('sb_key', keyVal);
-
-      document.getElementById('setup-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      document.getElementById('topbar-url').textContent = urlVal.replace('https://', '');
-
-      await loadImages();
+    loadImages().then(() => {
       document.getElementById('loading').classList.remove('active');
       document.getElementById('main').style.display = 'block';
       renderAllSections();
+    });
+  }
 
-    } catch (err) {
-      errEl.textContent = 'Connection failed: ' + (err.message || 'check your URL and key');
-      errEl.style.display = 'block';
-      btn.disabled = false; btn.textContent = 'Connect & Load Images';
-    }
+  document.getElementById('login-btn').addEventListener('click', doLogin);
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
   });
 
-  // Allow Enter key on key field
-  document.getElementById('sb-key').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('connect-btn').click();
-  });
-
-  // Sign out — clear session
   document.getElementById('signout-btn').addEventListener('click', () => {
-    sessionStorage.removeItem('sb_url');
-    sessionStorage.removeItem('sb_key');
+    sessionStorage.removeItem('admin_auth');
     location.reload();
   });
 
-  // Auto-connect if credentials saved in session
+  // Auto-login if session active
   window.addEventListener('DOMContentLoaded', () => {
-    const savedUrl = sessionStorage.getItem('sb_url');
-    const savedKey = sessionStorage.getItem('sb_key');
-    if (savedUrl && savedKey) {
-      document.getElementById('sb-url').value = savedUrl;
-      document.getElementById('sb-key').value  = savedKey;
-      document.getElementById('connect-btn').click();
+    if (sessionStorage.getItem('admin_auth') === '1') {
+      sb = supabase.createClient(SB_URL, SB_KEY);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadImages().then(() => {
+        document.getElementById('loading').classList.remove('active');
+        document.getElementById('main').style.display = 'block';
+        renderAllSections();
+      });
     }
   });
 
@@ -597,7 +569,6 @@
     const ext  = file.name.split('.').pop().toLowerCase();
     const path = `${slot}/${Date.now()}.${ext}`;
 
-    // Remove old file
     if (imageData[slot]?.storage_path) {
       await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
     }
@@ -618,7 +589,7 @@
     const publicUrl = urlData.publicUrl;
 
     const { error: dbErr } = await sb.from('site_images').upsert({
-      slot, url: publicUrl, storage_path: path, alt: SLOT_LABELS[slot] || slot,
+      slot, url: publicUrl, storage_path: path,
     }, { onConflict: 'slot' });
 
     bar.style.width = '100%';
