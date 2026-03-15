@@ -26,15 +26,19 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 })();
 
 // ── Apply image to a background-image element ─────────────────
+// Preloads via Image() so the swap is instant — containers stay
+// visible with their CSS gradient fallback the whole time.
 function applyImage(el, url, focalX, focalY, zoom) {
   const x = focalX != null ? focalX : 50;
   const y = focalY != null ? focalY : 50;
   const z = zoom   != null ? zoom   : 100;
-  el.style.backgroundImage    = `url('${url}')`;
-  el.style.backgroundSize     = z > 100 ? `${z}%` : 'cover';
-  el.style.backgroundPosition = `${x}% ${y}%`;
-  el.style.transition         = 'opacity .4s ease';
-  el.style.opacity            = '1';
+  const img = new Image();
+  img.onload = () => {
+    el.style.backgroundImage    = `url('${url}')`;
+    el.style.backgroundSize     = z > 100 ? `${z}%` : 'cover';
+    el.style.backgroundPosition = `${x}% ${y}%`;
+  };
+  img.src = url;
 }
 
 // ── Load images from Supabase with smart lazy loading ─────────
@@ -51,12 +55,7 @@ function loadSupabaseImages() {
     const map = {};
     data.forEach(row => { map[row.slot] = row; });
 
-    // Set placeholder opacity so fade-in works
-    document.querySelectorAll('[data-slot]').forEach(el => {
-      el.style.opacity = '0';
-    });
-
-    // 1 — Priority: load hero images instantly
+    // 1 — Priority: load hero images instantly (no IntersectionObserver)
     PRIORITY_SLOTS.forEach(slot => {
       if (!map[slot]) return;
       const { url, focal_x, focal_y, zoom } = map[slot];
@@ -64,7 +63,7 @@ function loadSupabaseImages() {
       document.querySelectorAll(`[data-slot-dup="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom));
     });
 
-    // 2 — Everything else: lazy load when 500px from viewport
+    // 2 — Everything else: lazy load when 800px from viewport
     const lazySlots = data.filter(r => !PRIORITY_SLOTS.includes(r.slot));
     if (!lazySlots.length) return;
 
@@ -80,7 +79,7 @@ function loadSupabaseImages() {
         const row = map[slot];
         if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom);
       });
-    }, { rootMargin: '500px 0px' }); // pre-fetch 500px before entering view
+    }, { rootMargin: '800px 0px' }); // pre-fetch 800px before entering view
 
     lazySlots.forEach(({ slot }) => {
       document.querySelectorAll(`[data-slot="${slot}"], [data-slot-dup="${slot}"]`).forEach(el => obs.observe(el));
