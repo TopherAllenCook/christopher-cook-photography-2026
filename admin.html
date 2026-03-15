@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -480,17 +480,17 @@
     renderAllSections();
   }
 
-  document.getElementById('login-btn').addEventListener('click', doLogin);
-  document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  // ── Boot ──────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('login-btn').addEventListener('click', doLogin);
+    document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('signout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem('admin_auth');
+      location.reload();
+    });
 
-  document.getElementById('signout-btn').addEventListener('click', () => {
-    sessionStorage.removeItem('admin_auth');
-    location.reload();
-  });
-
-  // Auto-login if session active
-  window.addEventListener('DOMContentLoaded', async () => {
+    // Auto-login if session still active
     if (sessionStorage.getItem('admin_auth') === '1') {
       try {
         sb = supabase.createClient(SB_URL, SB_KEY);
