@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Manager — Christopher Cook Photography</title>
+  <title>Admin — Christopher Cook Photography</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet" />
@@ -13,6 +13,7 @@
     :root {
       --bg:      #0f0f0e;
       --surface: #1a1a18;
+      --surface2:#222220;
       --border:  #2a2a27;
       --fg:      #f0ede8;
       --fg-mid:  #888480;
@@ -32,12 +33,13 @@
     .login-sub  { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 36px; }
     label { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-mid); margin-bottom: 7px; }
     .field { margin-bottom: 20px; }
-    input[type="email"], input[type="password"], input[type="range"] {
+    input[type="email"], input[type="password"], input[type="range"], select {
       width: 100%; background: var(--bg); border: 1px solid var(--border);
       color: var(--fg); font-family: var(--sans); font-size: 13px;
       padding: 11px 14px; border-radius: 3px; outline: none; transition: border-color .2s;
     }
-    input:focus { border-color: var(--accent); }
+    select option { background: var(--surface); }
+    input:focus, select:focus { border-color: var(--accent); }
     .btn-primary {
       width: 100%; background: var(--accent); color: #fff; border: none;
       font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .12em;
@@ -51,7 +53,7 @@
     /* ── App shell ─────────────────────────────────────────────── */
     #app { display: none; }
     .topbar {
-      position: sticky; top: 0; z-index: 10;
+      position: sticky; top: 0; z-index: 50;
       background: var(--surface); border-bottom: 1px solid var(--border);
       padding: 14px 40px; display: flex; align-items: center; justify-content: space-between;
     }
@@ -65,13 +67,9 @@
       border: 1px solid var(--border); background: var(--surface); color: var(--fg-mid);
       transition: all .2s;
     }
-    .btn-publish.dirty {
-      background: var(--green); color: #0f0f0e; border-color: var(--green);
-      box-shadow: 0 0 16px rgba(62,207,142,.25);
-    }
+    .btn-publish.dirty { background: var(--green); color: #0f0f0e; border-color: var(--green); box-shadow: 0 0 16px rgba(62,207,142,.25); }
     .btn-publish.dirty:hover { opacity: .9; }
     .btn-publish:disabled { opacity: .5; cursor: not-allowed; }
-
     .btn-discard {
       font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
       padding: 9px 16px; border-radius: 3px; cursor: pointer; display: none;
@@ -79,7 +77,6 @@
       transition: opacity .2s;
     }
     .btn-discard:hover { opacity: .7; }
-
     .btn-signout {
       font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
       color: var(--fg-mid); cursor: pointer; border: 1px solid var(--border);
@@ -97,17 +94,46 @@
     #pending-banner.show { display: flex; }
     #pending-banner strong { font-weight: 600; }
 
+    /* ── Tab Navigation ────────────────────────────────────────── */
+    .tab-nav {
+      position: sticky; top: 57px; z-index: 40;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+      padding: 0 40px; display: flex; gap: 0; overflow-x: auto;
+    }
+    .tab-btn {
+      font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--fg-mid); cursor: pointer;
+      border: none; background: none; padding: 14px 20px; position: relative;
+      transition: color .2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .tab-btn:hover { color: var(--fg); }
+    .tab-btn.active { color: var(--accent); }
+    .tab-btn.active::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: var(--accent);
+    }
+    .tab-badge {
+      display: inline-block; font-size: 9px; font-weight: 700;
+      background: rgba(155,123,90,.2); color: var(--accent);
+      padding: 2px 6px; border-radius: 10px; margin-left: 6px;
+    }
+
+    /* ── Tab panels ────────────────────────────────────────────── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
     .main { padding: 48px 40px; max-width: 1400px; margin: 0 auto; }
 
     /* ── Section headings ─────────────────────────────────────── */
-    .section { margin-bottom: 60px; }
+    .section { margin-bottom: 56px; }
     .section-title { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
     .section-desc  { font-size: 13px; color: var(--fg-mid); margin-bottom: 24px; }
     .page-label {
-      font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
-      opacity: .35; margin-bottom: 48px; font-weight: 500; margin-top: 32px;
+      font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+      opacity: .35; margin-bottom: 32px; font-weight: 600; margin-top: 16px;
+      padding-top: 24px; border-top: 1px solid var(--border);
     }
-    .page-label:first-child { margin-top: 0; }
+    .page-label:first-child { margin-top: 0; padding-top: 0; border-top: none; }
 
     /* ── Hero type cards ──────────────────────────────────────── */
     .hero-type-grid { display: flex; gap: 16px; flex-wrap: wrap; }
@@ -169,15 +195,12 @@
       border: 1px solid rgba(255,255,255,.6); padding: 8px 18px; border-radius: 2px;
     }
     .slot-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--green); width: 0%; transition: width .3s; }
-
     .focal-dot {
       position: absolute; width: 14px; height: 14px; border-radius: 50%;
       border: 2px solid #fff; background: rgba(155,123,90,.8);
       transform: translate(-50%, -50%); pointer-events: none;
       box-shadow: 0 0 0 1px rgba(0,0,0,.5);
     }
-
-    /* Pending tag on card */
     .pending-tag {
       position: absolute; top: 8px; left: 8px; z-index: 2;
       font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
@@ -205,8 +228,93 @@
     .btn-replace { background: rgba(155,123,90,.12); color: var(--accent); border: 1px solid rgba(155,123,90,.2); }
     .btn-focal   { background: rgba(62,207,142,.08); color: var(--green);  border: 1px solid rgba(62,207,142,.2); }
     .btn-undo    { background: rgba(245,200,66,.1);  color: var(--yellow); border: 1px solid rgba(245,200,66,.2); }
-
+    .btn-library { background: rgba(96,165,250,.1);  color: #60a5fa;       border: 1px solid rgba(96,165,250,.2); }
     .file-input { display: none; }
+
+    /* ── Storage Browser ───────────────────────────────────────── */
+    .storage-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .storage-toolbar h2 { font-size: 13px; font-weight: 600; letter-spacing: .06em; }
+    .storage-filter {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .storage-search {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 12px;
+      padding: 8px 14px; border-radius: 3px; outline: none; width: 220px;
+      transition: border-color .2s;
+    }
+    .storage-search:focus { border-color: var(--accent); }
+    .storage-folder-filter {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 12px;
+      padding: 8px 14px; border-radius: 3px; outline: none;
+      width: 180px; cursor: pointer;
+    }
+    .btn-reload-storage {
+      font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 8px 16px; border-radius: 3px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--fg-mid);
+      transition: color .2s; white-space: nowrap;
+    }
+    .btn-reload-storage:hover { color: var(--fg); border-color: var(--fg-mid); }
+
+    .storage-stats {
+      font-size: 12px; color: var(--fg-mid); margin-bottom: 20px;
+    }
+    .storage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .storage-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+      transition: border-color .2s, transform .15s;
+    }
+    .storage-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .storage-card-preview {
+      width: 100%; aspect-ratio: 4/3; overflow: hidden; position: relative; background: #111;
+    }
+    .storage-card-preview img {
+      width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s;
+    }
+    .storage-card:hover .storage-card-preview img { transform: scale(1.04); }
+    .storage-card-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,.6);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+    }
+    .storage-card:hover .storage-card-overlay { opacity: 1; }
+    .storage-card-overlay button {
+      font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; padding: 8px 16px; border-radius: 2px; cursor: pointer;
+      background: var(--accent); color: #fff; border: none;
+    }
+    .storage-card-info { padding: 8px 10px; }
+    .storage-card-folder {
+      font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent); opacity: .7; margin-bottom: 2px;
+    }
+    .storage-card-name { font-size: 11px; color: var(--fg-mid); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .storage-loading { display: flex; align-items: center; gap: 12px; padding: 60px 0; color: var(--fg-mid); font-size: 13px; }
+
+    /* ── Assign from Storage Modal ─────────────────────────────── */
+    #assign-modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.92); flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    #assign-modal.open { display: flex; }
+    .assign-inner { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 32px; width: 100%; max-width: 520px; }
+    .assign-inner h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .assign-inner p  { font-size: 12px; color: var(--fg-mid); margin-bottom: 20px; }
+    .assign-preview { width: 100%; height: 200px; border-radius: 3px; overflow: hidden; background: #111; margin-bottom: 20px; }
+    .assign-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .assign-select { margin-bottom: 20px; }
+    .assign-select label { margin-bottom: 8px; }
+    .assign-select select { width: 100%; }
+    .assign-btns { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-cancel { background: none; color: var(--fg-mid); border: 1px solid var(--border); font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 10px 20px; border-radius: 3px; cursor: pointer; }
+    .btn-confirm { background: var(--accent); color: #fff; border: none; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 10px 24px; border-radius: 3px; cursor: pointer; }
 
     /* ── Focal Point Modal ─────────────────────────────────────── */
     #focal-modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.92); flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
@@ -234,13 +342,19 @@
     /* ── Loading / Toast ───────────────────────────────────────── */
     #loading { display: none; align-items: center; justify-content: center; min-height: 60vh; gap: 12px; color: var(--fg-mid); font-size: 13px; }
     #loading.active { display: flex; }
-    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
     #toast { position: fixed; bottom: 32px; right: 32px; z-index: 2000; background: var(--surface); border: 1px solid var(--border); padding: 14px 20px; border-radius: 4px; font-size: 13px; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform .3s, opacity .3s; max-width: 340px; }
     #toast.show { transform: translateY(0); opacity: 1; }
     #toast.success { border-left: 3px solid var(--green); }
     #toast.error   { border-left: 3px solid var(--red); }
     #toast.info    { border-left: 3px solid var(--yellow); }
+
+    @media (max-width: 768px) {
+      .topbar, .tab-nav { padding-left: 20px; padding-right: 20px; }
+      .main { padding: 32px 20px; }
+      .storage-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
   </style>
 </head>
 <body>
@@ -249,7 +363,7 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">Christopher Cook</div>
-    <p class="login-sub">Image Manager · Sign in to continue</p>
+    <p class="login-sub">Admin Panel · Sign in to continue</p>
     <div class="field">
       <label for="login-email">Email</label>
       <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
@@ -265,145 +379,272 @@
 
 <!-- ═══ APP ══════════════════════════════════════════════════════ -->
 <div id="app">
+
+  <!-- Topbar -->
   <div class="topbar">
-    <span class="topbar-brand">Image Manager</span>
+    <span class="topbar-brand">Christopher Cook — Admin</span>
     <div class="topbar-right">
       <span class="topbar-status" id="topbar-status">● Connected</span>
-      <button class="btn-discard" id="discard-btn" onclick="discardAll()">Discard Changes</button>
+      <button class="btn-discard" id="discard-btn" onclick="discardAll()">Discard</button>
       <button class="btn-publish" id="publish-btn" onclick="publishAll()">Save &amp; Publish</button>
       <button class="btn-signout" onclick="sessionStorage.removeItem('admin_auth');location.reload()">Sign Out</button>
     </div>
   </div>
 
+  <!-- Pending banner -->
   <div id="pending-banner">
-    <strong id="pending-count">0 changes</strong> staged — click <strong>Save &amp; Publish</strong> to push live, or <strong>Discard Changes</strong> to revert.
+    <strong id="pending-count">0 changes</strong> staged — click <strong>Save &amp; Publish</strong> to push live, or <strong>Discard</strong> to revert.
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="tab-nav" id="tab-nav">
+    <button class="tab-btn active" onclick="showTab('settings')">Settings</button>
+    <button class="tab-btn" onclick="showTab('homepage')">Homepage</button>
+    <button class="tab-btn" onclick="showTab('about')">About</button>
+    <button class="tab-btn" onclick="showTab('portfolio')">Portfolio</button>
+    <button class="tab-btn" onclick="showTab('services')">Services</button>
+    <button class="tab-btn" onclick="showTab('experience')">Experience</button>
+    <button class="tab-btn" onclick="showTab('contact')">Contact</button>
+    <button class="tab-btn" onclick="showTab('storage')">📷 Storage</button>
   </div>
 
   <div id="loading" class="active"><div class="spinner"></div>Loading…</div>
 
-  <div class="main" id="main" style="display:none">
-
-    <!-- Site Settings -->
-    <div class="section">
-      <p class="section-title">Hero Style</p>
-      <p class="section-desc">Choose how the homepage hero displays. Changes stage until you Save &amp; Publish.</p>
-      <div class="hero-type-grid" id="hero-type-grid">
-        <div class="hero-type-card" id="ht-slideshow" onclick="setHeroType('slideshow')">
-          <div class="hero-type-icon">
-            <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.15)"/><rect x="17" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.3)"/><rect x="34" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.15)"/></svg>
+  <!-- ── Settings Tab ─────────────────────────────────────────── -->
+  <div class="tab-panel active" id="panel-settings">
+    <div class="main">
+      <div class="section">
+        <p class="section-title">Hero Style</p>
+        <p class="section-desc">Choose how the homepage hero displays. Changes stage until you Save &amp; Publish.</p>
+        <div class="hero-type-grid" id="hero-type-grid">
+          <div class="hero-type-card" id="ht-slideshow" onclick="setHeroType('slideshow')">
+            <div class="hero-type-icon">
+              <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.15)"/><rect x="17" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.3)"/><rect x="34" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.15)"/></svg>
+            </div>
+            <h4>Slideshow</h4>
+            <p>3 images auto-rotate every 5s</p>
           </div>
-          <h4>Slideshow</h4>
-          <p>3 images auto-rotate every 5s</p>
-        </div>
-        <div class="hero-type-card" id="ht-static" onclick="setHeroType('static')">
-          <div class="hero-type-icon">
-            <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="48" height="20" rx="1" fill="rgba(255,255,255,.28)"/></svg>
+          <div class="hero-type-card" id="ht-static" onclick="setHeroType('static')">
+            <div class="hero-type-icon">
+              <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="48" height="20" rx="1" fill="rgba(255,255,255,.28)"/></svg>
+            </div>
+            <h4>Static</h4>
+            <p>Single full-bleed image, no rotation</p>
           </div>
-          <h4>Static</h4>
-          <p>Single full-bleed image, no rotation</p>
-        </div>
-        <div class="hero-type-card" id="ht-cinematic" onclick="setHeroType('cinematic')">
-          <div class="hero-type-icon">
-            <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="48" height="20" rx="1" fill="rgba(255,255,255,.22)"/><rect x="0" y="0" width="48" height="5" fill="rgba(0,0,0,.55)"/><rect x="0" y="15" width="48" height="5" fill="rgba(0,0,0,.55)"/></svg>
+          <div class="hero-type-card" id="ht-cinematic" onclick="setHeroType('cinematic')">
+            <div class="hero-type-icon">
+              <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="48" height="20" rx="1" fill="rgba(255,255,255,.22)"/><rect x="0" y="0" width="48" height="5" fill="rgba(0,0,0,.55)"/><rect x="0" y="15" width="48" height="5" fill="rgba(0,0,0,.55)"/></svg>
+            </div>
+            <h4>Cinematic</h4>
+            <p>Single image with letterbox bars</p>
           </div>
-          <h4>Cinematic</h4>
-          <p>Single image with letterbox bars</p>
         </div>
       </div>
     </div>
+  </div>
 
-    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:48px" />
+  <!-- ── Homepage Tab ─────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-homepage">
+    <div class="main">
+      <p class="page-label">Hero</p>
+      <div class="section">
+        <p class="section-title">Hero Slideshow</p>
+        <p class="section-desc">3 full-width background images that rotate on the homepage.</p>
+        <div class="slot-grid wide" id="slots-hero"></div>
+      </div>
 
-    <p class="page-label">Homepage</p>
-    <div class="section">
-      <p class="section-title">Hero Slideshow</p>
-      <p class="section-desc">3 full-width background images that rotate on the homepage.</p>
-      <div class="slot-grid wide" id="slots-hero"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Gallery Strip</p>
-      <p class="section-desc">6 images in the auto-scrolling horizontal gallery.</p>
-      <div class="slot-grid" id="slots-gallery"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Homepage Portfolio Grid</p>
-      <p class="section-desc">3 featured portfolio images with hover captions.</p>
-      <div class="slot-grid" id="slots-portfolio"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Testimonial Photos</p>
-      <div class="slot-grid" id="slots-testimonials"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">About / Bio Portrait</p>
-      <div class="slot-grid" id="slots-about"></div>
-    </div>
+      <p class="page-label">Gallery Strip</p>
+      <div class="section">
+        <p class="section-title">Scrolling Gallery</p>
+        <p class="section-desc">6 images in the auto-scrolling horizontal gallery strip.</p>
+        <div class="slot-grid" id="slots-gallery"></div>
+      </div>
 
-    <p class="page-label">About Page</p>
-    <div class="section">
-      <p class="section-title">About Gallery</p>
-      <div class="slot-grid" id="slots-about-gallery"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">About — Full Page Splits</p>
-      <div class="slot-grid" id="slots-about-splits"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">About — Bio Portrait</p>
-      <div class="slot-grid" id="slots-about-bio"></div>
-    </div>
+      <p class="page-label">Portfolio Preview</p>
+      <div class="section">
+        <p class="section-title">Homepage Portfolio Grid</p>
+        <p class="section-desc">3 featured images with hover captions.</p>
+        <div class="slot-grid" id="slots-portfolio"></div>
+      </div>
 
-    <p class="page-label">Portfolio Page</p>
-    <div class="section">
-      <p class="section-title">Portfolio — Hero &amp; CTA Backgrounds</p>
-      <div class="slot-grid" id="slots-portfolio-hero"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Portfolio Gallery Grid</p>
-      <p class="section-desc">12 images in the masonry grid.</p>
-      <div class="slot-grid" id="slots-portfolio-gallery"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Portfolio — Featured Showcase</p>
-      <div class="slot-grid" id="slots-portfolio-featured"></div>
-    </div>
+      <p class="page-label">Testimonials</p>
+      <div class="section">
+        <p class="section-title">Testimonial Photos</p>
+        <div class="slot-grid" id="slots-testimonials"></div>
+      </div>
 
-    <p class="page-label">Services Page</p>
-    <div class="section">
-      <p class="section-title">Services — Hero &amp; "Known For"</p>
-      <div class="slot-grid wide" id="slots-services-top"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Services — Package Details</p>
-      <div class="slot-grid" id="slots-services-detail"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Services — À La Carte</p>
-      <div class="slot-grid" id="slots-services-alacarte"></div>
-    </div>
+      <p class="page-label">About / Bio</p>
+      <div class="section">
+        <p class="section-title">Bio Portrait</p>
+        <div class="slot-grid" id="slots-about"></div>
+      </div>
 
-    <p class="page-label">Experience Page</p>
-    <div class="section">
-      <p class="section-title">Experience — Hero, Portrait &amp; CTA</p>
-      <div class="slot-grid" id="slots-experience-top"></div>
+      <p class="page-label">Editorial Sections</p>
+      <div class="section">
+        <p class="section-title">Approach Section</p>
+        <p class="section-desc">Two images in the broken-grid "The Approach" section. Left image is tall; right image is shorter and bottom-aligned.</p>
+        <div class="slot-grid" id="slots-editorial-approach"></div>
+      </div>
+      <div class="section">
+        <p class="section-title">Explore Gallery</p>
+        <p class="section-desc">Three staggered images in the masonry Explore section.</p>
+        <div class="slot-grid" id="slots-editorial-explore"></div>
+      </div>
+      <div class="section">
+        <p class="section-title">Quote Avatar</p>
+        <p class="section-desc">Small circular portrait next to the featured quote.</p>
+        <div class="slot-grid" id="slots-editorial-quote"></div>
+      </div>
     </div>
-    <div class="section">
-      <p class="section-title">Experience — What You'll Feel</p>
-      <div class="slot-grid" id="slots-experience-feel"></div>
-    </div>
-    <div class="section">
-      <p class="section-title">Experience — The Process</p>
-      <div class="slot-grid" id="slots-experience-process"></div>
-    </div>
+  </div>
 
-    <p class="page-label">Contact Page</p>
-    <div class="section">
-      <p class="section-title">Contact — Images</p>
-      <div class="slot-grid" id="slots-contact"></div>
-    </div>
+  <!-- ── About Tab ────────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-about">
+    <div class="main">
+      <p class="page-label">About Gallery</p>
+      <div class="section">
+        <p class="section-title">About Gallery</p>
+        <div class="slot-grid" id="slots-about-gallery"></div>
+      </div>
 
+      <p class="page-label">Full Page Splits</p>
+      <div class="section">
+        <p class="section-title">About — Full Page Splits</p>
+        <div class="slot-grid" id="slots-about-splits"></div>
+      </div>
+
+      <p class="page-label">Bio Portrait</p>
+      <div class="section">
+        <p class="section-title">About — Bio Portrait</p>
+        <div class="slot-grid" id="slots-about-bio"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Portfolio Tab ────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-portfolio">
+    <div class="main">
+      <p class="page-label">Page Backgrounds</p>
+      <div class="section">
+        <p class="section-title">Portfolio — Hero &amp; CTA Backgrounds</p>
+        <div class="slot-grid wide" id="slots-portfolio-hero"></div>
+      </div>
+
+      <p class="page-label">Gallery Grid</p>
+      <div class="section">
+        <p class="section-title">Portfolio Gallery Grid</p>
+        <p class="section-desc">12 images in the masonry grid.</p>
+        <div class="slot-grid" id="slots-portfolio-gallery"></div>
+      </div>
+
+      <p class="page-label">Featured Stories</p>
+      <div class="section">
+        <p class="section-title">Portfolio — Featured Showcase</p>
+        <div class="slot-grid" id="slots-portfolio-featured"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Services Tab ─────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-services">
+    <div class="main">
+      <p class="page-label">Hero &amp; "Known For"</p>
+      <div class="section">
+        <p class="section-title">Services — Hero &amp; Known For</p>
+        <div class="slot-grid wide" id="slots-services-top"></div>
+      </div>
+
+      <p class="page-label">Package Details</p>
+      <div class="section">
+        <p class="section-title">Services — Package Details</p>
+        <div class="slot-grid" id="slots-services-detail"></div>
+      </div>
+
+      <p class="page-label">À La Carte</p>
+      <div class="section">
+        <p class="section-title">Services — À La Carte</p>
+        <div class="slot-grid" id="slots-services-alacarte"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Experience Tab ───────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-experience">
+    <div class="main">
+      <p class="page-label">Hero &amp; Portrait</p>
+      <div class="section">
+        <p class="section-title">Experience — Hero, Portrait &amp; CTA</p>
+        <div class="slot-grid" id="slots-experience-top"></div>
+      </div>
+
+      <p class="page-label">What You'll Feel</p>
+      <div class="section">
+        <p class="section-title">Experience — What You'll Feel</p>
+        <div class="slot-grid" id="slots-experience-feel"></div>
+      </div>
+
+      <p class="page-label">The Process</p>
+      <div class="section">
+        <p class="section-title">Experience — The Process</p>
+        <div class="slot-grid" id="slots-experience-process"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Contact Tab ──────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-contact">
+    <div class="main">
+      <div class="section">
+        <p class="section-title">Contact — Images</p>
+        <div class="slot-grid" id="slots-contact"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Storage Tab ──────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-storage">
+    <div class="main">
+      <div class="storage-toolbar">
+        <h2>Storage Browser</h2>
+        <div class="storage-filter">
+          <input class="storage-search" type="text" id="storage-search" placeholder="Search images…" oninput="filterStorage()" />
+          <select class="storage-folder-filter" id="storage-folder-filter" onchange="filterStorage()">
+            <option value="">All folders</option>
+          </select>
+          <button class="btn-reload-storage" onclick="reloadStorage()">↺ Refresh</button>
+        </div>
+      </div>
+      <p class="storage-stats" id="storage-stats">Loading images from Supabase…</p>
+      <div id="storage-grid" class="storage-grid">
+        <div class="storage-loading"><div class="spinner"></div>Connecting to storage…</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+
+<!-- ═══ ASSIGN FROM STORAGE MODAL ═══════════════════════════════ -->
+<div id="assign-modal">
+  <div class="assign-inner">
+    <h3>Assign to Slot</h3>
+    <p>Choose which slot this image should fill. Publish when ready to go live.</p>
+    <div class="assign-preview">
+      <img id="assign-img" src="" alt="" />
+    </div>
+    <div class="assign-select">
+      <label for="assign-select-el">Assign to slot</label>
+      <select id="assign-select-el">
+        <option value="">— select a slot —</option>
+      </select>
+    </div>
+    <div class="assign-btns">
+      <button class="btn-cancel" onclick="closeAssignModal()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmAssign()">Stage Assignment</button>
+    </div>
   </div>
 </div>
+
 
 <!-- ═══ FOCAL POINT MODAL ════════════════════════════════════════ -->
 <div id="focal-modal">
@@ -427,7 +668,7 @@
     <span class="focal-coords-disp" id="focal-coords-disp">Position: 50% / 50%</span>
     <div class="focal-btns">
       <button class="btn-cancel-focal" onclick="closeFocalModal()">Cancel</button>
-      <button class="btn-save-focal"   onclick="stageFocalPoint()">Stage Change</button>
+      <button class="btn-save-focal" onclick="stageFocalPoint()">Stage Change</button>
     </div>
   </div>
 </div>
@@ -442,69 +683,103 @@
   const ADMIN_EMAIL = 'hello@christophercook.co';
   const ADMIN_PASS  = 'LeoColterLaney91!';
 
+  // ── Slot definitions ───────────────────────────────────────────
   const SLOTS = {
-    'hero':               ['hero-1','hero-2','hero-3'],
-    'gallery':            ['gallery-1','gallery-2','gallery-3','gallery-4','gallery-5','gallery-6'],
-    'portfolio':          ['portfolio-1','portfolio-2','portfolio-3'],
-    'testimonials':       ['testimonial-1','testimonial-2','testimonial-3'],
-    'about':              ['about-portrait'],
-    'about-gallery':      ['about-gallery-1','about-gallery-2','about-gallery-3'],
-    'about-splits':       ['about-dark-img','about-light-img','about-story-img','about-cta-bg'],
-    'about-bio':          ['about-bio-img'],
-    'portfolio-hero':     ['portfolio-hero-bg','portfolio-cta-bg'],
-    'portfolio-gallery':  ['portfolio-gallery-1','portfolio-gallery-2','portfolio-gallery-3','portfolio-gallery-4','portfolio-gallery-5','portfolio-gallery-6','portfolio-gallery-7','portfolio-gallery-8','portfolio-gallery-9','portfolio-gallery-10','portfolio-gallery-11','portfolio-gallery-12'],
-    'portfolio-featured': ['portfolio-featured-1','portfolio-featured-2','portfolio-featured-3','portfolio-featured-4'],
-    'services-top':       ['services-hero-bg','services-known-1','services-known-2','services-known-3'],
-    'services-detail':    ['services-detail-1','services-detail-2','services-detail-3'],
-    'services-alacarte':  ['services-alacarte-1','services-alacarte-2','services-alacarte-3'],
-    'experience-top':     ['experience-hero-bg','experience-portrait','experience-cta-bg'],
-    'experience-feel':    ['experience-feel-1','experience-feel-2','experience-feel-3'],
-    'experience-process': ['experience-process-1','experience-process-2','experience-process-3','experience-process-4'],
-    'contact':            ['contact-img','contact-explore-1','contact-explore-2','contact-explore-3'],
+    // Homepage
+    'hero':                    ['hero-1','hero-2','hero-3'],
+    'gallery':                 ['gallery-1','gallery-2','gallery-3','gallery-4','gallery-5','gallery-6'],
+    'portfolio':               ['portfolio-1','portfolio-2','portfolio-3'],
+    'testimonials':            ['testimonial-1','testimonial-2','testimonial-3'],
+    'about':                   ['about-portrait'],
+    'editorial-approach':      ['ed-approach-1','ed-approach-2'],
+    'editorial-explore':       ['ed-explore-1','ed-explore-2','ed-explore-3'],
+    'editorial-quote':         ['ed-quote-avatar'],
+    // About
+    'about-gallery':           ['about-gallery-1','about-gallery-2','about-gallery-3'],
+    'about-splits':            ['about-dark-img','about-light-img','about-story-img','about-cta-bg'],
+    'about-bio':               ['about-bio-img'],
+    // Portfolio
+    'portfolio-hero':          ['portfolio-hero-bg','portfolio-cta-bg'],
+    'portfolio-gallery':       ['portfolio-gallery-1','portfolio-gallery-2','portfolio-gallery-3','portfolio-gallery-4','portfolio-gallery-5','portfolio-gallery-6','portfolio-gallery-7','portfolio-gallery-8','portfolio-gallery-9','portfolio-gallery-10','portfolio-gallery-11','portfolio-gallery-12'],
+    'portfolio-featured':      ['portfolio-featured-1','portfolio-featured-2','portfolio-featured-3','portfolio-featured-4'],
+    // Services
+    'services-top':            ['services-hero-bg','services-known-1','services-known-2','services-known-3'],
+    'services-detail':         ['services-detail-1','services-detail-2','services-detail-3'],
+    'services-alacarte':       ['services-alacarte-1','services-alacarte-2','services-alacarte-3'],
+    // Experience
+    'experience-top':          ['experience-hero-bg','experience-portrait','experience-cta-bg'],
+    'experience-feel':         ['experience-feel-1','experience-feel-2','experience-feel-3'],
+    'experience-process':      ['experience-process-1','experience-process-2','experience-process-3','experience-process-4'],
+    // Contact
+    'contact':                 ['contact-img','contact-explore-1','contact-explore-2','contact-explore-3'],
   };
 
   const SLOT_LABELS = {
     'hero-1':'Hero Slide 1','hero-2':'Hero Slide 2','hero-3':'Hero Slide 3',
     'gallery-1':'Gallery 1','gallery-2':'Gallery 2','gallery-3':'Gallery 3',
     'gallery-4':'Gallery 4','gallery-5':'Gallery 5','gallery-6':'Gallery 6',
-    'portfolio-1':'Homepage Portfolio — Main','portfolio-2':'Homepage Portfolio — Right Top','portfolio-3':'Homepage Portfolio — Right Bottom',
+    'portfolio-1':'Portfolio — Main','portfolio-2':'Portfolio — Right Top','portfolio-3':'Portfolio — Right Bottom',
     'testimonial-1':'Testimonial 1','testimonial-2':'Testimonial 2','testimonial-3':'Testimonial 3',
     'about-portrait':'Bio Portrait',
+    'ed-approach-1':'Approach — Left (tall)','ed-approach-2':'Approach — Right (short)',
+    'ed-explore-1':'Explore Gallery 1 (tall)','ed-explore-2':'Explore Gallery 2','ed-explore-3':'Explore Gallery 3',
+    'ed-quote-avatar':'Quote Avatar',
     'about-gallery-1':'About Gallery 1','about-gallery-2':'About Gallery 2','about-gallery-3':'About Gallery 3',
     'about-dark-img':'About — Dark Split','about-light-img':'About — Light Split','about-story-img':'About — Story Split','about-cta-bg':'About — CTA Background',
     'about-bio-img':'About — Bio Portrait',
-    'portfolio-hero-bg':'Portfolio Hero Background','portfolio-cta-bg':'Portfolio CTA Background',
-    'portfolio-gallery-1':'Portfolio Gallery 1','portfolio-gallery-2':'Portfolio Gallery 2','portfolio-gallery-3':'Portfolio Gallery 3',
-    'portfolio-gallery-4':'Portfolio Gallery 4','portfolio-gallery-5':'Portfolio Gallery 5','portfolio-gallery-6':'Portfolio Gallery 6',
-    'portfolio-gallery-7':'Portfolio Gallery 7','portfolio-gallery-8':'Portfolio Gallery 8','portfolio-gallery-9':'Portfolio Gallery 9',
-    'portfolio-gallery-10':'Portfolio Gallery 10','portfolio-gallery-11':'Portfolio Gallery 11','portfolio-gallery-12':'Portfolio Gallery 12',
-    'portfolio-featured-1':'Featured Story 1','portfolio-featured-2':'Featured Story 2','portfolio-featured-3':'Featured Story 3','portfolio-featured-4':'Featured Story 4',
-    'services-hero-bg':'Services Hero Background',
-    'services-known-1':'Known For — Wedding Coverage','services-known-2':'Known For — Destination','services-known-3':'Known For — Film & Hybrid',
-    'services-detail-1':'Service Detail — Wedding Day','services-detail-2':'Service Detail — Full Weekend','services-detail-3':'Service Detail — Destination',
+    'portfolio-hero-bg':'Portfolio Hero BG','portfolio-cta-bg':'Portfolio CTA BG',
+    'portfolio-gallery-1':'Portfolio 1','portfolio-gallery-2':'Portfolio 2','portfolio-gallery-3':'Portfolio 3',
+    'portfolio-gallery-4':'Portfolio 4','portfolio-gallery-5':'Portfolio 5','portfolio-gallery-6':'Portfolio 6',
+    'portfolio-gallery-7':'Portfolio 7','portfolio-gallery-8':'Portfolio 8','portfolio-gallery-9':'Portfolio 9',
+    'portfolio-gallery-10':'Portfolio 10','portfolio-gallery-11':'Portfolio 11','portfolio-gallery-12':'Portfolio 12',
+    'portfolio-featured-1':'Featured 1','portfolio-featured-2':'Featured 2','portfolio-featured-3':'Featured 3','portfolio-featured-4':'Featured 4',
+    'services-hero-bg':'Services Hero BG',
+    'services-known-1':'Known For — Wedding','services-known-2':'Known For — Destination','services-known-3':'Known For — Film',
+    'services-detail-1':'Detail — Wedding Day','services-detail-2':'Detail — Full Weekend','services-detail-3':'Detail — Destination',
     'services-alacarte-1':'À La Carte — Engagement','services-alacarte-2':'À La Carte — Editorial','services-alacarte-3':'À La Carte — Film',
-    'experience-hero-bg':'Experience Hero Background','experience-portrait':'Photographer Portrait','experience-cta-bg':'Experience CTA Background',
+    'experience-hero-bg':'Experience Hero BG','experience-portrait':'Photographer Portrait','experience-cta-bg':'Experience CTA BG',
     'experience-feel-1':'Feel — Deeply Seen','experience-feel-2':'Feel — Unhurried','experience-feel-3':'Feel — Moved',
     'experience-process-1':'Process — Inquiry','experience-process-2':'Process — Planning','experience-process-3':'Process — Wedding Day','experience-process-4':'Process — Delivery',
-    'contact-img':'Contact — Main Image','contact-explore-1':'Explore — Portfolio','contact-explore-2':'Explore — Experience','contact-explore-3':'Explore — Services',
+    'contact-img':'Contact — Main','contact-explore-1':'Explore — Portfolio','contact-explore-2':'Explore — Experience','contact-explore-3':'Explore — Services',
   };
 
-  // ── State ─────────────────────────────────────────────────────
+  // All slots flat
+  const ALL_SLOTS = Object.values(SLOTS).flat();
+
+  // ── State ───────────────────────────────────────────────────────
   let sb             = null;
-  let imageData      = {};          // committed DB state
-  let heroType       = 'slideshow'; // committed hero type
+  let imageData      = {};
+  let heroType       = 'slideshow';
   let activeSlot     = null;
   let focalSlot      = null;
   let focalX = 50, focalY = 50, focalZoom = 100;
+  let pendingUploads  = {};
+  let pendingFocal    = {};
+  let pendingRemovals = {};
+  let pendingHeroType = null;
+  let orphanPaths     = [];
+  let activeTab       = 'settings';
 
-  // Draft state
-  let pendingUploads  = {};   // slot → { url, storage_path, focal_x, focal_y, zoom, _oldPath }
-  let pendingFocal    = {};   // slot → { focal_x, focal_y, zoom }
-  let pendingRemovals = {};   // slot → { storage_path }
-  let pendingHeroType = null; // string | null
-  let orphanPaths     = [];   // storage paths to delete on discard
+  // Storage browser state
+  let storageImages  = [];
+  let storageLoaded  = false;
+  let assignPath     = null;
+  let assignUrl      = null;
 
-  // ── Login ──────────────────────────────────────────────────────
+  // ── Tab system ─────────────────────────────────────────────────
+  function showTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    const btns = document.querySelectorAll('.tab-btn');
+    const tabNames = ['settings','homepage','about','portfolio','services','experience','contact','storage'];
+    const idx = tabNames.indexOf(tab);
+    if (idx !== -1) btns[idx].classList.add('active');
+    activeTab = tab;
+    if (tab === 'storage' && !storageLoaded) loadStorageTab();
+  }
+
+  // ── Login ───────────────────────────────────────────────────────
   async function doLogin() {
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const pass  = document.getElementById('login-password').value;
@@ -533,9 +808,12 @@
     await loadImages();
     await loadSiteSettings();
     document.getElementById('loading').classList.remove('active');
-    document.getElementById('main').style.display = 'block';
+    document.querySelectorAll('.tab-panel').forEach(p => {
+      if (p.id !== 'panel-settings') p.style.display = '';
+    });
     renderAllSections();
     highlightHeroType(heroType);
+    updateTabBadges();
   }
 
   if (sessionStorage.getItem('admin_auth') === '1') {
@@ -543,7 +821,7 @@
     showApp();
   }
 
-  // ── Load from DB ───────────────────────────────────────────────
+  // ── Load from DB ────────────────────────────────────────────────
   async function loadImages() {
     const { data } = await sb.from('site_images').select('*');
     imageData = {};
@@ -555,54 +833,78 @@
     (data || []).forEach(({ key, value }) => { if (key === 'hero_type') heroType = value; });
   }
 
-  // ── Pending state helpers ──────────────────────────────────────
+  // ── Pending state ───────────────────────────────────────────────
   function isDirty() {
-    return Object.keys(pendingUploads).length > 0  ||
+    return Object.keys(pendingUploads).length > 0 ||
            Object.keys(pendingFocal).length > 0    ||
            Object.keys(pendingRemovals).length > 0 ||
            pendingHeroType !== null;
   }
 
   function pendingCount() {
-    const slots = new Set([
-      ...Object.keys(pendingUploads),
-      ...Object.keys(pendingFocal),
-      ...Object.keys(pendingRemovals),
-    ]);
+    const slots = new Set([...Object.keys(pendingUploads), ...Object.keys(pendingFocal), ...Object.keys(pendingRemovals)]);
     return slots.size + (pendingHeroType !== null ? 1 : 0);
   }
 
   function updatePublishBtn() {
-    const dirty   = isDirty();
-    const count   = pendingCount();
-    const btn     = document.getElementById('publish-btn');
+    const dirty = isDirty(), count = pendingCount();
+    const btn = document.getElementById('publish-btn');
     const discard = document.getElementById('discard-btn');
-    const banner  = document.getElementById('pending-banner');
-    const badge   = document.getElementById('pending-count');
-
+    const banner = document.getElementById('pending-banner');
+    const badge = document.getElementById('pending-count');
     btn.classList.toggle('dirty', dirty);
     btn.textContent = dirty ? `Save & Publish (${count})` : 'Save & Publish';
     discard.style.display = dirty ? 'block' : 'none';
     banner.classList.toggle('show', dirty);
     badge.textContent = count + (count === 1 ? ' change' : ' changes');
+    updateTabBadges();
   }
 
-  // Merged view: pending overrides DB state
   function getSlotData(slot) {
-    if (pendingRemovals[slot])  return null;
-    if (pendingUploads[slot])   return { ...pendingUploads[slot],  _pending: 'upload' };
-    if (pendingFocal[slot])     return { ...imageData[slot], ...pendingFocal[slot], _pending: 'focal' };
+    if (pendingRemovals[slot]) return null;
+    if (pendingUploads[slot])  return { ...pendingUploads[slot], _pending: 'upload' };
+    if (pendingFocal[slot])    return { ...imageData[slot], ...pendingFocal[slot], _pending: 'focal' };
     return imageData[slot] || null;
   }
 
-  // ── Hero type ──────────────────────────────────────────────────
+  // ── Tab badges (filled count) ────────────────────────────────────
+  function updateTabBadges() {
+    const tabSlotGroups = {
+      homepage: ['hero','gallery','portfolio','testimonials','about','editorial-approach','editorial-explore','editorial-quote'],
+      about:    ['about-gallery','about-splits','about-bio'],
+      portfolio:['portfolio-hero','portfolio-gallery','portfolio-featured'],
+      services: ['services-top','services-detail','services-alacarte'],
+      experience:['experience-top','experience-feel','experience-process'],
+      contact:  ['contact'],
+    };
+    const btnOrder = ['settings','homepage','about','portfolio','services','experience','contact','storage'];
+    const btns = document.querySelectorAll('.tab-btn');
+    Object.entries(tabSlotGroups).forEach(([tab, groups]) => {
+      const allSlotsInTab = groups.flatMap(g => SLOTS[g] || []);
+      const filled = allSlotsInTab.filter(s => !!getSlotData(s)).length;
+      const total  = allSlotsInTab.length;
+      const idx = btnOrder.indexOf(tab);
+      if (idx !== -1 && btns[idx]) {
+        const existing = btns[idx].querySelector('.tab-badge');
+        if (existing) existing.remove();
+        if (filled < total) {
+          const badge = document.createElement('span');
+          badge.className = 'tab-badge';
+          badge.textContent = `${filled}/${total}`;
+          btns[idx].appendChild(badge);
+        }
+      }
+    });
+  }
+
+  // ── Hero type ───────────────────────────────────────────────────
   function highlightHeroType(type) {
     document.querySelectorAll('.hero-type-card').forEach(c => c.classList.remove('active', 'pending'));
     const el = document.getElementById('ht-' + type);
     if (el) el.classList.add('active');
     if (pendingHeroType !== null && pendingHeroType !== heroType) {
       const pel = document.getElementById('ht-' + pendingHeroType);
-      if (pel) { pel.classList.remove('active'); pel.classList.add('active', 'pending'); }
+      if (pel) { pel.classList.remove('active'); pel.classList.add('active','pending'); }
     }
   }
 
@@ -614,7 +916,7 @@
     showToast(pendingHeroType ? `Hero style staged as "${type}" — publish to go live.` : 'Hero style reverted.', 'info');
   }
 
-  // ── Render ────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────
   function renderAllSections() {
     Object.entries(SLOTS).forEach(([section, slots]) => {
       const container = document.getElementById('slots-' + section);
@@ -625,13 +927,13 @@
   }
 
   function makeCard(slot) {
-    const data       = getSlotData(slot);
-    const isRemoval  = !!pendingRemovals[slot];
-    const isUpload   = !!pendingUploads[slot];
-    const isFocal    = !!pendingFocal[slot];
-    const isPending  = isRemoval || isUpload || isFocal;
-    const label      = SLOT_LABELS[slot] || slot;
-    const isPortrait = slot.includes('portrait');
+    const data      = getSlotData(slot);
+    const isRemoval = !!pendingRemovals[slot];
+    const isUpload  = !!pendingUploads[slot];
+    const isFocal   = !!pendingFocal[slot];
+    const isPending = isRemoval || isUpload || isFocal;
+    const label     = SLOT_LABELS[slot] || slot;
+    const isPortrait = slot.includes('portrait') || slot.includes('avatar');
     const isHero     = slot.startsWith('hero');
     const fx = data?.focal_x ?? 50;
     const fy = data?.focal_y ?? 50;
@@ -674,18 +976,17 @@
         <span class="slot-badge ${badge}">${badgeText}</span>
       </div>
       <div class="slot-actions">
-        ${!isRemoval && !data    ? `` : ''}
-        ${!isRemoval             ? `<button class="btn-replace" onclick="event.stopPropagation();triggerUpload('${slot}')">Upload</button>` : ''}
-        ${data && !isRemoval     ? `<button class="btn-focal"   onclick="event.stopPropagation();openFocalModal('${slot}')">Position</button>` : ''}
-        ${data && !isRemoval && !isUpload && !isFocal ? `<button class="btn-remove"  onclick="event.stopPropagation();stageRemoval('${slot}')">Remove</button>` : ''}
-        ${isPending              ? `<button class="btn-undo"    onclick="event.stopPropagation();undoSlot('${slot}')">Undo</button>` : ''}
+        ${!isRemoval ? `<button class="btn-replace" onclick="event.stopPropagation();triggerUpload('${slot}')">Upload</button>` : ''}
+        ${!isRemoval ? `<button class="btn-library" onclick="event.stopPropagation();openAssignFromStorage('${slot}')">Library</button>` : ''}
+        ${data && !isRemoval ? `<button class="btn-focal" onclick="event.stopPropagation();openFocalModal('${slot}')">Position</button>` : ''}
+        ${data && !isRemoval && !isUpload && !isFocal ? `<button class="btn-remove" onclick="event.stopPropagation();stageRemoval('${slot}')">Remove</button>` : ''}
+        ${isPending ? `<button class="btn-undo" onclick="event.stopPropagation();undoSlot('${slot}')">Undo</button>` : ''}
       </div>
     `;
 
     card.querySelector('.slot-preview').addEventListener('click', () => {
       if (!data && !isRemoval) triggerUpload(slot);
     });
-
     card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('dragover'); });
     card.addEventListener('dragleave', () => card.classList.remove('dragover'));
     card.addEventListener('drop', e => {
@@ -693,23 +994,19 @@
       const file = e.dataTransfer.files[0];
       if (file) stageUpload(slot, file);
     });
-
     return card;
   }
 
-  // ── File picker ───────────────────────────────────────────────
+  // ── File picker ─────────────────────────────────────────────────
   const fileInput = document.getElementById('file-input');
   function triggerUpload(slot) { activeSlot = slot; fileInput.value = ''; fileInput.click(); }
   fileInput.addEventListener('change', () => { if (fileInput.files[0] && activeSlot) stageUpload(activeSlot, fileInput.files[0]); });
 
-  // ── Image compression ─────────────────────────────────────────
+  // ── Image compression ────────────────────────────────────────────
   function compressImage(file, slot) {
     return new Promise((resolve) => {
-      // Hero/background images: 2400px wide; portraits/splits: 1600px; thumbnails: 1200px
       const maxW = (slot.includes('hero') || slot.includes('bg') || slot.includes('cta')) ? 2400
-                 : (slot.includes('portrait') || slot.includes('gallery')) ? 1200 : 1600;
-      const quality = 0.82;
-
+                 : (slot.includes('portrait') || slot.includes('gallery') || slot.includes('avatar')) ? 1200 : 1600;
       const img = new Image();
       const objUrl = URL.createObjectURL(file);
       img.onload = () => {
@@ -719,16 +1016,14 @@
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         URL.revokeObjectURL(objUrl);
-        canvas.toBlob(blob => {
-          resolve(new File([blob], slot + '.jpg', { type: 'image/jpeg' }));
-        }, 'image/jpeg', quality);
+        canvas.toBlob(blob => resolve(new File([blob], slot + '.jpg', { type: 'image/jpeg' })), 'image/jpeg', 0.82);
       };
-      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(file); }; // fallback: use original
+      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(file); };
       img.src = objUrl;
     });
   }
 
-  // ── Stage upload (file → storage immediately, DB on publish) ──
+  // ── Stage upload ─────────────────────────────────────────────────
   async function stageUpload(slot, file) {
     if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
     if (file.size > 100 * 1024 * 1024)  { showToast('File must be under 100 MB.', 'error'); return; }
@@ -738,42 +1033,191 @@
     const bar = card.querySelector('.slot-progress');
     bar.style.width = '15%';
 
-    // Compress before uploading
     const compressed = await compressImage(file, slot);
     bar.style.width = '30%';
 
     const path = `${slot}/${Date.now()}.jpg`;
-
     const { error: upErr } = await sb.storage.from(BUCKET).upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
-    if (upErr) {
-      card.classList.remove('uploading'); bar.style.width = '0%';
-      showToast('Upload failed: ' + upErr.message, 'error'); return;
-    }
+    if (upErr) { card.classList.remove('uploading'); bar.style.width = '0%'; showToast('Upload failed: ' + upErr.message, 'error'); return; }
     bar.style.width = '100%';
 
     const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
     orphanPaths.push(path);
-
     const existing = pendingUploads[slot] || imageData[slot];
     pendingUploads[slot] = {
-      url: urlData.publicUrl,
-      storage_path: path,
-      focal_x: existing?.focal_x ?? 50,
-      focal_y: existing?.focal_y ?? 50,
-      zoom: existing?.zoom ?? 100,
-      _oldPath: imageData[slot]?.storage_path || null,
+      url: urlData.publicUrl, storage_path: path,
+      focal_x: existing?.focal_x ?? 50, focal_y: existing?.focal_y ?? 50,
+      zoom: existing?.zoom ?? 100, _oldPath: imageData[slot]?.storage_path || null,
     };
     delete pendingFocal[slot];
     delete pendingRemovals[slot];
-
     updatePublishBtn();
     setTimeout(() => { card.classList.remove('uploading'); bar.style.width = '0%'; card.replaceWith(makeCard(slot)); }, 300);
     showToast(`"${SLOT_LABELS[slot]}" staged — publish to go live.`, 'info');
+    storageLoaded = false; // invalidate storage cache after new upload
   }
 
-  // ── Stage removal ─────────────────────────────────────────────
+  // ── Assign from storage ──────────────────────────────────────────
+  function openAssignFromStorage(slot) {
+    // Pre-select this slot and open the storage tab
+    showTab('storage');
+    if (!storageLoaded) {
+      loadStorageTab().then(() => { preSelectAssignSlot(slot); });
+    } else {
+      preSelectAssignSlot(slot);
+    }
+    showToast(`Browse the library and click "Assign" to set "${SLOT_LABELS[slot]}".`, 'info');
+  }
+
+  function preSelectAssignSlot(slot) {
+    // Store the slot so the next "Assign" click pre-selects it
+    window._pendingAssignSlot = slot;
+  }
+
+  // ── Storage Browser ──────────────────────────────────────────────
+  async function loadStorageTab() {
+    const grid = document.getElementById('storage-grid');
+    const stats = document.getElementById('storage-stats');
+    grid.innerHTML = '<div class="storage-loading"><div class="spinner"></div>Scanning storage bucket…</div>';
+    stats.textContent = 'Loading…';
+
+    try {
+      const { data: rootItems, error: rootErr } = await sb.storage.from(BUCKET).list('', { limit: 500 });
+      if (rootErr) throw rootErr;
+
+      const folders = (rootItems || []).filter(i => !i.metadata); // folders have no metadata
+      const files   = (rootItems || []).filter(i =>  i.metadata); // files at root level
+
+      storageImages = [];
+
+      // Files at root (no subfolder)
+      files.forEach(file => {
+        const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(file.name);
+        storageImages.push({ path: file.name, url: urlData.publicUrl, folder: '(root)', filename: file.name, updated: file.updated_at });
+      });
+
+      // Files in subfolders (slots)
+      await Promise.all(folders.map(async folder => {
+        const { data: subFiles } = await sb.storage.from(BUCKET).list(folder.name, { limit: 500 });
+        (subFiles || []).filter(f => f.metadata).forEach(file => {
+          const path = `${folder.name}/${file.name}`;
+          const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+          storageImages.push({ path, url: urlData.publicUrl, folder: folder.name, filename: file.name, updated: file.updated_at });
+        });
+      }));
+
+      // Sort newest first
+      storageImages.sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
+
+      // Populate folder filter
+      const folderFilter = document.getElementById('storage-folder-filter');
+      const existingFolders = [...new Set(storageImages.map(i => i.folder))].sort();
+      folderFilter.innerHTML = '<option value="">All folders</option>' +
+        existingFolders.map(f => `<option value="${f}">${f}</option>`).join('');
+
+      // Populate assign slot selector
+      const sel = document.getElementById('assign-select-el');
+      sel.innerHTML = '<option value="">— select a slot —</option>' +
+        ALL_SLOTS.map(s => `<option value="${s}">${SLOT_LABELS[s] || s}</option>`).join('');
+
+      storageLoaded = true;
+      renderStorageGrid(storageImages);
+      stats.textContent = `${storageImages.length} image${storageImages.length !== 1 ? 's' : ''} in storage`;
+
+    } catch(err) {
+      grid.innerHTML = `<p style="color:var(--red);padding:40px 0">Failed to load storage: ${err.message}</p>`;
+      stats.textContent = '';
+    }
+  }
+
+  function renderStorageGrid(images) {
+    const grid = document.getElementById('storage-grid');
+    grid.innerHTML = '';
+
+    if (!images || !images.length) {
+      grid.innerHTML = '<p style="color:var(--fg-mid);padding:40px 0">No images found.</p>';
+      return;
+    }
+
+    images.forEach(img => {
+      const card = document.createElement('div');
+      card.className = 'storage-card';
+      card.innerHTML = `
+        <div class="storage-card-preview">
+          <img src="${img.url}" loading="lazy" alt="${img.filename}" />
+          <div class="storage-card-overlay">
+            <button onclick="openAssignModal('${img.path}', '${img.url}')">Assign to Slot</button>
+          </div>
+        </div>
+        <div class="storage-card-info">
+          <div class="storage-card-folder">${img.folder}</div>
+          <div class="storage-card-name">${img.filename}</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterStorage() {
+    const query  = document.getElementById('storage-search').value.toLowerCase();
+    const folder = document.getElementById('storage-folder-filter').value;
+    const filtered = storageImages.filter(img => {
+      const matchFolder  = !folder || img.folder === folder;
+      const matchSearch  = !query  || img.folder.toLowerCase().includes(query) || img.filename.toLowerCase().includes(query) || img.path.toLowerCase().includes(query);
+      return matchFolder && matchSearch;
+    });
+    renderStorageGrid(filtered);
+    document.getElementById('storage-stats').textContent = `${filtered.length} of ${storageImages.length} images`;
+  }
+
+  async function reloadStorage() {
+    storageLoaded = false;
+    document.getElementById('storage-search').value = '';
+    document.getElementById('storage-folder-filter').value = '';
+    await loadStorageTab();
+  }
+
+  // ── Assign from storage modal ────────────────────────────────────
+  function openAssignModal(path, url) {
+    assignPath = path;
+    assignUrl  = url;
+    document.getElementById('assign-img').src = url;
+    const sel = document.getElementById('assign-select-el');
+    sel.value = window._pendingAssignSlot || '';
+    window._pendingAssignSlot = null;
+    document.getElementById('assign-modal').classList.add('open');
+  }
+
+  function closeAssignModal() {
+    document.getElementById('assign-modal').classList.remove('open');
+    assignPath = null; assignUrl = null;
+  }
+
+  async function confirmAssign() {
+    const slot = document.getElementById('assign-select-el').value;
+    if (!slot) { showToast('Please select a slot.', 'error'); return; }
+
+    const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(assignPath);
+    const existing = pendingUploads[slot] || imageData[slot];
+    pendingUploads[slot] = {
+      url: urlData.publicUrl, storage_path: assignPath,
+      focal_x: existing?.focal_x ?? 50, focal_y: existing?.focal_y ?? 50,
+      zoom: existing?.zoom ?? 100, _oldPath: imageData[slot]?.storage_path || null,
+    };
+    delete pendingFocal[slot];
+    delete pendingRemovals[slot];
+    updatePublishBtn();
+
+    const card = document.querySelector(`.slot-card[data-slot="${slot}"]`);
+    if (card) card.replaceWith(makeCard(slot));
+
+    showToast(`Assigned to "${SLOT_LABELS[slot]}" — publish to go live.`, 'info');
+    closeAssignModal();
+  }
+
+  // ── Stage removal ────────────────────────────────────────────────
   function stageRemoval(slot) {
-    if (!confirm(`Stage "${SLOT_LABELS[slot]}" for removal? It will be deleted when you publish.`)) return;
+    if (!confirm(`Stage "${SLOT_LABELS[slot]}" for removal?`)) return;
     const storagePath = pendingUploads[slot]?.storage_path || imageData[slot]?.storage_path;
     pendingRemovals[slot] = { storage_path: storagePath };
     delete pendingUploads[slot];
@@ -783,29 +1227,24 @@
     showToast(`"${SLOT_LABELS[slot]}" staged for removal.`, 'info');
   }
 
-  // ── Undo a single slot ────────────────────────────────────────
+  // ── Undo ─────────────────────────────────────────────────────────
   async function undoSlot(slot) {
-    // If we uploaded a new file for this slot, remove it from storage
     if (pendingUploads[slot]) {
       await sb.storage.from(BUCKET).remove([pendingUploads[slot].storage_path]);
       orphanPaths = orphanPaths.filter(p => p !== pendingUploads[slot].storage_path);
     }
-    delete pendingUploads[slot];
-    delete pendingFocal[slot];
-    delete pendingRemovals[slot];
+    delete pendingUploads[slot]; delete pendingFocal[slot]; delete pendingRemovals[slot];
     updatePublishBtn();
     document.querySelector(`.slot-card[data-slot="${slot}"]`)?.replaceWith(makeCard(slot));
     showToast('Change undone.', 'success');
   }
 
-  // ── Focal point modal ─────────────────────────────────────────
+  // ── Focal point ──────────────────────────────────────────────────
   function openFocalModal(slot) {
     const data = getSlotData(slot);
     if (!data) return;
     focalSlot = slot;
-    focalX    = data.focal_x ?? 50;
-    focalY    = data.focal_y ?? 50;
-    focalZoom = data.zoom    ?? 100;
+    focalX = data.focal_x ?? 50; focalY = data.focal_y ?? 50; focalZoom = data.zoom ?? 100;
     document.getElementById('focal-title').textContent = 'Set Position — ' + (SLOT_LABELS[slot] || slot);
     document.getElementById('focal-img').src = data.url;
     document.getElementById('focal-zoom').value = focalZoom;
@@ -837,7 +1276,6 @@
 
   function stageFocalPoint() {
     if (!focalSlot) return;
-    // Merge into existing pending upload if any, else add to pendingFocal
     if (pendingUploads[focalSlot]) {
       pendingUploads[focalSlot].focal_x = focalX;
       pendingUploads[focalSlot].focal_y = focalY;
@@ -851,14 +1289,12 @@
     closeFocalModal();
   }
 
-  // ── Publish all ───────────────────────────────────────────────
+  // ── Publish all ──────────────────────────────────────────────────
   async function publishAll() {
     if (!isDirty()) return;
     const btn = document.getElementById('publish-btn');
     btn.disabled = true; btn.textContent = 'Publishing…';
-
     try {
-      // 1. Commit uploads
       for (const [slot, data] of Object.entries(pendingUploads)) {
         if (data._oldPath && data._oldPath !== data.storage_path) {
           await sb.storage.from(BUCKET).remove([data._oldPath]);
@@ -871,8 +1307,6 @@
         orphanPaths = orphanPaths.filter(p => p !== data.storage_path);
         imageData[slot] = { ...data };
       }
-
-      // 2. Commit focal changes
       for (const [slot, focal] of Object.entries(pendingFocal)) {
         const { error } = await sb.from('site_images').update({
           focal_x: focal.focal_x, focal_y: focal.focal_y, zoom: focal.zoom,
@@ -880,65 +1314,43 @@
         if (error) throw new Error(`Position save failed (${slot}): ${error.message}`);
         if (imageData[slot]) Object.assign(imageData[slot], focal);
       }
-
-      // 3. Commit removals
       for (const [slot, data] of Object.entries(pendingRemovals)) {
         if (data.storage_path) await sb.storage.from(BUCKET).remove([data.storage_path]);
         await sb.from('site_images').delete().eq('slot', slot);
         delete imageData[slot];
       }
-
-      // 4. Commit hero type
       if (pendingHeroType !== null) {
         const { error } = await sb.from('site_settings').upsert({ key: 'hero_type', value: pendingHeroType }, { onConflict: 'key' });
         if (error) throw new Error('Hero type save failed: ' + error.message);
         heroType = pendingHeroType;
       }
-
-      // Clear draft state
-      pendingUploads  = {};
-      pendingFocal    = {};
-      pendingRemovals = {};
-      pendingHeroType = null;
-      orphanPaths     = [];
-
+      pendingUploads = {}; pendingFocal = {}; pendingRemovals = {}; pendingHeroType = null; orphanPaths = [];
       updatePublishBtn();
       highlightHeroType(heroType);
       renderAllSections();
       showToast('Published! Changes are now live.', 'success');
-
     } catch(err) {
       showToast('Publish failed: ' + err.message, 'error');
     } finally {
-      btn.disabled = false;
-      updatePublishBtn();
+      btn.disabled = false; updatePublishBtn();
     }
   }
 
-  // ── Discard all ───────────────────────────────────────────────
+  // ── Discard all ──────────────────────────────────────────────────
   async function discardAll() {
     if (!isDirty()) return;
-    if (!confirm('Discard all staged changes? Uploaded files will be deleted from storage.')) return;
-    for (const path of orphanPaths) {
-      await sb.storage.from(BUCKET).remove([path]).catch(() => {});
-    }
-    pendingUploads  = {};
-    pendingFocal    = {};
-    pendingRemovals = {};
-    pendingHeroType = null;
-    orphanPaths     = [];
+    if (!confirm('Discard all staged changes?')) return;
+    for (const path of orphanPaths) await sb.storage.from(BUCKET).remove([path]).catch(() => {});
+    pendingUploads = {}; pendingFocal = {}; pendingRemovals = {}; pendingHeroType = null; orphanPaths = [];
     updatePublishBtn();
     highlightHeroType(heroType);
     renderAllSections();
     showToast('All changes discarded.', 'success');
   }
 
-  // Warn before leaving with unsaved changes
-  window.addEventListener('beforeunload', e => {
-    if (isDirty()) { e.preventDefault(); e.returnValue = ''; }
-  });
+  window.addEventListener('beforeunload', e => { if (isDirty()) { e.preventDefault(); e.returnValue = ''; } });
 
-  // ── Toast ─────────────────────────────────────────────────────
+  // ── Toast ────────────────────────────────────────────────────────
   let toastTimer;
   function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
