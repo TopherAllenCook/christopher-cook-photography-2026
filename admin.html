@@ -24,7 +24,7 @@
     }
     body { background: var(--bg); color: var(--fg); font-family: var(--sans); min-height: 100vh; }
 
-    /* ── Login screen ──────────────────────────────────────────── */
+    /* ── Login ─────────────────────────────────────────────────── */
     #login-screen {
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 24px;
@@ -34,29 +34,21 @@
       background: var(--surface); border: 1px solid var(--border);
       padding: 48px 40px; border-radius: 4px;
     }
-    .login-logo {
-      font-family: var(--serif); font-size: 24px; font-style: italic;
-      color: var(--accent); margin-bottom: 4px;
-    }
-    .login-sub { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 36px; }
-    label {
-      display: block; font-size: 11px; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--fg-mid); margin-bottom: 7px;
-    }
+    .login-logo { font-family: var(--serif); font-size: 24px; font-style: italic; color: var(--accent); margin-bottom: 4px; }
+    .login-sub  { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 36px; }
+    label { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-mid); margin-bottom: 7px; }
     .field { margin-bottom: 20px; }
-    input[type="email"], input[type="password"] {
+    input[type="email"], input[type="password"], input[type="range"] {
       width: 100%; background: var(--bg); border: 1px solid var(--border);
       color: var(--fg); font-family: var(--sans); font-size: 13px;
-      padding: 11px 14px; border-radius: 3px; outline: none;
-      transition: border-color .2s;
+      padding: 11px 14px; border-radius: 3px; outline: none; transition: border-color .2s;
     }
     input:focus { border-color: var(--accent); }
     .btn-primary {
       width: 100%; background: var(--accent); color: #fff; border: none;
       font-family: var(--sans); font-size: 12px; font-weight: 600;
       letter-spacing: .12em; text-transform: uppercase;
-      padding: 14px; border-radius: 3px; cursor: pointer;
-      transition: opacity .2s; margin-top: 8px;
+      padding: 14px; border-radius: 3px; cursor: pointer; transition: opacity .2s; margin-top: 8px;
     }
     .btn-primary:hover { opacity: .85; }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
@@ -67,8 +59,7 @@
     .topbar {
       position: sticky; top: 0; z-index: 10;
       background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 16px 40px;
-      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
     }
     .topbar-brand { font-size: 13px; font-weight: 600; letter-spacing: .08em; }
     .topbar-right { display: flex; align-items: center; gap: 16px; }
@@ -80,28 +71,44 @@
       transition: color .2s, border-color .2s; font-family: var(--sans);
     }
     .btn-signout:hover { color: var(--fg); border-color: var(--fg-mid); }
-
     .main { padding: 48px 40px; max-width: 1400px; margin: 0 auto; }
 
     /* ── Section headings ─────────────────────────────────────── */
     .section { margin-bottom: 60px; }
-    .section-title {
-      font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
-      color: var(--accent); font-weight: 600; margin-bottom: 6px;
-    }
-    .section-desc { font-size: 13px; color: var(--fg-mid); margin-bottom: 24px; }
+    .section-title { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+    .section-desc  { font-size: 13px; color: var(--fg-mid); margin-bottom: 24px; }
     .page-label {
       font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
       opacity: .35; margin-bottom: 48px; font-weight: 500; margin-top: 32px;
     }
     .page-label:first-child { margin-top: 0; }
 
-    /* ── Slot grid ─────────────────────────────────────────────── */
-    .slot-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+    /* ── Hero type cards ──────────────────────────────────────── */
+    .hero-type-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-type-card {
+      flex: 1; min-width: 160px; max-width: 220px;
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 6px; padding: 20px 16px; cursor: pointer;
+      transition: border-color .2s, transform .15s; text-align: center;
     }
+    .hero-type-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .hero-type-card.active { border-color: var(--accent); background: rgba(155,123,90,.08); }
+    .hero-type-icon {
+      width: 100%; aspect-ratio: 16/7; border-radius: 3px;
+      background: #222; margin-bottom: 12px; display: flex;
+      align-items: center; justify-content: center; font-size: 20px;
+      color: var(--fg-mid); overflow: hidden; position: relative;
+    }
+    .icon-slideshow::before,
+    .icon-slideshow::after { content: ''; position: absolute; top: 0; bottom: 0; width: 33.3%; background: rgba(255,255,255,.06); }
+    .icon-slideshow::before { left: 33.3%; }
+    .icon-slideshow::after  { right: 0; }
+    .hero-type-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .hero-type-card p  { font-size: 11px; color: var(--fg-mid); line-height: 1.4; }
+    .hero-type-saving { font-size: 11px; color: var(--accent); margin-top: 14px; display: none; }
+
+    /* ── Slot grid ─────────────────────────────────────────────── */
+    .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
     .slot-grid.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 
     /* ── Slot card ─────────────────────────────────────────────── */
@@ -114,17 +121,11 @@
     .slot-card.dragover { border-color: var(--green); border-style: dashed; }
     .slot-card.uploading { pointer-events: none; opacity: .7; }
 
-    .slot-preview {
-      width: 100%; aspect-ratio: 3/2; background: #222220;
-      position: relative; overflow: hidden;
-    }
-    .slot-preview.portrait   { aspect-ratio: 2/3; }
-    .slot-preview.wide-hero  { aspect-ratio: 16/7; }
+    .slot-preview { width: 100%; aspect-ratio: 3/2; background: #222220; position: relative; overflow: hidden; }
+    .slot-preview.portrait  { aspect-ratio: 2/3; }
+    .slot-preview.wide-hero { aspect-ratio: 16/7; }
 
-    .slot-preview img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      transition: transform .4s;
-    }
+    .slot-preview img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
     .slot-card:hover .slot-preview img { transform: scale(1.04); }
 
     .slot-placeholder {
@@ -146,52 +147,108 @@
       font-weight: 600; color: #fff;
       border: 1px solid rgba(255,255,255,.6); padding: 8px 18px; border-radius: 2px;
     }
+    .slot-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--green); width: 0%; transition: width .3s; }
 
-    .slot-progress {
-      position: absolute; bottom: 0; left: 0; height: 3px;
-      background: var(--green); width: 0%; transition: width .3s;
+    /* Focal point indicator dot on image */
+    .focal-dot {
+      position: absolute; width: 14px; height: 14px;
+      border-radius: 50%; border: 2px solid #fff;
+      background: rgba(155,123,90,.8);
+      transform: translate(-50%, -50%);
+      pointer-events: none; box-shadow: 0 0 0 1px rgba(0,0,0,.5);
+      transition: left .2s, top .2s;
     }
 
-    .slot-info {
-      padding: 12px 14px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .slot-info { padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
     .slot-label { font-size: 12px; font-weight: 500; }
-    .slot-badge {
-      font-size: 10px; letter-spacing: .08em; padding: 3px 8px;
-      border-radius: 20px; font-weight: 500;
-    }
+    .slot-badge { font-size: 10px; letter-spacing: .08em; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
     .slot-badge.filled { background: rgba(62,207,142,.12); color: var(--green); }
     .slot-badge.empty  { background: rgba(136,132,128,.1);  color: var(--fg-mid); }
 
-    .slot-actions { padding: 0 14px 12px; display: flex; gap: 8px; }
+    .slot-actions { padding: 0 14px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
     .slot-actions button {
       font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
-      padding: 5px 12px; border-radius: 2px; cursor: pointer; font-family: var(--sans);
+      padding: 5px 10px; border-radius: 2px; cursor: pointer; font-family: var(--sans);
       transition: opacity .2s;
     }
     .slot-actions button:hover { opacity: .7; }
-    .btn-remove  { background: rgba(224,82,82,.12); color: var(--red);    border: 1px solid rgba(224,82,82,.2); }
+    .btn-remove  { background: rgba(224,82,82,.12);  color: var(--red);    border: 1px solid rgba(224,82,82,.2); }
     .btn-replace { background: rgba(155,123,90,.12); color: var(--accent); border: 1px solid rgba(155,123,90,.2); }
+    .btn-focal   { background: rgba(62,207,142,.08); color: var(--green);  border: 1px solid rgba(62,207,142,.2); }
 
     .file-input { display: none; }
 
-    /* ── Loading ───────────────────────────────────────────────── */
-    #loading {
-      display: none; align-items: center; justify-content: center;
-      min-height: 60vh; gap: 12px; color: var(--fg-mid); font-size: 13px;
+    /* ── Focal Point Modal ─────────────────────────────────────── */
+    #focal-modal {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.92); flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px;
     }
+    #focal-modal.open { display: flex; }
+
+    .focal-header {
+      width: 100%; max-width: 900px; display: flex;
+      align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .focal-header h3 { font-size: 13px; font-weight: 600; letter-spacing: .06em; }
+    .focal-header p  { font-size: 12px; color: var(--fg-mid); }
+    .focal-img-wrap {
+      position: relative; max-width: 900px; width: 100%;
+      max-height: 65vh; cursor: crosshair; overflow: hidden;
+      border-radius: 4px; border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .focal-img-wrap img {
+      width: 100%; height: 100%; object-fit: contain;
+      display: block; max-height: 65vh;
+      pointer-events: none; user-select: none;
+    }
+    .focal-cross {
+      position: absolute; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .focal-cross::before, .focal-cross::after {
+      content: ''; position: absolute; background: rgba(155,123,90,.9);
+    }
+    .focal-cross::before { width: 2px; height: 28px; left: -1px; top: -14px; }
+    .focal-cross::after  { width: 28px; height: 2px; top: -1px; left: -14px; }
+    .focal-cross-ring {
+      position: absolute; transform: translate(-50%, -50%);
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4);
+      pointer-events: none; background: rgba(155,123,90,.5);
+    }
+
+    .focal-controls {
+      width: 100%; max-width: 900px; margin-top: 16px;
+      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .focal-zoom-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .focal-zoom-wrap label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-mid); white-space: nowrap; }
+    #focal-zoom { flex: 1; padding: 0; height: 4px; accent-color: var(--accent); cursor: pointer; }
+    .focal-zoom-val { font-size: 12px; color: var(--fg-mid); min-width: 36px; }
+    .focal-coords-disp { font-size: 12px; color: var(--fg-mid); }
+    .focal-btns { display: flex; gap: 10px; margin-left: auto; }
+    .btn-save-focal {
+      background: var(--accent); color: #fff; border: none;
+      font-family: var(--sans); font-size: 11px; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 10px 24px; border-radius: 3px; cursor: pointer;
+    }
+    .btn-cancel-focal {
+      background: none; color: var(--fg-mid); border: 1px solid var(--border);
+      font-family: var(--sans); font-size: 11px; letter-spacing: .1em;
+      text-transform: uppercase; padding: 10px 20px; border-radius: 3px; cursor: pointer;
+    }
+
+    /* ── Loading / Toast ───────────────────────────────────────── */
+    #loading { display: none; align-items: center; justify-content: center; min-height: 60vh; gap: 12px; color: var(--fg-mid); font-size: 13px; }
     #loading.active { display: flex; }
-    .spinner {
-      width: 20px; height: 20px; border: 2px solid var(--border);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Toast ─────────────────────────────────────────────────── */
     #toast {
-      position: fixed; bottom: 32px; right: 32px; z-index: 1000;
+      position: fixed; bottom: 32px; right: 32px; z-index: 2000;
       background: var(--surface); border: 1px solid var(--border);
       padding: 14px 20px; border-radius: 4px;
       font-size: 13px; display: flex; align-items: center; gap: 10px;
@@ -205,22 +262,19 @@
 </head>
 <body>
 
-<!-- ═══ LOGIN SCREEN ═════════════════════════════════════════════ -->
+<!-- ═══ LOGIN ════════════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">Christopher Cook</div>
     <p class="login-sub">Image Manager · Sign in to continue</p>
-
     <div class="field">
       <label for="login-email">Email</label>
       <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
     </div>
-
     <div class="field">
       <label for="login-password">Password</label>
       <input type="password" id="login-password" autocomplete="current-password" />
     </div>
-
     <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
     <p id="login-error"></p>
   </div>
@@ -232,13 +286,49 @@
     <span class="topbar-brand">Image Manager</span>
     <div class="topbar-right">
       <span class="topbar-status">● Connected</span>
-      <button class="btn-signout" id="signout-btn" onclick="sessionStorage.removeItem('admin_auth');location.reload()">Sign Out</button>
+      <button class="btn-signout" onclick="sessionStorage.removeItem('admin_auth');location.reload()">Sign Out</button>
     </div>
   </div>
 
-  <div id="loading" class="active"><div class="spinner"></div>Loading images…</div>
+  <div id="loading" class="active"><div class="spinner"></div>Loading…</div>
 
   <div class="main" id="main" style="display:none">
+
+    <!-- ── Site Settings ──────────────────────────────────────── -->
+    <div class="section">
+      <p class="section-title">Hero Style</p>
+      <p class="section-desc">Choose how the homepage hero section displays. Click a style to apply it live.</p>
+      <div class="hero-type-grid" id="hero-type-grid">
+
+        <div class="hero-type-card" id="ht-slideshow" onclick="setHeroType('slideshow')">
+          <div class="hero-type-icon icon-slideshow">
+            <svg width="36" height="16" viewBox="0 0 36 16"><rect x="0" y="0" width="11" height="16" rx="1" fill="rgba(255,255,255,.15)"/><rect x="13" y="0" width="11" height="16" rx="1" fill="rgba(255,255,255,.3)"/><rect x="26" y="0" width="10" height="16" rx="1" fill="rgba(255,255,255,.15)"/></svg>
+          </div>
+          <h4>Slideshow</h4>
+          <p>3 images auto-rotate every 5s</p>
+        </div>
+
+        <div class="hero-type-card" id="ht-static" onclick="setHeroType('static')">
+          <div class="hero-type-icon">
+            <svg width="36" height="16" viewBox="0 0 36 16"><rect x="0" y="0" width="36" height="16" rx="1" fill="rgba(255,255,255,.25)"/></svg>
+          </div>
+          <h4>Static</h4>
+          <p>Single full-bleed image, no rotation</p>
+        </div>
+
+        <div class="hero-type-card" id="ht-cinematic" onclick="setHeroType('cinematic')">
+          <div class="hero-type-icon">
+            <svg width="36" height="16" viewBox="0 0 36 16"><rect x="0" y="0" width="36" height="16" rx="1" fill="rgba(255,255,255,.2)"/><rect x="0" y="0" width="36" height="4" fill="rgba(0,0,0,.5)"/><rect x="0" y="12" width="36" height="4" fill="rgba(0,0,0,.5)"/></svg>
+          </div>
+          <h4>Cinematic</h4>
+          <p>Single image with letterbox bars</p>
+        </div>
+
+      </div>
+      <p class="hero-type-saving" id="hero-type-saving">Saving…</p>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:48px" />
 
     <p class="page-label">Homepage</p>
 
@@ -276,7 +366,7 @@
 
     <div class="section">
       <p class="section-title">About Gallery</p>
-      <p class="section-desc">3 staggered/composed images at the top of the About page.</p>
+      <p class="section-desc">3 staggered images at the top of the About page.</p>
       <div class="slot-grid" id="slots-about-gallery"></div>
     </div>
 
@@ -296,7 +386,6 @@
 
     <div class="section">
       <p class="section-title">Portfolio — Hero &amp; CTA Backgrounds</p>
-      <p class="section-desc">Hero background image and CTA section background.</p>
       <div class="slot-grid" id="slots-portfolio-hero"></div>
     </div>
 
@@ -308,7 +397,6 @@
 
     <div class="section">
       <p class="section-title">Portfolio — Featured Showcase</p>
-      <p class="section-desc">4 large featured story images.</p>
       <div class="slot-grid" id="slots-portfolio-featured"></div>
     </div>
 
@@ -316,19 +404,16 @@
 
     <div class="section">
       <p class="section-title">Services — Hero &amp; "Known For"</p>
-      <p class="section-desc">Hero background + 3 column images.</p>
       <div class="slot-grid wide" id="slots-services-top"></div>
     </div>
 
     <div class="section">
       <p class="section-title">Services — Package Details</p>
-      <p class="section-desc">3 large images for Wedding Day, Full Weekend, and Destination sections.</p>
       <div class="slot-grid" id="slots-services-detail"></div>
     </div>
 
     <div class="section">
       <p class="section-title">Services — À La Carte</p>
-      <p class="section-desc">3 images for Engagement, Editorial, and Film add-on cards.</p>
       <div class="slot-grid" id="slots-services-alacarte"></div>
     </div>
 
@@ -336,19 +421,16 @@
 
     <div class="section">
       <p class="section-title">Experience — Hero, Portrait &amp; CTA</p>
-      <p class="section-desc">Hero background, photographer portrait, and CTA background.</p>
       <div class="slot-grid" id="slots-experience-top"></div>
     </div>
 
     <div class="section">
       <p class="section-title">Experience — What You'll Feel</p>
-      <p class="section-desc">3 split-section images for Deeply Seen, Unhurried, and Moved.</p>
       <div class="slot-grid" id="slots-experience-feel"></div>
     </div>
 
     <div class="section">
       <p class="section-title">Experience — The Process</p>
-      <p class="section-desc">4 images for Inquiry, Planning, Wedding Day, and Delivery steps.</p>
       <div class="slot-grid" id="slots-experience-process"></div>
     </div>
 
@@ -356,10 +438,36 @@
 
     <div class="section">
       <p class="section-title">Contact — Images</p>
-      <p class="section-desc">Main image in the inquiry split, plus 3 "Keep Exploring" cards.</p>
       <div class="slot-grid" id="slots-contact"></div>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══ FOCAL POINT MODAL ════════════════════════════════════════ -->
+<div id="focal-modal">
+  <div class="focal-header">
+    <div>
+      <h3 id="focal-title">Set Focal Point</h3>
+      <p>Click anywhere on the image to set what stays in frame when cropped.</p>
+    </div>
+  </div>
+  <div class="focal-img-wrap" id="focal-img-wrap" onclick="focalClick(event)">
+    <img id="focal-img" src="" alt="" />
+    <div class="focal-cross" id="focal-cross"></div>
+    <div class="focal-cross-ring" id="focal-cross-ring"></div>
+  </div>
+  <div class="focal-controls">
+    <div class="focal-zoom-wrap">
+      <label>Zoom</label>
+      <input type="range" id="focal-zoom" min="100" max="200" step="5" value="100" oninput="focalZoomUpdate()" />
+      <span class="focal-zoom-val" id="focal-zoom-val">100%</span>
+    </div>
+    <span class="focal-coords-disp" id="focal-coords-disp">Position: 50% / 50%</span>
+    <div class="focal-btns">
+      <button class="btn-cancel-focal" onclick="closeFocalModal()">Cancel</button>
+      <button class="btn-save-focal"   onclick="saveFocalPoint()">Save</button>
+    </div>
   </div>
 </div>
 
@@ -367,11 +475,11 @@
 <input type="file" class="file-input" id="file-input" accept="image/*" />
 
 <script>
-  const BUCKET       = 'site-images';
-  const SB_URL       = 'https://qxdtidacdmkdueudjkiu.supabase.co';
-  const SB_KEY       = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzU1MTU2MSwiZXhwIjoyMDg5MTI3NTYxfQ.1Cyl11ZB0A9pL7l-3kmOnvSSUY6EkKXbfOv20sGjdhs';
-  const ADMIN_EMAIL  = 'hello@christophercook.co';
-  const ADMIN_PASS   = 'LeoColterLaney91!';
+  const BUCKET      = 'site-images';
+  const SB_URL      = 'https://qxdtidacdmkdueudjkiu.supabase.co';
+  const SB_KEY      = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzU1MTU2MSwiZXhwIjoyMDg5MTI3NTYxfQ.1Cyl11ZB0A9pL7l-3kmOnvSSUY6EkKXbfOv20sGjdhs';
+  const ADMIN_EMAIL = 'hello@christophercook.co';
+  const ADMIN_PASS  = 'LeoColterLaney91!';
 
   const SLOTS = {
     'hero':               ['hero-1','hero-2','hero-3'],
@@ -423,75 +531,89 @@
   let sb         = null;
   let imageData  = {};
   let activeSlot = null;
+  let heroType   = 'slideshow';
+  let focalSlot  = null;
+  let focalX     = 50;
+  let focalY     = 50;
+  let focalZoom  = 100;
 
-  // ── Login ─────────────────────────────────────────────────────
+  // ── Login ──────────────────────────────────────────────────────
   async function doLogin() {
-    const email    = document.getElementById('login-email').value.trim().toLowerCase();
-    const password = document.getElementById('login-password').value;
-    const errEl    = document.getElementById('login-error');
-    const btn      = document.getElementById('login-btn');
-
+    const email  = document.getElementById('login-email').value.trim().toLowerCase();
+    const pass   = document.getElementById('login-password').value;
+    const errEl  = document.getElementById('login-error');
+    const btn    = document.getElementById('login-btn');
     errEl.style.display = 'none';
 
-    if (!email || !password) {
+    if (!email || !pass) {
       errEl.textContent = 'Please enter your email and password.';
-      errEl.style.display = 'block';
-      return;
+      errEl.style.display = 'block'; return;
     }
-
-    if (email !== ADMIN_EMAIL.toLowerCase() || password !== ADMIN_PASS) {
+    if (email !== ADMIN_EMAIL.toLowerCase() || pass !== ADMIN_PASS) {
       errEl.textContent = 'Incorrect email or password.';
-      errEl.style.display = 'block';
-      return;
+      errEl.style.display = 'block'; return;
     }
 
     btn.disabled = true; btn.textContent = 'Signing in…';
-
     try {
       sb = supabase.createClient(SB_URL, SB_KEY);
-
-      // Verify Supabase is reachable
       const { error } = await sb.from('site_images').select('slot').limit(1);
-      if (error) throw new Error('Supabase error: ' + error.message);
-
+      if (error) throw new Error(error.message);
       sessionStorage.setItem('admin_auth', '1');
       showApp();
-    } catch (err) {
+    } catch(err) {
       errEl.textContent = 'Connection failed: ' + err.message;
       errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Sign In';
+      btn.disabled = false; btn.textContent = 'Sign In';
     }
   }
 
   async function showApp() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    document.getElementById('loading').classList.add('active');
-
-    try {
-      await loadImages();
-    } catch(err) {
-      showToast('Failed to load images: ' + err.message, 'error');
-    }
-
+    await loadImages();
+    await loadSiteSettings();
     document.getElementById('loading').classList.remove('active');
     document.getElementById('main').style.display = 'block';
     renderAllSections();
+    highlightHeroType(heroType);
   }
 
-  // Auto-login if session still active
+  // Auto-login from session
   if (sessionStorage.getItem('admin_auth') === '1') {
     sb = supabase.createClient(SB_URL, SB_KEY);
     showApp();
   }
 
-  // ── Load images ───────────────────────────────────────────────
+  // ── Data loading ───────────────────────────────────────────────
   async function loadImages() {
-    const { data, error } = await sb.from('site_images').select('*');
-    if (error) { showToast('Failed to load images: ' + error.message, 'error'); return; }
+    const { data } = await sb.from('site_images').select('*');
     imageData = {};
     (data || []).forEach(row => { imageData[row.slot] = row; });
+  }
+
+  async function loadSiteSettings() {
+    const { data } = await sb.from('site_settings').select('key,value');
+    (data || []).forEach(({ key, value }) => {
+      if (key === 'hero_type') heroType = value;
+    });
+  }
+
+  // ── Hero type ──────────────────────────────────────────────────
+  function highlightHeroType(type) {
+    document.querySelectorAll('.hero-type-card').forEach(c => c.classList.remove('active'));
+    const el = document.getElementById('ht-' + type);
+    if (el) el.classList.add('active');
+  }
+
+  async function setHeroType(type) {
+    heroType = type;
+    highlightHeroType(type);
+    const saving = document.getElementById('hero-type-saving');
+    saving.style.display = 'block';
+    await sb.from('site_settings').upsert({ key: 'hero_type', value: type }, { onConflict: 'key' });
+    saving.style.display = 'none';
+    showToast('Hero style set to "' + type + '"', 'success');
   }
 
   // ── Render ────────────────────────────────────────────────────
@@ -509,16 +631,20 @@
     const label = SLOT_LABELS[slot] || slot;
     const isPortrait = slot.includes('portrait');
     const isHero     = slot.startsWith('hero');
+    const fx = data?.focal_x ?? 50;
+    const fy = data?.focal_y ?? 50;
 
     const card = document.createElement('div');
     card.className = 'slot-card';
     card.dataset.slot = slot;
 
     const previewClass = isPortrait ? 'portrait' : isHero ? 'wide-hero' : '';
+
     card.innerHTML = `
       <div class="slot-preview ${previewClass}">
         ${data
-          ? `<img src="${data.url}" alt="${label}" loading="lazy" />`
+          ? `<img src="${data.url}" alt="${label}" loading="lazy" style="object-position:${fx}% ${fy}%" />
+             <div class="focal-dot" style="left:${fx}%;top:${fy}%"></div>`
           : `<div class="slot-placeholder">
                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
@@ -535,14 +661,15 @@
         <span class="slot-badge ${data ? 'filled' : 'empty'}">${data ? 'Set' : 'Empty'}</span>
       </div>
       ${data ? `<div class="slot-actions">
-        <button class="btn-replace" data-slot="${slot}">Replace</button>
-        <button class="btn-remove"  data-slot="${slot}">Remove</button>
+        <button class="btn-replace" data-slot="${slot}" onclick="event.stopPropagation();triggerUpload('${slot}')">Replace</button>
+        <button class="btn-focal"   data-slot="${slot}" onclick="event.stopPropagation();openFocalModal('${slot}')">Position</button>
+        <button class="btn-remove"  data-slot="${slot}" onclick="event.stopPropagation();removeImage('${slot}')">Remove</button>
       </div>` : ''}
     `;
 
-    card.querySelector('.slot-preview').addEventListener('click', () => triggerUpload(slot));
-    card.querySelector('.btn-replace')?.addEventListener('click', e => { e.stopPropagation(); triggerUpload(slot); });
-    card.querySelector('.btn-remove')?.addEventListener('click',  e => { e.stopPropagation(); removeImage(slot); });
+    card.querySelector('.slot-preview').addEventListener('click', () => {
+      if (!data) triggerUpload(slot);
+    });
 
     card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('dragover'); });
     card.addEventListener('dragleave', () => card.classList.remove('dragover'));
@@ -583,11 +710,7 @@
     }
     bar.style.width = '50%';
 
-    const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, {
-      upsert: true,
-      contentType: file.type,
-    });
-
+    const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, { upsert: true, contentType: file.type });
     if (upErr) {
       card.classList.remove('uploading'); bar.style.width = '0%';
       showToast('Upload failed: ' + upErr.message, 'error'); return;
@@ -598,35 +721,90 @@
     const publicUrl = urlData.publicUrl;
 
     const { error: dbErr } = await sb.from('site_images').upsert({
-      slot, url: publicUrl, storage_path: path,
+      slot, url: publicUrl, storage_path: path, focal_x: 50, focal_y: 50, zoom: 100,
     }, { onConflict: 'slot' });
 
     bar.style.width = '100%';
+    if (dbErr) { card.classList.remove('uploading'); bar.style.width = '0%'; showToast('DB error: ' + dbErr.message, 'error'); return; }
 
-    if (dbErr) {
-      card.classList.remove('uploading'); bar.style.width = '0%';
-      showToast('DB save failed: ' + dbErr.message, 'error'); return;
-    }
-
-    imageData[slot] = { url: publicUrl, storage_path: path };
-    showToast(`"${SLOT_LABELS[slot]}" updated.`, 'success');
-
-    setTimeout(() => {
-      card.classList.remove('uploading'); bar.style.width = '0%';
-      card.replaceWith(makeCard(slot));
-    }, 400);
+    imageData[slot] = { url: publicUrl, storage_path: path, focal_x: 50, focal_y: 50, zoom: 100 };
+    showToast(`"${SLOT_LABELS[slot]}" uploaded.`, 'success');
+    setTimeout(() => { card.classList.remove('uploading'); bar.style.width = '0%'; card.replaceWith(makeCard(slot)); }, 400);
   }
 
   // ── Remove ────────────────────────────────────────────────────
   async function removeImage(slot) {
-    if (!confirm(`Remove the image for "${SLOT_LABELS[slot]}"?`)) return;
-    if (imageData[slot]?.storage_path) {
-      await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
-    }
+    if (!confirm(`Remove "${SLOT_LABELS[slot]}"?`)) return;
+    if (imageData[slot]?.storage_path) await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
     await sb.from('site_images').delete().eq('slot', slot);
     delete imageData[slot];
     document.querySelector(`.slot-card[data-slot="${slot}"]`)?.replaceWith(makeCard(slot));
     showToast(`"${SLOT_LABELS[slot]}" removed.`, 'success');
+  }
+
+  // ── Focal point modal ─────────────────────────────────────────
+  function openFocalModal(slot) {
+    const data = imageData[slot];
+    if (!data) return;
+    focalSlot = slot;
+    focalX    = data.focal_x ?? 50;
+    focalY    = data.focal_y ?? 50;
+    focalZoom = data.zoom    ?? 100;
+
+    document.getElementById('focal-title').textContent = 'Set Position — ' + (SLOT_LABELS[slot] || slot);
+    document.getElementById('focal-img').src = data.url;
+    document.getElementById('focal-zoom').value   = focalZoom;
+    document.getElementById('focal-zoom-val').textContent = focalZoom + '%';
+    updateFocalCross();
+    document.getElementById('focal-modal').classList.add('open');
+  }
+
+  function closeFocalModal() {
+    document.getElementById('focal-modal').classList.remove('open');
+    focalSlot = null;
+  }
+
+  function focalClick(e) {
+    const wrap = document.getElementById('focal-img-wrap');
+    const rect = wrap.getBoundingClientRect();
+    focalX = Math.round(((e.clientX - rect.left) / rect.width)  * 100);
+    focalY = Math.round(((e.clientY - rect.top)  / rect.height) * 100);
+    focalX = Math.max(0, Math.min(100, focalX));
+    focalY = Math.max(0, Math.min(100, focalY));
+    updateFocalCross();
+  }
+
+  function updateFocalCross() {
+    const cross = document.getElementById('focal-cross');
+    const ring  = document.getElementById('focal-cross-ring');
+    cross.style.left = focalX + '%';
+    cross.style.top  = focalY + '%';
+    ring.style.left  = focalX + '%';
+    ring.style.top   = focalY + '%';
+    document.getElementById('focal-coords-disp').textContent = `Position: ${focalX}% / ${focalY}%`;
+  }
+
+  function focalZoomUpdate() {
+    focalZoom = parseInt(document.getElementById('focal-zoom').value);
+    document.getElementById('focal-zoom-val').textContent = focalZoom + '%';
+  }
+
+  async function saveFocalPoint() {
+    if (!focalSlot) return;
+    const { error } = await sb.from('site_images').update({
+      focal_x: focalX, focal_y: focalY, zoom: focalZoom,
+    }).eq('slot', focalSlot);
+
+    if (error) { showToast('Save failed: ' + error.message, 'error'); return; }
+
+    imageData[focalSlot].focal_x = focalX;
+    imageData[focalSlot].focal_y = focalY;
+    imageData[focalSlot].zoom    = focalZoom;
+
+    const card = document.querySelector(`.slot-card[data-slot="${focalSlot}"]`);
+    card?.replaceWith(makeCard(focalSlot));
+    showToast('Position saved.', 'success');
+    closeFocalModal();
   }
 
   // ── Toast ─────────────────────────────────────────────────────

@@ -987,6 +987,19 @@
 
     startTimer();
 
+    // ── Hero type from site settings ──────────────────────────────
+    window.addEventListener('siteSettingsLoaded', (e) => {
+      const type = e.detail.hero_type || 'slideshow';
+      if (type === 'static') {
+        clearInterval(timer);
+        document.getElementById('heroDots').style.display = 'none';
+      } else if (type === 'cinematic') {
+        clearInterval(timer);
+        document.getElementById('heroDots').style.display = 'none';
+        document.querySelector('.hero-overlay').style.background = 'linear-gradient(to bottom, rgba(0,0,0,.5) 0%, rgba(0,0,0,.2) 50%, rgba(0,0,0,.6) 100%)';
+      }
+    });
+
     // ── Mobile menu ───────────────────────────────────────────────
     const hamburger  = document.getElementById('hamburger');
     const overlay    = document.getElementById('navOverlay');
