@@ -19,21 +19,15 @@
       --accent:  #9b7b5a;
       --green:   #3ecf8e;
       --red:     #e05252;
+      --yellow:  #f5c842;
       --sans:    'Inter', sans-serif;
       --serif:   'Cormorant Garamond', serif;
     }
     body { background: var(--bg); color: var(--fg); font-family: var(--sans); min-height: 100vh; }
 
     /* ── Login ─────────────────────────────────────────────────── */
-    #login-screen {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; padding: 24px;
-    }
-    .login-card {
-      width: 100%; max-width: 420px;
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 48px 40px; border-radius: 4px;
-    }
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .login-card { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); padding: 48px 40px; border-radius: 4px; }
     .login-logo { font-family: var(--serif); font-size: 24px; font-style: italic; color: var(--accent); margin-bottom: 4px; }
     .login-sub  { font-size: 12px; color: var(--fg-mid); letter-spacing: .08em; margin-bottom: 36px; }
     label { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-mid); margin-bottom: 7px; }
@@ -46,9 +40,9 @@
     input:focus { border-color: var(--accent); }
     .btn-primary {
       width: 100%; background: var(--accent); color: #fff; border: none;
-      font-family: var(--sans); font-size: 12px; font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase;
-      padding: 14px; border-radius: 3px; cursor: pointer; transition: opacity .2s; margin-top: 8px;
+      font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; padding: 14px; border-radius: 3px; cursor: pointer;
+      transition: opacity .2s; margin-top: 8px;
     }
     .btn-primary:hover { opacity: .85; }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
@@ -59,11 +53,33 @@
     .topbar {
       position: sticky; top: 0; z-index: 10;
       background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 40px; display: flex; align-items: center; justify-content: space-between;
     }
     .topbar-brand { font-size: 13px; font-weight: 600; letter-spacing: .08em; }
-    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
     .topbar-status { font-size: 12px; color: var(--green); }
+
+    .btn-publish {
+      font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; padding: 9px 22px; border-radius: 3px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--fg-mid);
+      transition: all .2s;
+    }
+    .btn-publish.dirty {
+      background: var(--green); color: #0f0f0e; border-color: var(--green);
+      box-shadow: 0 0 16px rgba(62,207,142,.25);
+    }
+    .btn-publish.dirty:hover { opacity: .9; }
+    .btn-publish:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btn-discard {
+      font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 9px 16px; border-radius: 3px; cursor: pointer; display: none;
+      border: 1px solid rgba(224,82,82,.3); background: rgba(224,82,82,.08); color: var(--red);
+      transition: opacity .2s;
+    }
+    .btn-discard:hover { opacity: .7; }
+
     .btn-signout {
       font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
       color: var(--fg-mid); cursor: pointer; border: 1px solid var(--border);
@@ -71,6 +87,16 @@
       transition: color .2s, border-color .2s; font-family: var(--sans);
     }
     .btn-signout:hover { color: var(--fg); border-color: var(--fg-mid); }
+
+    /* Pending banner */
+    #pending-banner {
+      display: none; background: rgba(245,200,66,.08); border-bottom: 1px solid rgba(245,200,66,.2);
+      padding: 10px 40px; font-size: 12px; color: var(--yellow);
+      align-items: center; gap: 12px;
+    }
+    #pending-banner.show { display: flex; }
+    #pending-banner strong { font-weight: 600; }
+
     .main { padding: 48px 40px; max-width: 1400px; margin: 0 auto; }
 
     /* ── Section headings ─────────────────────────────────────── */
@@ -93,25 +119,19 @@
     }
     .hero-type-card:hover { border-color: var(--accent); transform: translateY(-2px); }
     .hero-type-card.active { border-color: var(--accent); background: rgba(155,123,90,.08); }
+    .hero-type-card.pending { border-color: var(--yellow) !important; }
     .hero-type-icon {
       width: 100%; aspect-ratio: 16/7; border-radius: 3px;
       background: #222; margin-bottom: 12px; display: flex;
-      align-items: center; justify-content: center; font-size: 20px;
-      color: var(--fg-mid); overflow: hidden; position: relative;
+      align-items: center; justify-content: center; overflow: hidden;
     }
-    .icon-slideshow::before,
-    .icon-slideshow::after { content: ''; position: absolute; top: 0; bottom: 0; width: 33.3%; background: rgba(255,255,255,.06); }
-    .icon-slideshow::before { left: 33.3%; }
-    .icon-slideshow::after  { right: 0; }
     .hero-type-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
     .hero-type-card p  { font-size: 11px; color: var(--fg-mid); line-height: 1.4; }
-    .hero-type-saving { font-size: 11px; color: var(--accent); margin-top: 14px; display: none; }
 
-    /* ── Slot grid ─────────────────────────────────────────────── */
+    /* ── Slot grid & cards ────────────────────────────────────── */
     .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
     .slot-grid.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 
-    /* ── Slot card ─────────────────────────────────────────────── */
     .slot-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 4px; overflow: hidden; cursor: pointer;
@@ -120,11 +140,12 @@
     .slot-card:hover { border-color: var(--accent); transform: translateY(-2px); }
     .slot-card.dragover { border-color: var(--green); border-style: dashed; }
     .slot-card.uploading { pointer-events: none; opacity: .7; }
+    .slot-card.pending-change { border-color: var(--yellow); }
+    .slot-card.pending-remove { border-color: var(--red); border-style: dashed; opacity: .6; }
 
     .slot-preview { width: 100%; aspect-ratio: 3/2; background: #222220; position: relative; overflow: hidden; }
     .slot-preview.portrait  { aspect-ratio: 2/3; }
     .slot-preview.wide-hero { aspect-ratio: 16/7; }
-
     .slot-preview img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
     .slot-card:hover .slot-preview img { transform: scale(1.04); }
 
@@ -149,21 +170,29 @@
     }
     .slot-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--green); width: 0%; transition: width .3s; }
 
-    /* Focal point indicator dot on image */
     .focal-dot {
-      position: absolute; width: 14px; height: 14px;
-      border-radius: 50%; border: 2px solid #fff;
-      background: rgba(155,123,90,.8);
-      transform: translate(-50%, -50%);
-      pointer-events: none; box-shadow: 0 0 0 1px rgba(0,0,0,.5);
-      transition: left .2s, top .2s;
+      position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid #fff; background: rgba(155,123,90,.8);
+      transform: translate(-50%, -50%); pointer-events: none;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.5);
     }
+
+    /* Pending tag on card */
+    .pending-tag {
+      position: absolute; top: 8px; left: 8px; z-index: 2;
+      font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      padding: 3px 7px; border-radius: 2px;
+    }
+    .pending-tag.change { background: var(--yellow); color: #0f0f0e; }
+    .pending-tag.remove { background: var(--red);    color: #fff; }
 
     .slot-info { padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
     .slot-label { font-size: 12px; font-weight: 500; }
     .slot-badge { font-size: 10px; letter-spacing: .08em; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
-    .slot-badge.filled { background: rgba(62,207,142,.12); color: var(--green); }
-    .slot-badge.empty  { background: rgba(136,132,128,.1);  color: var(--fg-mid); }
+    .slot-badge.filled  { background: rgba(62,207,142,.12);  color: var(--green); }
+    .slot-badge.empty   { background: rgba(136,132,128,.1);  color: var(--fg-mid); }
+    .slot-badge.pending { background: rgba(245,200,66,.15);  color: var(--yellow); }
+    .slot-badge.staged  { background: rgba(224,82,82,.12);   color: var(--red); }
 
     .slot-actions { padding: 0 14px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
     .slot-actions button {
@@ -175,89 +204,43 @@
     .btn-remove  { background: rgba(224,82,82,.12);  color: var(--red);    border: 1px solid rgba(224,82,82,.2); }
     .btn-replace { background: rgba(155,123,90,.12); color: var(--accent); border: 1px solid rgba(155,123,90,.2); }
     .btn-focal   { background: rgba(62,207,142,.08); color: var(--green);  border: 1px solid rgba(62,207,142,.2); }
+    .btn-undo    { background: rgba(245,200,66,.1);  color: var(--yellow); border: 1px solid rgba(245,200,66,.2); }
 
     .file-input { display: none; }
 
     /* ── Focal Point Modal ─────────────────────────────────────── */
-    #focal-modal {
-      display: none; position: fixed; inset: 0; z-index: 1000;
-      background: rgba(0,0,0,.92); flex-direction: column;
-      align-items: center; justify-content: center; padding: 24px;
-    }
+    #focal-modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.92); flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
     #focal-modal.open { display: flex; }
-
-    .focal-header {
-      width: 100%; max-width: 900px; display: flex;
-      align-items: center; justify-content: space-between; margin-bottom: 16px;
-    }
+    .focal-header { width: 100%; max-width: 900px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .focal-header h3 { font-size: 13px; font-weight: 600; letter-spacing: .06em; }
     .focal-header p  { font-size: 12px; color: var(--fg-mid); }
-    .focal-img-wrap {
-      position: relative; max-width: 900px; width: 100%;
-      max-height: 65vh; cursor: crosshair; overflow: hidden;
-      border-radius: 4px; border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .focal-img-wrap img {
-      width: 100%; height: 100%; object-fit: contain;
-      display: block; max-height: 65vh;
-      pointer-events: none; user-select: none;
-    }
-    .focal-cross {
-      position: absolute; transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .focal-cross::before, .focal-cross::after {
-      content: ''; position: absolute; background: rgba(155,123,90,.9);
-    }
+    .focal-img-wrap { position: relative; max-width: 900px; width: 100%; max-height: 65vh; cursor: crosshair; overflow: hidden; border-radius: 4px; border: 1px solid var(--border); flex-shrink: 0; }
+    .focal-img-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; max-height: 65vh; pointer-events: none; user-select: none; }
+    .focal-cross { position: absolute; transform: translate(-50%, -50%); pointer-events: none; }
+    .focal-cross::before, .focal-cross::after { content: ''; position: absolute; background: rgba(155,123,90,.9); }
     .focal-cross::before { width: 2px; height: 28px; left: -1px; top: -14px; }
     .focal-cross::after  { width: 28px; height: 2px; top: -1px; left: -14px; }
-    .focal-cross-ring {
-      position: absolute; transform: translate(-50%, -50%);
-      width: 16px; height: 16px; border-radius: 50%;
-      border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4);
-      pointer-events: none; background: rgba(155,123,90,.5);
-    }
-
-    .focal-controls {
-      width: 100%; max-width: 900px; margin-top: 16px;
-      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-    }
+    .focal-cross-ring { position: absolute; transform: translate(-50%, -50%); width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4); pointer-events: none; background: rgba(155,123,90,.5); }
+    .focal-controls { width: 100%; max-width: 900px; margin-top: 16px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
     .focal-zoom-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
     .focal-zoom-wrap label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-mid); white-space: nowrap; }
     #focal-zoom { flex: 1; padding: 0; height: 4px; accent-color: var(--accent); cursor: pointer; }
     .focal-zoom-val { font-size: 12px; color: var(--fg-mid); min-width: 36px; }
     .focal-coords-disp { font-size: 12px; color: var(--fg-mid); }
     .focal-btns { display: flex; gap: 10px; margin-left: auto; }
-    .btn-save-focal {
-      background: var(--accent); color: #fff; border: none;
-      font-family: var(--sans); font-size: 11px; font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase;
-      padding: 10px 24px; border-radius: 3px; cursor: pointer;
-    }
-    .btn-cancel-focal {
-      background: none; color: var(--fg-mid); border: 1px solid var(--border);
-      font-family: var(--sans); font-size: 11px; letter-spacing: .1em;
-      text-transform: uppercase; padding: 10px 20px; border-radius: 3px; cursor: pointer;
-    }
+    .btn-save-focal { background: var(--accent); color: #fff; border: none; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 10px 24px; border-radius: 3px; cursor: pointer; }
+    .btn-cancel-focal { background: none; color: var(--fg-mid); border: 1px solid var(--border); font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 10px 20px; border-radius: 3px; cursor: pointer; }
 
     /* ── Loading / Toast ───────────────────────────────────────── */
     #loading { display: none; align-items: center; justify-content: center; min-height: 60vh; gap: 12px; color: var(--fg-mid); font-size: 13px; }
     #loading.active { display: flex; }
     .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    #toast {
-      position: fixed; bottom: 32px; right: 32px; z-index: 2000;
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 14px 20px; border-radius: 4px;
-      font-size: 13px; display: flex; align-items: center; gap: 10px;
-      transform: translateY(80px); opacity: 0;
-      transition: transform .3s, opacity .3s; max-width: 340px;
-    }
+    #toast { position: fixed; bottom: 32px; right: 32px; z-index: 2000; background: var(--surface); border: 1px solid var(--border); padding: 14px 20px; border-radius: 4px; font-size: 13px; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform .3s, opacity .3s; max-width: 340px; }
     #toast.show { transform: translateY(0); opacity: 1; }
     #toast.success { border-left: 3px solid var(--green); }
     #toast.error   { border-left: 3px solid var(--red); }
+    #toast.info    { border-left: 3px solid var(--yellow); }
   </style>
 </head>
 <body>
@@ -285,157 +268,135 @@
   <div class="topbar">
     <span class="topbar-brand">Image Manager</span>
     <div class="topbar-right">
-      <span class="topbar-status">● Connected</span>
+      <span class="topbar-status" id="topbar-status">● Connected</span>
+      <button class="btn-discard" id="discard-btn" onclick="discardAll()">Discard Changes</button>
+      <button class="btn-publish" id="publish-btn" onclick="publishAll()">Save &amp; Publish</button>
       <button class="btn-signout" onclick="sessionStorage.removeItem('admin_auth');location.reload()">Sign Out</button>
     </div>
+  </div>
+
+  <div id="pending-banner">
+    <strong id="pending-count">0 changes</strong> staged — click <strong>Save &amp; Publish</strong> to push live, or <strong>Discard Changes</strong> to revert.
   </div>
 
   <div id="loading" class="active"><div class="spinner"></div>Loading…</div>
 
   <div class="main" id="main" style="display:none">
 
-    <!-- ── Site Settings ──────────────────────────────────────── -->
+    <!-- Site Settings -->
     <div class="section">
       <p class="section-title">Hero Style</p>
-      <p class="section-desc">Choose how the homepage hero section displays. Click a style to apply it live.</p>
+      <p class="section-desc">Choose how the homepage hero displays. Changes stage until you Save &amp; Publish.</p>
       <div class="hero-type-grid" id="hero-type-grid">
-
         <div class="hero-type-card" id="ht-slideshow" onclick="setHeroType('slideshow')">
-          <div class="hero-type-icon icon-slideshow">
-            <svg width="36" height="16" viewBox="0 0 36 16"><rect x="0" y="0" width="11" height="16" rx="1" fill="rgba(255,255,255,.15)"/><rect x="13" y="0" width="11" height="16" rx="1" fill="rgba(255,255,255,.3)"/><rect x="26" y="0" width="10" height="16" rx="1" fill="rgba(255,255,255,.15)"/></svg>
+          <div class="hero-type-icon">
+            <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.15)"/><rect x="17" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.3)"/><rect x="34" y="0" width="14" height="20" rx="1" fill="rgba(255,255,255,.15)"/></svg>
           </div>
           <h4>Slideshow</h4>
           <p>3 images auto-rotate every 5s</p>
         </div>
-
         <div class="hero-type-card" id="ht-static" onclick="setHeroType('static')">
           <div class="hero-type-icon">
-            <svg width="36" height="16" viewBox="0 0 36 16"><rect x="0" y="0" width="36" height="16" rx="1" fill="rgba(255,255,255,.25)"/></svg>
+            <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="48" height="20" rx="1" fill="rgba(255,255,255,.28)"/></svg>
           </div>
           <h4>Static</h4>
           <p>Single full-bleed image, no rotation</p>
         </div>
-
         <div class="hero-type-card" id="ht-cinematic" onclick="setHeroType('cinematic')">
           <div class="hero-type-icon">
-            <svg width="36" height="16" viewBox="0 0 36 16"><rect x="0" y="0" width="36" height="16" rx="1" fill="rgba(255,255,255,.2)"/><rect x="0" y="0" width="36" height="4" fill="rgba(0,0,0,.5)"/><rect x="0" y="12" width="36" height="4" fill="rgba(0,0,0,.5)"/></svg>
+            <svg width="48" height="20" viewBox="0 0 48 20"><rect x="0" y="0" width="48" height="20" rx="1" fill="rgba(255,255,255,.22)"/><rect x="0" y="0" width="48" height="5" fill="rgba(0,0,0,.55)"/><rect x="0" y="15" width="48" height="5" fill="rgba(0,0,0,.55)"/></svg>
           </div>
           <h4>Cinematic</h4>
           <p>Single image with letterbox bars</p>
         </div>
-
       </div>
-      <p class="hero-type-saving" id="hero-type-saving">Saving…</p>
     </div>
 
     <hr style="border:none;border-top:1px solid var(--border);margin-bottom:48px" />
 
     <p class="page-label">Homepage</p>
-
     <div class="section">
       <p class="section-title">Hero Slideshow</p>
       <p class="section-desc">3 full-width background images that rotate on the homepage.</p>
       <div class="slot-grid wide" id="slots-hero"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Gallery Strip</p>
       <p class="section-desc">6 images in the auto-scrolling horizontal gallery.</p>
       <div class="slot-grid" id="slots-gallery"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Homepage Portfolio Grid</p>
       <p class="section-desc">3 featured portfolio images with hover captions.</p>
       <div class="slot-grid" id="slots-portfolio"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Testimonial Photos</p>
-      <p class="section-desc">One photo per client testimonial card.</p>
       <div class="slot-grid" id="slots-testimonials"></div>
     </div>
-
     <div class="section">
       <p class="section-title">About / Bio Portrait</p>
-      <p class="section-desc">Portrait photo in the "Behind the Lens" section.</p>
       <div class="slot-grid" id="slots-about"></div>
     </div>
 
     <p class="page-label">About Page</p>
-
     <div class="section">
       <p class="section-title">About Gallery</p>
-      <p class="section-desc">3 staggered images at the top of the About page.</p>
       <div class="slot-grid" id="slots-about-gallery"></div>
     </div>
-
     <div class="section">
       <p class="section-title">About — Full Page Splits</p>
-      <p class="section-desc">3 large split-section images + 1 CTA background.</p>
       <div class="slot-grid" id="slots-about-splits"></div>
     </div>
-
     <div class="section">
       <p class="section-title">About — Bio Portrait</p>
-      <p class="section-desc">Portrait image in the Bio section alongside the quote.</p>
       <div class="slot-grid" id="slots-about-bio"></div>
     </div>
 
     <p class="page-label">Portfolio Page</p>
-
     <div class="section">
       <p class="section-title">Portfolio — Hero &amp; CTA Backgrounds</p>
       <div class="slot-grid" id="slots-portfolio-hero"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Portfolio Gallery Grid</p>
       <p class="section-desc">12 images in the masonry grid.</p>
       <div class="slot-grid" id="slots-portfolio-gallery"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Portfolio — Featured Showcase</p>
       <div class="slot-grid" id="slots-portfolio-featured"></div>
     </div>
 
     <p class="page-label">Services Page</p>
-
     <div class="section">
       <p class="section-title">Services — Hero &amp; "Known For"</p>
       <div class="slot-grid wide" id="slots-services-top"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Services — Package Details</p>
       <div class="slot-grid" id="slots-services-detail"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Services — À La Carte</p>
       <div class="slot-grid" id="slots-services-alacarte"></div>
     </div>
 
     <p class="page-label">Experience Page</p>
-
     <div class="section">
       <p class="section-title">Experience — Hero, Portrait &amp; CTA</p>
       <div class="slot-grid" id="slots-experience-top"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Experience — What You'll Feel</p>
       <div class="slot-grid" id="slots-experience-feel"></div>
     </div>
-
     <div class="section">
       <p class="section-title">Experience — The Process</p>
       <div class="slot-grid" id="slots-experience-process"></div>
     </div>
 
     <p class="page-label">Contact Page</p>
-
     <div class="section">
       <p class="section-title">Contact — Images</p>
       <div class="slot-grid" id="slots-contact"></div>
@@ -449,7 +410,7 @@
   <div class="focal-header">
     <div>
       <h3 id="focal-title">Set Focal Point</h3>
-      <p>Click anywhere on the image to set what stays in frame when cropped.</p>
+      <p>Click anywhere on the image to set the crop focus point.</p>
     </div>
   </div>
   <div class="focal-img-wrap" id="focal-img-wrap" onclick="focalClick(event)">
@@ -466,7 +427,7 @@
     <span class="focal-coords-disp" id="focal-coords-disp">Position: 50% / 50%</span>
     <div class="focal-btns">
       <button class="btn-cancel-focal" onclick="closeFocalModal()">Cancel</button>
-      <button class="btn-save-focal"   onclick="saveFocalPoint()">Save</button>
+      <button class="btn-save-focal"   onclick="stageFocalPoint()">Stage Change</button>
     </div>
   </div>
 </div>
@@ -528,32 +489,30 @@
     'contact-img':'Contact — Main Image','contact-explore-1':'Explore — Portfolio','contact-explore-2':'Explore — Experience','contact-explore-3':'Explore — Services',
   };
 
-  let sb         = null;
-  let imageData  = {};
-  let activeSlot = null;
-  let heroType   = 'slideshow';
-  let focalSlot  = null;
-  let focalX     = 50;
-  let focalY     = 50;
-  let focalZoom  = 100;
+  // ── State ─────────────────────────────────────────────────────
+  let sb             = null;
+  let imageData      = {};          // committed DB state
+  let heroType       = 'slideshow'; // committed hero type
+  let activeSlot     = null;
+  let focalSlot      = null;
+  let focalX = 50, focalY = 50, focalZoom = 100;
+
+  // Draft state
+  let pendingUploads  = {};   // slot → { url, storage_path, focal_x, focal_y, zoom, _oldPath }
+  let pendingFocal    = {};   // slot → { focal_x, focal_y, zoom }
+  let pendingRemovals = {};   // slot → { storage_path }
+  let pendingHeroType = null; // string | null
+  let orphanPaths     = [];   // storage paths to delete on discard
 
   // ── Login ──────────────────────────────────────────────────────
   async function doLogin() {
-    const email  = document.getElementById('login-email').value.trim().toLowerCase();
-    const pass   = document.getElementById('login-password').value;
-    const errEl  = document.getElementById('login-error');
-    const btn    = document.getElementById('login-btn');
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('login-password').value;
+    const errEl = document.getElementById('login-error');
+    const btn   = document.getElementById('login-btn');
     errEl.style.display = 'none';
-
-    if (!email || !pass) {
-      errEl.textContent = 'Please enter your email and password.';
-      errEl.style.display = 'block'; return;
-    }
-    if (email !== ADMIN_EMAIL.toLowerCase() || pass !== ADMIN_PASS) {
-      errEl.textContent = 'Incorrect email or password.';
-      errEl.style.display = 'block'; return;
-    }
-
+    if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
+    if (email !== ADMIN_EMAIL.toLowerCase() || pass !== ADMIN_PASS) { errEl.textContent = 'Incorrect email or password.'; errEl.style.display = 'block'; return; }
     btn.disabled = true; btn.textContent = 'Signing in…';
     try {
       sb = supabase.createClient(SB_URL, SB_KEY);
@@ -579,13 +538,12 @@
     highlightHeroType(heroType);
   }
 
-  // Auto-login from session
   if (sessionStorage.getItem('admin_auth') === '1') {
     sb = supabase.createClient(SB_URL, SB_KEY);
     showApp();
   }
 
-  // ── Data loading ───────────────────────────────────────────────
+  // ── Load from DB ───────────────────────────────────────────────
   async function loadImages() {
     const { data } = await sb.from('site_images').select('*');
     imageData = {};
@@ -594,26 +552,66 @@
 
   async function loadSiteSettings() {
     const { data } = await sb.from('site_settings').select('key,value');
-    (data || []).forEach(({ key, value }) => {
-      if (key === 'hero_type') heroType = value;
-    });
+    (data || []).forEach(({ key, value }) => { if (key === 'hero_type') heroType = value; });
+  }
+
+  // ── Pending state helpers ──────────────────────────────────────
+  function isDirty() {
+    return Object.keys(pendingUploads).length > 0  ||
+           Object.keys(pendingFocal).length > 0    ||
+           Object.keys(pendingRemovals).length > 0 ||
+           pendingHeroType !== null;
+  }
+
+  function pendingCount() {
+    const slots = new Set([
+      ...Object.keys(pendingUploads),
+      ...Object.keys(pendingFocal),
+      ...Object.keys(pendingRemovals),
+    ]);
+    return slots.size + (pendingHeroType !== null ? 1 : 0);
+  }
+
+  function updatePublishBtn() {
+    const dirty   = isDirty();
+    const count   = pendingCount();
+    const btn     = document.getElementById('publish-btn');
+    const discard = document.getElementById('discard-btn');
+    const banner  = document.getElementById('pending-banner');
+    const badge   = document.getElementById('pending-count');
+
+    btn.classList.toggle('dirty', dirty);
+    btn.textContent = dirty ? `Save & Publish (${count})` : 'Save & Publish';
+    discard.style.display = dirty ? 'block' : 'none';
+    banner.classList.toggle('show', dirty);
+    badge.textContent = count + (count === 1 ? ' change' : ' changes');
+  }
+
+  // Merged view: pending overrides DB state
+  function getSlotData(slot) {
+    if (pendingRemovals[slot])  return null;
+    if (pendingUploads[slot])   return { ...pendingUploads[slot],  _pending: 'upload' };
+    if (pendingFocal[slot])     return { ...imageData[slot], ...pendingFocal[slot], _pending: 'focal' };
+    return imageData[slot] || null;
   }
 
   // ── Hero type ──────────────────────────────────────────────────
   function highlightHeroType(type) {
-    document.querySelectorAll('.hero-type-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.hero-type-card').forEach(c => c.classList.remove('active', 'pending'));
     const el = document.getElementById('ht-' + type);
     if (el) el.classList.add('active');
+    if (pendingHeroType !== null && pendingHeroType !== heroType) {
+      const pel = document.getElementById('ht-' + pendingHeroType);
+      if (pel) { pel.classList.remove('active'); pel.classList.add('active', 'pending'); }
+    }
   }
 
-  async function setHeroType(type) {
-    heroType = type;
-    highlightHeroType(type);
-    const saving = document.getElementById('hero-type-saving');
-    saving.style.display = 'block';
-    await sb.from('site_settings').upsert({ key: 'hero_type', value: type }, { onConflict: 'key' });
-    saving.style.display = 'none';
-    showToast('Hero style set to "' + type + '"', 'success');
+  function setHeroType(type) {
+    if (type === heroType && pendingHeroType === null) return;
+    pendingHeroType = (type === heroType) ? null : type;
+    highlightHeroType(pendingHeroType ?? heroType);
+    updatePublishBtn();
+    showToast(pendingHeroType ? `Hero style staged as "${type}" — publish to go live.` : 'Hero style reverted.', 'info');
   }
 
   // ── Render ────────────────────────────────────────────────────
@@ -627,48 +625,65 @@
   }
 
   function makeCard(slot) {
-    const data  = imageData[slot];
-    const label = SLOT_LABELS[slot] || slot;
+    const data       = getSlotData(slot);
+    const isRemoval  = !!pendingRemovals[slot];
+    const isUpload   = !!pendingUploads[slot];
+    const isFocal    = !!pendingFocal[slot];
+    const isPending  = isRemoval || isUpload || isFocal;
+    const label      = SLOT_LABELS[slot] || slot;
     const isPortrait = slot.includes('portrait');
     const isHero     = slot.startsWith('hero');
     const fx = data?.focal_x ?? 50;
     const fy = data?.focal_y ?? 50;
 
-    const card = document.createElement('div');
-    card.className = 'slot-card';
-    card.dataset.slot = slot;
+    let cardClass = 'slot-card';
+    if (isRemoval) cardClass += ' pending-remove';
+    else if (isPending) cardClass += ' pending-change';
+
+    let badge = data ? 'filled' : 'empty';
+    let badgeText = data ? 'Set' : 'Empty';
+    if (isUpload)  { badge = 'pending'; badgeText = 'Staged'; }
+    if (isFocal)   { badge = 'pending'; badgeText = 'Edited'; }
+    if (isRemoval) { badge = 'staged';  badgeText = 'Removing'; }
 
     const previewClass = isPortrait ? 'portrait' : isHero ? 'wide-hero' : '';
+
+    const card = document.createElement('div');
+    card.className = cardClass;
+    card.dataset.slot = slot;
 
     card.innerHTML = `
       <div class="slot-preview ${previewClass}">
         ${data
-          ? `<img src="${data.url}" alt="${label}" loading="lazy" style="object-position:${fx}% ${fy}%" />
-             <div class="focal-dot" style="left:${fx}%;top:${fy}%"></div>`
+          ? `<img src="${data.url}" alt="${label}" loading="lazy" style="object-position:${fx}% ${fy}%" />`
           : `<div class="slot-placeholder">
                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
                  <polyline points="21 15 16 10 5 21"/>
                </svg>
-               <span>No image</span>
+               <span>${isRemoval ? 'Pending removal' : 'No image'}</span>
              </div>`
         }
+        ${data ? `<div class="focal-dot" style="left:${fx}%;top:${fy}%"></div>` : ''}
+        ${isPending ? `<div class="pending-tag ${isRemoval ? 'remove' : 'change'}">${isRemoval ? 'Removing' : 'Staged'}</div>` : ''}
         <div class="slot-upload-overlay"><span>${data ? 'Replace' : 'Upload'}</span></div>
         <div class="slot-progress"></div>
       </div>
       <div class="slot-info">
         <span class="slot-label">${label}</span>
-        <span class="slot-badge ${data ? 'filled' : 'empty'}">${data ? 'Set' : 'Empty'}</span>
+        <span class="slot-badge ${badge}">${badgeText}</span>
       </div>
-      ${data ? `<div class="slot-actions">
-        <button class="btn-replace" data-slot="${slot}" onclick="event.stopPropagation();triggerUpload('${slot}')">Replace</button>
-        <button class="btn-focal"   data-slot="${slot}" onclick="event.stopPropagation();openFocalModal('${slot}')">Position</button>
-        <button class="btn-remove"  data-slot="${slot}" onclick="event.stopPropagation();removeImage('${slot}')">Remove</button>
-      </div>` : ''}
+      <div class="slot-actions">
+        ${!isRemoval && !data    ? `` : ''}
+        ${!isRemoval             ? `<button class="btn-replace" onclick="event.stopPropagation();triggerUpload('${slot}')">Upload</button>` : ''}
+        ${data && !isRemoval     ? `<button class="btn-focal"   onclick="event.stopPropagation();openFocalModal('${slot}')">Position</button>` : ''}
+        ${data && !isRemoval && !isUpload && !isFocal ? `<button class="btn-remove"  onclick="event.stopPropagation();stageRemoval('${slot}')">Remove</button>` : ''}
+        ${isPending              ? `<button class="btn-undo"    onclick="event.stopPropagation();undoSlot('${slot}')">Undo</button>` : ''}
+      </div>
     `;
 
     card.querySelector('.slot-preview').addEventListener('click', () => {
-      if (!data) triggerUpload(slot);
+      if (!data && !isRemoval) triggerUpload(slot);
     });
 
     card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('dragover'); });
@@ -676,7 +691,7 @@
     card.addEventListener('drop', e => {
       e.preventDefault(); card.classList.remove('dragover');
       const file = e.dataTransfer.files[0];
-      if (file) uploadImage(slot, file);
+      if (file) stageUpload(slot, file);
     });
 
     return card;
@@ -684,103 +699,105 @@
 
   // ── File picker ───────────────────────────────────────────────
   const fileInput = document.getElementById('file-input');
+  function triggerUpload(slot) { activeSlot = slot; fileInput.value = ''; fileInput.click(); }
+  fileInput.addEventListener('change', () => { if (fileInput.files[0] && activeSlot) stageUpload(activeSlot, fileInput.files[0]); });
 
-  function triggerUpload(slot) {
-    activeSlot = slot; fileInput.value = ''; fileInput.click();
-  }
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0] && activeSlot) uploadImage(activeSlot, fileInput.files[0]);
-  });
-
-  // ── Upload ────────────────────────────────────────────────────
-  async function uploadImage(slot, file) {
+  // ── Stage upload (file → storage immediately, DB on publish) ──
+  async function stageUpload(slot, file) {
     if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
-    if (file.size > 30 * 1024 * 1024)   { showToast('File must be under 30 MB.', 'error'); return; }
+    if (file.size > 50 * 1024 * 1024)   { showToast('File must be under 50 MB.', 'error'); return; }
 
     const card = document.querySelector(`.slot-card[data-slot="${slot}"]`);
     card.classList.add('uploading');
     const bar = card.querySelector('.slot-progress');
-    bar.style.width = '20%';
+    bar.style.width = '30%';
 
     const ext  = file.name.split('.').pop().toLowerCase();
     const path = `${slot}/${Date.now()}.${ext}`;
-
-    if (imageData[slot]?.storage_path) {
-      await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
-    }
-    bar.style.width = '50%';
 
     const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, { upsert: true, contentType: file.type });
     if (upErr) {
       card.classList.remove('uploading'); bar.style.width = '0%';
       showToast('Upload failed: ' + upErr.message, 'error'); return;
     }
-    bar.style.width = '80%';
+    bar.style.width = '100%';
 
     const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
-    const publicUrl = urlData.publicUrl;
+    orphanPaths.push(path);
 
-    const { error: dbErr } = await sb.from('site_images').upsert({
-      slot, url: publicUrl, storage_path: path, focal_x: 50, focal_y: 50, zoom: 100,
-    }, { onConflict: 'slot' });
+    const existing = pendingUploads[slot] || imageData[slot];
+    pendingUploads[slot] = {
+      url: urlData.publicUrl,
+      storage_path: path,
+      focal_x: existing?.focal_x ?? 50,
+      focal_y: existing?.focal_y ?? 50,
+      zoom: existing?.zoom ?? 100,
+      _oldPath: imageData[slot]?.storage_path || null,
+    };
+    delete pendingFocal[slot];
+    delete pendingRemovals[slot];
 
-    bar.style.width = '100%';
-    if (dbErr) { card.classList.remove('uploading'); bar.style.width = '0%'; showToast('DB error: ' + dbErr.message, 'error'); return; }
-
-    imageData[slot] = { url: publicUrl, storage_path: path, focal_x: 50, focal_y: 50, zoom: 100 };
-    showToast(`"${SLOT_LABELS[slot]}" uploaded.`, 'success');
-    setTimeout(() => { card.classList.remove('uploading'); bar.style.width = '0%'; card.replaceWith(makeCard(slot)); }, 400);
+    updatePublishBtn();
+    setTimeout(() => { card.classList.remove('uploading'); bar.style.width = '0%'; card.replaceWith(makeCard(slot)); }, 300);
+    showToast(`"${SLOT_LABELS[slot]}" staged — publish to go live.`, 'info');
   }
 
-  // ── Remove ────────────────────────────────────────────────────
-  async function removeImage(slot) {
-    if (!confirm(`Remove "${SLOT_LABELS[slot]}"?`)) return;
-    if (imageData[slot]?.storage_path) await sb.storage.from(BUCKET).remove([imageData[slot].storage_path]);
-    await sb.from('site_images').delete().eq('slot', slot);
-    delete imageData[slot];
+  // ── Stage removal ─────────────────────────────────────────────
+  function stageRemoval(slot) {
+    if (!confirm(`Stage "${SLOT_LABELS[slot]}" for removal? It will be deleted when you publish.`)) return;
+    const storagePath = pendingUploads[slot]?.storage_path || imageData[slot]?.storage_path;
+    pendingRemovals[slot] = { storage_path: storagePath };
+    delete pendingUploads[slot];
+    delete pendingFocal[slot];
+    updatePublishBtn();
     document.querySelector(`.slot-card[data-slot="${slot}"]`)?.replaceWith(makeCard(slot));
-    showToast(`"${SLOT_LABELS[slot]}" removed.`, 'success');
+    showToast(`"${SLOT_LABELS[slot]}" staged for removal.`, 'info');
+  }
+
+  // ── Undo a single slot ────────────────────────────────────────
+  async function undoSlot(slot) {
+    // If we uploaded a new file for this slot, remove it from storage
+    if (pendingUploads[slot]) {
+      await sb.storage.from(BUCKET).remove([pendingUploads[slot].storage_path]);
+      orphanPaths = orphanPaths.filter(p => p !== pendingUploads[slot].storage_path);
+    }
+    delete pendingUploads[slot];
+    delete pendingFocal[slot];
+    delete pendingRemovals[slot];
+    updatePublishBtn();
+    document.querySelector(`.slot-card[data-slot="${slot}"]`)?.replaceWith(makeCard(slot));
+    showToast('Change undone.', 'success');
   }
 
   // ── Focal point modal ─────────────────────────────────────────
   function openFocalModal(slot) {
-    const data = imageData[slot];
+    const data = getSlotData(slot);
     if (!data) return;
     focalSlot = slot;
     focalX    = data.focal_x ?? 50;
     focalY    = data.focal_y ?? 50;
     focalZoom = data.zoom    ?? 100;
-
     document.getElementById('focal-title').textContent = 'Set Position — ' + (SLOT_LABELS[slot] || slot);
     document.getElementById('focal-img').src = data.url;
-    document.getElementById('focal-zoom').value   = focalZoom;
+    document.getElementById('focal-zoom').value = focalZoom;
     document.getElementById('focal-zoom-val').textContent = focalZoom + '%';
     updateFocalCross();
     document.getElementById('focal-modal').classList.add('open');
   }
 
-  function closeFocalModal() {
-    document.getElementById('focal-modal').classList.remove('open');
-    focalSlot = null;
-  }
+  function closeFocalModal() { document.getElementById('focal-modal').classList.remove('open'); focalSlot = null; }
 
   function focalClick(e) {
     const wrap = document.getElementById('focal-img-wrap');
     const rect = wrap.getBoundingClientRect();
-    focalX = Math.round(((e.clientX - rect.left) / rect.width)  * 100);
-    focalY = Math.round(((e.clientY - rect.top)  / rect.height) * 100);
-    focalX = Math.max(0, Math.min(100, focalX));
-    focalY = Math.max(0, Math.min(100, focalY));
+    focalX = Math.max(0, Math.min(100, Math.round(((e.clientX - rect.left) / rect.width)  * 100)));
+    focalY = Math.max(0, Math.min(100, Math.round(((e.clientY - rect.top)  / rect.height) * 100)));
     updateFocalCross();
   }
 
   function updateFocalCross() {
-    const cross = document.getElementById('focal-cross');
-    const ring  = document.getElementById('focal-cross-ring');
-    cross.style.left = focalX + '%';
-    cross.style.top  = focalY + '%';
-    ring.style.left  = focalX + '%';
-    ring.style.top   = focalY + '%';
+    document.getElementById('focal-cross').style.cssText = `left:${focalX}%;top:${focalY}%`;
+    document.getElementById('focal-cross-ring').style.cssText = `left:${focalX}%;top:${focalY}%`;
     document.getElementById('focal-coords-disp').textContent = `Position: ${focalX}% / ${focalY}%`;
   }
 
@@ -789,23 +806,108 @@
     document.getElementById('focal-zoom-val').textContent = focalZoom + '%';
   }
 
-  async function saveFocalPoint() {
+  function stageFocalPoint() {
     if (!focalSlot) return;
-    const { error } = await sb.from('site_images').update({
-      focal_x: focalX, focal_y: focalY, zoom: focalZoom,
-    }).eq('slot', focalSlot);
-
-    if (error) { showToast('Save failed: ' + error.message, 'error'); return; }
-
-    imageData[focalSlot].focal_x = focalX;
-    imageData[focalSlot].focal_y = focalY;
-    imageData[focalSlot].zoom    = focalZoom;
-
-    const card = document.querySelector(`.slot-card[data-slot="${focalSlot}"]`);
-    card?.replaceWith(makeCard(focalSlot));
-    showToast('Position saved.', 'success');
+    // Merge into existing pending upload if any, else add to pendingFocal
+    if (pendingUploads[focalSlot]) {
+      pendingUploads[focalSlot].focal_x = focalX;
+      pendingUploads[focalSlot].focal_y = focalY;
+      pendingUploads[focalSlot].zoom    = focalZoom;
+    } else {
+      pendingFocal[focalSlot] = { focal_x: focalX, focal_y: focalY, zoom: focalZoom };
+    }
+    updatePublishBtn();
+    document.querySelector(`.slot-card[data-slot="${focalSlot}"]`)?.replaceWith(makeCard(focalSlot));
+    showToast('Position staged — publish to go live.', 'info');
     closeFocalModal();
   }
+
+  // ── Publish all ───────────────────────────────────────────────
+  async function publishAll() {
+    if (!isDirty()) return;
+    const btn = document.getElementById('publish-btn');
+    btn.disabled = true; btn.textContent = 'Publishing…';
+
+    try {
+      // 1. Commit uploads
+      for (const [slot, data] of Object.entries(pendingUploads)) {
+        if (data._oldPath && data._oldPath !== data.storage_path) {
+          await sb.storage.from(BUCKET).remove([data._oldPath]);
+        }
+        const { error } = await sb.from('site_images').upsert({
+          slot, url: data.url, storage_path: data.storage_path,
+          focal_x: data.focal_x, focal_y: data.focal_y, zoom: data.zoom,
+        }, { onConflict: 'slot' });
+        if (error) throw new Error(`Image save failed (${slot}): ${error.message}`);
+        orphanPaths = orphanPaths.filter(p => p !== data.storage_path);
+        imageData[slot] = { ...data };
+      }
+
+      // 2. Commit focal changes
+      for (const [slot, focal] of Object.entries(pendingFocal)) {
+        const { error } = await sb.from('site_images').update({
+          focal_x: focal.focal_x, focal_y: focal.focal_y, zoom: focal.zoom,
+        }).eq('slot', slot);
+        if (error) throw new Error(`Position save failed (${slot}): ${error.message}`);
+        if (imageData[slot]) Object.assign(imageData[slot], focal);
+      }
+
+      // 3. Commit removals
+      for (const [slot, data] of Object.entries(pendingRemovals)) {
+        if (data.storage_path) await sb.storage.from(BUCKET).remove([data.storage_path]);
+        await sb.from('site_images').delete().eq('slot', slot);
+        delete imageData[slot];
+      }
+
+      // 4. Commit hero type
+      if (pendingHeroType !== null) {
+        const { error } = await sb.from('site_settings').upsert({ key: 'hero_type', value: pendingHeroType }, { onConflict: 'key' });
+        if (error) throw new Error('Hero type save failed: ' + error.message);
+        heroType = pendingHeroType;
+      }
+
+      // Clear draft state
+      pendingUploads  = {};
+      pendingFocal    = {};
+      pendingRemovals = {};
+      pendingHeroType = null;
+      orphanPaths     = [];
+
+      updatePublishBtn();
+      highlightHeroType(heroType);
+      renderAllSections();
+      showToast('Published! Changes are now live.', 'success');
+
+    } catch(err) {
+      showToast('Publish failed: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      updatePublishBtn();
+    }
+  }
+
+  // ── Discard all ───────────────────────────────────────────────
+  async function discardAll() {
+    if (!isDirty()) return;
+    if (!confirm('Discard all staged changes? Uploaded files will be deleted from storage.')) return;
+    for (const path of orphanPaths) {
+      await sb.storage.from(BUCKET).remove([path]).catch(() => {});
+    }
+    pendingUploads  = {};
+    pendingFocal    = {};
+    pendingRemovals = {};
+    pendingHeroType = null;
+    orphanPaths     = [];
+    updatePublishBtn();
+    highlightHeroType(heroType);
+    renderAllSections();
+    showToast('All changes discarded.', 'success');
+  }
+
+  // Warn before leaving with unsaved changes
+  window.addEventListener('beforeunload', e => {
+    if (isDirty()) { e.preventDefault(); e.returnValue = ''; }
+  });
 
   // ── Toast ─────────────────────────────────────────────────────
   let toastTimer;
