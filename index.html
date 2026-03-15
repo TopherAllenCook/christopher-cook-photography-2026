@@ -22,7 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://qxdtidacdmkdueudjkiu.supabase.co" />
   <style>
     /* ─── Reset & Base ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -880,8 +881,7 @@
       .ed-explore-item3 { grid-column: 1; height: 280px; margin-top: 0; }
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <!-- GSAP loaded after paint via shared.js -->
 </head>
 <body>
 
@@ -1319,11 +1319,7 @@
 
 
   <script>
-    // ── Sticky nav on scroll ──────────────────────────────────────
-    const nav = document.getElementById('mainNav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    });
+    // Nav scroll handled by shared.js — removed duplicate
 
     // ── Hero slideshow ────────────────────────────────────────────
     const slides = document.querySelectorAll('.hero-slide');
@@ -1526,10 +1522,16 @@
       });
     }
 
-    /* ── Boot when DOM + GSAP ready ───────────────────────────── */
+    /* ── Boot: lazy-load GSAP via shared.js, IO fallback ──────── */
     window.addEventListener('load', function () {
-      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        initEditorialGSAP();
+      if (typeof loadGSAP === 'function') {
+        loadGSAP(function () {
+          if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            initEditorialGSAP();
+          } else {
+            initEditorialIO();
+          }
+        });
       } else {
         initEditorialIO();
       }

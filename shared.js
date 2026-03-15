@@ -25,20 +25,32 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   window.closeOverlay = () => overlay.classList.remove('open');
 })();
 
+// ── Supabase image transforms ─────────────────────────────────
+// Rewrites public URL to use render/image endpoint with width & quality
+function optimizedUrl(rawUrl, slot) {
+  if (!rawUrl || !rawUrl.includes('/object/public/')) return rawUrl;
+  // Determine optimal width by slot type
+  let w = 1200;
+  if (slot && (slot.includes('hero') || slot.includes('bg') || slot.includes('cta'))) w = 1920;
+  else if (slot && (slot.includes('avatar') || slot.includes('portrait'))) w = 600;
+  else if (slot && slot.includes('gallery')) w = 800;
+  // Swap /object/public/ to /render/image/public/ and add transforms
+  return rawUrl.replace('/object/public/', '/render/image/public/') + '?width=' + w + '&quality=75';
+}
+
 // ── Apply image to a background-image element ─────────────────
-// Preloads via Image() so the swap is instant — containers stay
-// visible with their CSS gradient fallback the whole time.
-function applyImage(el, url, focalX, focalY, zoom) {
+function applyImage(el, url, focalX, focalY, zoom, slot) {
   const x = focalX != null ? focalX : 50;
   const y = focalY != null ? focalY : 50;
   const z = zoom   != null ? zoom   : 100;
+  const src = optimizedUrl(url, slot);
   const img = new Image();
   img.onload = () => {
-    el.style.backgroundImage    = `url('${url}')`;
+    el.style.backgroundImage    = `url('${src}')`;
     el.style.backgroundSize     = z > 100 ? `${z}%` : 'cover';
     el.style.backgroundPosition = `${x}% ${y}%`;
   };
-  img.src = url;
+  img.src = src;
 }
 
 // ── Load images from Supabase with smart lazy loading ─────────
@@ -59,8 +71,8 @@ function loadSupabaseImages() {
     PRIORITY_SLOTS.forEach(slot => {
       if (!map[slot]) return;
       const { url, focal_x, focal_y, zoom } = map[slot];
-      document.querySelectorAll(`[data-slot="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom));
-      document.querySelectorAll(`[data-slot-dup="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom));
+      document.querySelectorAll(`[data-slot="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom, slot));
+      document.querySelectorAll(`[data-slot-dup="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom, slot));
     });
 
     // 2 — Everything else: lazy load when 800px from viewport
@@ -77,7 +89,7 @@ function loadSupabaseImages() {
         seen.add(el);
         obs.unobserve(el);
         const row = map[slot];
-        if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom);
+        if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom, slot);
       });
     }, { rootMargin: '800px 0px' }); // pre-fetch 800px before entering view
 
@@ -116,4 +128,33 @@ function initFadeIn(selector) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', loadSupabaseImages);
+// ── Lazy-load GSAP + ScrollTrigger after first paint ──────────
+function loadGSAP(callback) {
+  if (typeof gsap !== 'undefined') { callback(); return; }
+  var s1 = document.createElement('script');
+  s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+  s1.onload = function () {
+    var s2 = document.createElement('script');
+    s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js';
+    s2.onload = callback;
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s1);
+}
+
+// ── Boot: wait for async Supabase SDK then load images ────────
+function boot() {
+  if (typeof supabase !== 'undefined') {
+    loadSupabaseImages();
+  } else {
+    // SDK still loading (async) — poll briefly
+    var attempts = 0;
+    var poll = setInterval(function () {
+      attempts++;
+      if (typeof supabase !== 'undefined') { clearInterval(poll); loadSupabaseImages(); }
+      else if (attempts > 50) clearInterval(poll); // give up after 5s
+    }, 100);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', boot);
