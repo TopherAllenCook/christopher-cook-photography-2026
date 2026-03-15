@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     /* ─── Reset & Base ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1032,33 +1032,7 @@
       observer.observe(el);
     });
 
-    // ── Supabase image loader ─────────────────────────────────────
-    // Replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY with your project values
-    const SUPABASE_URL      = 'https://qxdtidacdmkdueudjkiu.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NTE1NjEsImV4cCI6MjA4OTEyNzU2MX0.Fh4uOTSXlwRAuPNGNrg02M-bbioJ0HNLl_nOfqaSg7Q';
-
-    if (!SUPABASE_URL.startsWith('YOUR')) {
-      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-      sb.from('site_images').select('slot, url').then(({ data }) => {
-        if (!data) return;
-        data.forEach(({ slot, url }) => {
-          // Primary slots
-          const el = document.querySelector(`[data-slot="${slot}"]`);
-          if (el) applyImage(el, url);
-
-          // Duplicate gallery slots for seamless loop
-          const dup = document.querySelector(`[data-slot-dup="${slot}"]`);
-          if (dup) applyImage(dup, url);
-        });
-      });
-    }
-
-    function applyImage(el, url) {
-      el.style.backgroundImage = `url('${url}')`;
-      el.style.backgroundSize   = 'cover';
-      el.style.backgroundPosition = 'center';
-    }
   </script>
+  <script src="shared.js"></script>
 </body>
 </html>
