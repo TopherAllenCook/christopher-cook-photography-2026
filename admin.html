@@ -425,13 +425,19 @@
   let activeSlot = null;
 
   // ── Login ─────────────────────────────────────────────────────
-  function doLogin() {
+  async function doLogin() {
     const email    = document.getElementById('login-email').value.trim().toLowerCase();
     const password = document.getElementById('login-password').value;
     const errEl    = document.getElementById('login-error');
     const btn      = document.getElementById('login-btn');
 
     errEl.style.display = 'none';
+
+    if (!email || !password) {
+      errEl.textContent = 'Please enter your email and password.';
+      errEl.style.display = 'block';
+      return;
+    }
 
     if (email !== ADMIN_EMAIL.toLowerCase() || password !== ADMIN_PASS) {
       errEl.textContent = 'Incorrect email or password.';
@@ -440,23 +446,43 @@
     }
 
     btn.disabled = true; btn.textContent = 'Signing in…';
-    sessionStorage.setItem('admin_auth', '1');
 
-    sb = supabase.createClient(SB_URL, SB_KEY);
+    try {
+      sb = supabase.createClient(SB_URL, SB_KEY);
+
+      // Verify Supabase is reachable
+      const { error } = await sb.from('site_images').select('slot').limit(1);
+      if (error) throw new Error('Supabase error: ' + error.message);
+
+      sessionStorage.setItem('admin_auth', '1');
+      showApp();
+    } catch (err) {
+      errEl.textContent = 'Connection failed: ' + err.message;
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  }
+
+  async function showApp() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    document.getElementById('loading').classList.add('active');
 
-    loadImages().then(() => {
-      document.getElementById('loading').classList.remove('active');
-      document.getElementById('main').style.display = 'block';
-      renderAllSections();
-    });
+    try {
+      await loadImages();
+    } catch(err) {
+      showToast('Failed to load images: ' + err.message, 'error');
+    }
+
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('main').style.display = 'block';
+    renderAllSections();
   }
 
   document.getElementById('login-btn').addEventListener('click', doLogin);
-  document.getElementById('login-password').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
+  document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
   document.getElementById('signout-btn').addEventListener('click', () => {
     sessionStorage.removeItem('admin_auth');
@@ -464,16 +490,14 @@
   });
 
   // Auto-login if session active
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('DOMContentLoaded', async () => {
     if (sessionStorage.getItem('admin_auth') === '1') {
-      sb = supabase.createClient(SB_URL, SB_KEY);
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      loadImages().then(() => {
-        document.getElementById('loading').classList.remove('active');
-        document.getElementById('main').style.display = 'block';
-        renderAllSections();
-      });
+      try {
+        sb = supabase.createClient(SB_URL, SB_KEY);
+        await showApp();
+      } catch(err) {
+        sessionStorage.removeItem('admin_auth');
+      }
     }
   });
 
