@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Batch Image Compressor</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f0f0e; color: #f0ede8; font-family: 'Segoe UI', sans-serif; padding: 40px; }
+    h1 { font-size: 18px; margin-bottom: 8px; }
+    p { font-size: 13px; color: #888; margin-bottom: 24px; }
+    #start { background: #3ecf8e; color: #0f0f0e; border: none; padding: 12px 28px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; letter-spacing: .08em; text-transform: uppercase; }
+    #start:disabled { opacity: .4; cursor: not-allowed; }
+    #log { margin-top: 24px; font-size: 12px; font-family: monospace; line-height: 1.8; max-height: 70vh; overflow-y: auto; }
+    .ok { color: #3ecf8e; } .err { color: #e05252; } .skip { color: #f5c842; } .info { color: #60a5fa; }
+    #progress { margin-top: 16px; height: 4px; background: #222; border-radius: 2px; overflow: hidden; }
+    #bar { height: 100%; background: #3ecf8e; width: 0%; transition: width .3s; }
+    #summary { margin-top: 16px; font-size: 14px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Batch Image Compressor</h1>
+  <p>Downloads every image from Supabase storage, compresses via canvas, re-uploads as optimized JPG, and updates the database URL.</p>
+  <button id="start" onclick="run()">Start Compression</button>
+  <div id="progress"><div id="bar"></div></div>
+  <div id="summary"></div>
+  <div id="log"></div>
+
+<script>
+const SB_URL = 'https://qxdtidacdmkdueudjkiu.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzU1MTU2MSwiZXhwIjoyMDg5MTI3NTYxfQ.1Cyl11ZB0A9pL7l-3kmOnvSSUY6EkKXbfOv20sGjdhs';
+const BUCKET = 'site-images';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+// Max widths by slot type
+function maxWidth(slot) {
+  if (!slot) return 1600;
+  if (slot.includes('hero') || slot.includes('bg') || slot.includes('cta')) return 2200;
+  if (slot.includes('avatar')) return 500;
+  if (slot.includes('portrait')) return 1000;
+  return 1400;
+}
+
+const QUALITY = 0.80;
+const SIZE_THRESHOLD = 500 * 1024; // skip if already under 500KB
+
+function log(msg, cls = '') {
+  const d = document.getElementById('log');
+  d.innerHTML += `<div class="${cls}">${msg}</div>`;
+  d.scrollTop = d.scrollHeight;
+}
+
+function setProgress(n, total) {
+  document.getElementById('bar').style.width = (n / total * 100) + '%';
+}
+
+function compress(imgEl, slot) {
+  return new Promise(resolve => {
+    const mw = maxWidth(slot);
+    let w = imgEl.naturalWidth, h = imgEl.naturalHeight;
+    if (w > mw) { h = Math.round(h * mw / w); w = mw; }
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(imgEl, 0, 0, w, h);
+    c.toBlob(blob => resolve(blob), 'image/jpeg', QUALITY);
+  });
+}
+
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Failed to load'));
+    img.src = url;
+  });
+}
+
+async function run() {
+  const btn = document.getElementById('start');
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+
+  // 1. Get all rows from site_images
+  const { data: rows, error } = await sb.from('site_images').select('*');
+  if (error || !rows) { log('Failed to load site_images: ' + (error?.message || 'no data'), 'err'); return; }
+
+  log(`Found ${rows.length} slots to process`, 'info');
+  let compressed = 0, skipped = 0, failed = 0;
+  let savedBytes = 0;
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    setProgress(i + 1, rows.length);
+
+    // Skip if no storage_path (shouldn't happen)
+    if (!row.storage_path) { log(`[${row.slot}] No storage_path — skipping`, 'skip'); skipped++; continue; }
+
+    // Check current file size
+    try {
+      const { data: files } = await sb.storage.from(BUCKET).list(
+        row.storage_path.includes('/') ? row.storage_path.split('/').slice(0, -1).join('/') : '',
+        { limit: 500 }
+      );
+      const fname = row.storage_path.split('/').pop();
+      const file = (files || []).find(f => f.name === fname);
+      const origSize = file?.metadata?.size || 0;
+
+      if (origSize > 0 && origSize < SIZE_THRESHOLD) {
+        log(`[${row.slot}] Already ${(origSize/1024).toFixed(0)}KB — skipping`, 'skip');
+        skipped++;
+        continue;
+      }
+
+      // Load image via canvas
+      const imgEl = await loadImage(row.url);
+      const blob = await compress(imgEl, row.slot);
+
+      if (!blob) { log(`[${row.slot}] Canvas compression failed`, 'err'); failed++; continue; }
+
+      const newSize = blob.size;
+      const saved = origSize - newSize;
+
+      // Upload compressed version to new path
+      const newPath = `${row.slot}/${Date.now()}.jpg`;
+      const { error: upErr } = await sb.storage.from(BUCKET).upload(newPath, blob, { upsert: true, contentType: 'image/jpeg' });
+      if (upErr) { log(`[${row.slot}] Upload failed: ${upErr.message}`, 'err'); failed++; continue; }
+
+      // Get new public URL
+      const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(newPath);
+
+      // Update database row
+      const { error: dbErr } = await sb.from('site_images').update({
+        url: urlData.publicUrl,
+        storage_path: newPath
+      }).eq('slot', row.slot);
+
+      if (dbErr) { log(`[${row.slot}] DB update failed: ${dbErr.message}`, 'err'); failed++; continue; }
+
+      // Delete old file
+      await sb.storage.from(BUCKET).remove([row.storage_path]).catch(() => {});
+
+      savedBytes += saved;
+      compressed++;
+      log(`[${row.slot}] ${(origSize/1024/1024).toFixed(1)}MB → ${(newSize/1024).toFixed(0)}KB (saved ${(saved/1024/1024).toFixed(1)}MB)`, 'ok');
+
+    } catch (e) {
+      log(`[${row.slot}] Error: ${e.message}`, 'err');
+      failed++;
+    }
+  }
+
+  setProgress(rows.length, rows.length);
+  const summary = `Done! Compressed: ${compressed} | Skipped: ${skipped} | Failed: ${failed} | Total saved: ${(savedBytes/1024/1024).toFixed(0)}MB`;
+  document.getElementById('summary').textContent = summary;
+  log(summary, 'info');
+  btn.textContent = 'Complete';
+}
+</script>
+</body>
+</html>
