@@ -1108,11 +1108,10 @@
 
       storageImages = [];
 
-      // Helper: get full URL (for assigning) and thumb URL (for grid preview)
+      // Helper: get full URL (used for both assigning and grid preview — transforms require Pro plan)
       function getUrls(path) {
         const { data: full } = sb.storage.from(BUCKET).getPublicUrl(path);
-        const { data: thumb } = sb.storage.from(BUCKET).getPublicUrl(path, { transform: { width: 320, quality: 65 } });
-        return { url: full.publicUrl, thumb: thumb.publicUrl };
+        return { url: full.publicUrl, thumb: full.publicUrl };
       }
 
       // Files at root (no subfolder)
