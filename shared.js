@@ -27,70 +27,98 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // ── Apply image to a background-image element ─────────────────
 function applyImage(el, url, focalX, focalY, zoom) {
-  const x = focalX != null ? focalX : 50;
-  const y = focalY != null ? focalY : 50;
-  const z = zoom   != null ? zoom   : 100;
-  const img = new Image();
-  img.onload = () => {
-    el.style.backgroundImage    = `url('${url}')`;
-    el.style.backgroundSize     = z > 100 ? `${z}%` : 'cover';
-    el.style.backgroundPosition = `${x}% ${y}%`;
-  };
-  img.src = url;
+  var x = focalX != null ? focalX : 50;
+  var y = focalY != null ? focalY : 50;
+  var z = zoom   != null ? zoom   : 100;
+  el.style.backgroundImage    = "url('" + url + "')";
+  el.style.backgroundSize     = z > 100 ? z + '%' : 'cover';
+  el.style.backgroundPosition = x + '% ' + y + '%';
 }
 
-// ── Load images from Supabase with smart lazy loading ─────────
+// ── Apply fetched image data to the page ──────────────────────
+function applyImageData(data) {
+  if (!data || !data.length) return;
+  var PRIORITY_SLOTS = ['hero-1', 'hero-2', 'hero-3'];
+  var map = {};
+  data.forEach(function (row) { map[row.slot] = row; });
+
+  // 1 — Priority: load hero images instantly
+  PRIORITY_SLOTS.forEach(function (slot) {
+    if (!map[slot]) return;
+    var r = map[slot];
+    document.querySelectorAll('[data-slot="' + slot + '"]').forEach(function (el) { applyImage(el, r.url, r.focal_x, r.focal_y, r.zoom); });
+    document.querySelectorAll('[data-slot-dup="' + slot + '"]').forEach(function (el) { applyImage(el, r.url, r.focal_x, r.focal_y, r.zoom); });
+  });
+
+  // 2 — Everything else: lazy load when 800px from viewport
+  var lazySlots = data.filter(function (r) { return PRIORITY_SLOTS.indexOf(r.slot) === -1; });
+  if (!lazySlots.length) return;
+
+  var seen = new Set();
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var el   = entry.target;
+      var slot = el.dataset.slot || el.dataset.slotDup;
+      if (!slot || seen.has(el)) return;
+      seen.add(el);
+      obs.unobserve(el);
+      var row = map[slot];
+      if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom);
+    });
+  }, { rootMargin: '800px 0px' });
+
+  lazySlots.forEach(function (r) {
+    document.querySelectorAll('[data-slot="' + r.slot + '"], [data-slot-dup="' + r.slot + '"]').forEach(function (el) { obs.observe(el); });
+  });
+}
+
+// ── Load images from Supabase (SDK or direct fetch fallback) ──
 function loadSupabaseImages() {
-  if (typeof supabase === 'undefined') return;
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Try SDK first
+  if (typeof supabase !== 'undefined') {
+    try {
+      var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      sb.from('site_images').select('slot, url, focal_x, focal_y, zoom').then(function (res) {
+        if (res.data && res.data.length) {
+          applyImageData(res.data);
+        } else {
+          loadImagesFallback();
+        }
+      }).catch(function () { loadImagesFallback(); });
 
-  // Above-fold hero slots — load immediately, no waiting
-  const PRIORITY_SLOTS = ['hero-1', 'hero-2', 'hero-3'];
+      sb.from('site_settings').select('key, value').then(function (res) {
+        if (!res.data) return;
+        var settings = {};
+        res.data.forEach(function (r) { settings[r.key] = r.value; });
+        window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
+      }).catch(function () {});
+      return;
+    } catch (e) { /* fall through to fetch fallback */ }
+  }
+  loadImagesFallback();
+}
 
-  sb.from('site_images').select('slot, url, focal_x, focal_y, zoom').then(({ data }) => {
-    if (!data) return;
+// ── Direct fetch fallback (no SDK needed) ─────────────────────
+function loadImagesFallback() {
+  fetch(SUPABASE_URL + '/rest/v1/site_images?select=slot,url,focal_x,focal_y,zoom', {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (data) { applyImageData(data); })
+  .catch(function (e) { console.error('Image load failed:', e); });
 
-    const map = {};
-    data.forEach(row => { map[row.slot] = row; });
-
-    // 1 — Priority: load hero images instantly (no IntersectionObserver)
-    PRIORITY_SLOTS.forEach(slot => {
-      if (!map[slot]) return;
-      const { url, focal_x, focal_y, zoom } = map[slot];
-      document.querySelectorAll(`[data-slot="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom));
-      document.querySelectorAll(`[data-slot-dup="${slot}"]`).forEach(el => applyImage(el, url, focal_x, focal_y, zoom));
-    });
-
-    // 2 — Everything else: lazy load when 800px from viewport
-    const lazySlots = data.filter(r => !PRIORITY_SLOTS.includes(r.slot));
-    if (!lazySlots.length) return;
-
-    const seen = new Set();
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const el   = entry.target;
-        const slot = el.dataset.slot || el.dataset.slotDup;
-        if (!slot || seen.has(el)) return;
-        seen.add(el);
-        obs.unobserve(el);
-        const row = map[slot];
-        if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom);
-      });
-    }, { rootMargin: '800px 0px' }); // pre-fetch 800px before entering view
-
-    lazySlots.forEach(({ slot }) => {
-      document.querySelectorAll(`[data-slot="${slot}"], [data-slot-dup="${slot}"]`).forEach(el => obs.observe(el));
-    });
-  });
-
-  // Site settings (hero type etc.)
-  sb.from('site_settings').select('key, value').then(({ data }) => {
-    if (!data) return;
-    const settings = {};
-    data.forEach(({ key, value }) => { settings[key] = value; });
+  fetch(SUPABASE_URL + '/rest/v1/site_settings?select=key,value', {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (data) {
+    if (!data || !data.length) return;
+    var settings = {};
+    data.forEach(function (r) { settings[r.key] = r.value; });
     window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
-  });
+  })
+  .catch(function () {});
 }
 
 // ── Scroll fade-in ────────────────────────────────────────────
@@ -133,12 +161,11 @@ function boot() {
   if (typeof supabase !== 'undefined') {
     loadSupabaseImages();
   } else {
-    // SDK still loading (async) — poll briefly
     var attempts = 0;
     var poll = setInterval(function () {
       attempts++;
       if (typeof supabase !== 'undefined') { clearInterval(poll); loadSupabaseImages(); }
-      else if (attempts > 50) clearInterval(poll); // give up after 5s
+      else if (attempts > 30) { clearInterval(poll); loadImagesFallback(); } // fallback after 3s
     }, 100);
   }
 }
