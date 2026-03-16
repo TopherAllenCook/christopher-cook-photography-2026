@@ -493,6 +493,10 @@
     .ql-editor.ql-blank::before { color: var(--fg-mid); opacity: .4; font-style: italic; }
 
     /* ── Copy/Text Editing ─────────────────────────────────────── */
+    .copy-section-wrap {
+      margin-bottom: 48px; padding-bottom: 32px;
+      border-bottom: 2px solid var(--accent);
+    }
     .copy-section-header {
       display: flex; align-items: center; gap: 12px;
       margin-top: 48px; margin-bottom: 24px; padding-bottom: 12px;
@@ -1060,13 +1064,22 @@
       container.innerHTML = '';
       (SLOTS[section] || []).forEach(slot => container.appendChild(makeCard(slot)));
     });
-    // Render copy/text fields for this tab
-    const panel = document.getElementById('panel-' + tab);
-    if (panel && COPY_SLOTS[tab]) {
-      // Remove any existing copy section
-      panel.querySelectorAll('.copy-section-header, .copy-group').forEach(el => el.remove());
-      const main = panel.querySelector('.main');
-      if (main) renderCopySection(tab, main);
+    // Render copy/text fields for this tab — BEFORE image sections
+    try {
+      const panel = document.getElementById('panel-' + tab);
+      if (panel && COPY_SLOTS[tab]) {
+        panel.querySelectorAll('.copy-section-wrap').forEach(el => el.remove());
+        const main = panel.querySelector('.main');
+        if (main) {
+          // Insert copy section at the TOP of .main, before image slots
+          const copyContainer = document.createElement('div');
+          copyContainer.className = 'copy-section-wrap';
+          renderCopySection(tab, copyContainer);
+          main.insertBefore(copyContainer, main.firstChild);
+        }
+      }
+    } catch (e) {
+      console.error('Copy section render error:', e);
     }
     renderedTabs.add(tab);
   }
@@ -1127,9 +1140,15 @@
   }
 
   async function loadContent() {
-    const { data } = await sb.from('site_content').select('*');
-    contentData = {};
-    (data || []).forEach(row => { contentData[row.slot] = row; });
+    try {
+      const { data, error } = await sb.from('site_content').select('*');
+      if (error) console.warn('loadContent error:', error.message);
+      contentData = {};
+      (data || []).forEach(row => { contentData[row.slot] = row; });
+    } catch (e) {
+      console.warn('loadContent failed:', e);
+      contentData = {};
+    }
   }
 
   // ── Pending state ───────────────────────────────────────────────
@@ -1228,12 +1247,19 @@
         (SLOTS[section] || []).forEach(slot => container.appendChild(makeCard(slot)));
       });
       // Re-render copy fields
-      const panel = document.getElementById('panel-' + tab);
-      if (panel && COPY_SLOTS[tab]) {
-        panel.querySelectorAll('.copy-section-header, .copy-group').forEach(el => el.remove());
-        const main = panel.querySelector('.main');
-        if (main) renderCopySection(tab, main);
-      }
+      try {
+        const panel = document.getElementById('panel-' + tab);
+        if (panel && COPY_SLOTS[tab]) {
+          panel.querySelectorAll('.copy-section-wrap').forEach(el => el.remove());
+          const main = panel.querySelector('.main');
+          if (main) {
+            const copyContainer = document.createElement('div');
+            copyContainer.className = 'copy-section-wrap';
+            renderCopySection(tab, copyContainer);
+            main.insertBefore(copyContainer, main.firstChild);
+          }
+        }
+      } catch (e) { console.error('Copy re-render error:', e); }
     });
   }
 
