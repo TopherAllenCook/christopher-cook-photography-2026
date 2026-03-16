@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Journal — Christopher Cook Photography</title>
+  <meta name="description" id="page-desc" content="Stories and insights from Christopher Cook Photography." />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Christopher Cook Photography" />
+  <meta property="og:title" id="og-title" content="Journal — Christopher Cook Photography" />
+  <meta property="og:description" id="og-desc" content="" />
+  <meta property="og:image" id="og-image" content="https://christophercook.co/og-image.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://qxdtidacdmkdueudjkiu.supabase.co" />
+  <style>
+    /* ─── Post Hero ──────────────────────────────────────────── */
+    .post-hero {
+      position: relative; min-height: 480px;
+      display: flex; align-items: flex-end; justify-content: center;
+      color: var(--cream); overflow: hidden;
+      background: linear-gradient(135deg, #1a1512 0%, #2a2018 50%, #1a1512 100%);
+    }
+    .post-hero-img {
+      position: absolute; inset: 0; background-size: cover; background-position: center;
+    }
+    .post-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,7,7,.7) 0%, rgba(7,7,7,.2) 50%, rgba(7,7,7,.3) 100%); }
+    .post-hero-content {
+      position: relative; z-index: 2; max-width: 800px; padding: 120px 40px 60px;
+      text-align: center; width: 100%;
+    }
+    .post-hero-date {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 20px;
+    }
+    .post-hero-title {
+      font-family: var(--serif); font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300; line-height: 1.15;
+    }
+    .post-hero-title em { font-style: italic; }
+
+    /* ─── Post Body ──────────────────────────────────────────── */
+    .post-body-wrap {
+      max-width: 740px; margin: 0 auto; padding: 64px 40px 80px;
+    }
+    .post-excerpt {
+      font-family: var(--serif); font-size: 20px; font-weight: 300;
+      font-style: italic; line-height: 1.7; color: var(--page-fg-mid);
+      margin-bottom: 40px; padding-bottom: 40px;
+      border-bottom: 1px solid var(--page-border);
+    }
+    .post-content {
+      font-size: 16px; line-height: 1.85; font-weight: 300;
+      color: var(--page-fg);
+    }
+    .post-content h2 {
+      font-family: var(--serif); font-size: 28px; font-weight: 300;
+      margin: 48px 0 20px; line-height: 1.3;
+    }
+    .post-content h3 {
+      font-family: var(--serif); font-size: 22px; font-weight: 400;
+      margin: 36px 0 16px; line-height: 1.3;
+    }
+    .post-content p { margin-bottom: 24px; }
+    .post-content blockquote {
+      font-family: var(--serif); font-size: 20px; font-style: italic;
+      font-weight: 300; line-height: 1.7; color: var(--page-fg-mid);
+      border-left: 3px solid var(--accent); padding-left: 24px;
+      margin: 32px 0;
+    }
+    .post-content img {
+      width: 100%; height: auto; border-radius: 4px;
+      margin: 32px 0;
+    }
+    .post-content a { color: var(--accent); border-bottom: 1px solid var(--accent); }
+    .post-content ul, .post-content ol {
+      margin: 16px 0 24px 24px;
+    }
+    .post-content li { margin-bottom: 8px; }
+
+    /* Tags */
+    .post-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 48px; padding-top: 32px;
+      border-top: 1px solid var(--page-border);
+    }
+    .post-tag {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .15em;
+      text-transform: uppercase; font-weight: 500;
+      padding: 6px 16px; border: 1px solid var(--page-border);
+      border-radius: 20px; color: var(--page-fg-mid);
+    }
+
+    /* Back link */
+    .post-back {
+      max-width: 740px; margin: 0 auto; padding: 0 40px 60px;
+    }
+    .post-back a {
+      font-family: var(--sans); font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent);
+    }
+    .post-back a:hover { opacity: .7; }
+
+    /* Loading / Error */
+    .post-loading {
+      text-align: center; padding: 160px 40px; font-family: var(--serif);
+      font-size: 24px; color: var(--page-fg-mid); font-weight: 300; font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .nav-inquire { display: none; }
+      .nav-hamburger { display: flex; }
+      .post-body-wrap { padding: 48px 20px 60px; }
+      .post-back { padding: 0 20px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═══════════════════════════════════════════════════ -->
+  <nav class="nav" id="mainNav">
+    <a href="index.html" class="nav-logo">Christopher Cook</a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="journal.html" class="active">Journal</a></li>
+    </ul>
+    <a href="contact.html" class="nav-inquire">Inquire</a>
+    <div class="nav-hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Overlay -->
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-overlay-close" id="overlayClose">✕</button>
+    <ul class="nav-overlay-links">
+      <li><a href="about.html" onclick="closeOverlay()">About</a></li>
+      <li><a href="portfolio.html" onclick="closeOverlay()">Portfolio</a></li>
+      <li><a href="services.html" onclick="closeOverlay()">Services</a></li>
+      <li><a href="experience.html" onclick="closeOverlay()">Experience</a></li>
+      <li><a href="journal.html" onclick="closeOverlay()">Journal</a></li>
+      <li><a href="contact.html" onclick="closeOverlay()">Inquire</a></li>
+    </ul>
+  </div>
+
+  <div id="post-container">
+    <div class="post-loading">Loading…</div>
+  </div>
+
+  <!-- ═══ FOOTER ═════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Christopher Cook Photography</p>
+        <p class="footer-tagline">"Timeless imagery that feels effortless today and iconic forever."</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/christophercook.co" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.pinterest.com/christophercookco" target="_blank" rel="noopener">Pinterest</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Navigate</p>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="experience.html">Experience</a></li>
+          <li><a href="journal.html">Journal</a></li>
+          <li><a href="contact.html">Inquire</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Explore</p>
+        <ul>
+          <li><a href="experience.html">The Experience</a></li>
+          <li><a href="portfolio.html">The Work</a></li>
+          <li><a href="services.html">Investment</a></li>
+          <li><a href="about.html">The Photographer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-col-contact">
+        <p class="footer-col-title">Contact</p>
+        <p>Park City, Utah<br />Destinations Worldwide</p>
+        <p>hello@christophercook.co</p>
+        <a href="contact.html" class="btn btn-dark" style="display:inline-block;font-size:10px;padding:12px 28px;margin-top:8px;">Inquire Now</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Christopher Allen Luxury Productions LLC · Utah Wedding Photographer</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    const SB_URL = 'https://qxdtidacdmkdueudjkiu.supabase.co';
+    const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NTE1NjEsImV4cCI6MjA4OTEyNzU2MX0.Fh4uOTSXlwRAuPNGNrg02M-bbioJ0HNLl_nOfqaSg7Q';
+
+    function getSlug() {
+      // Try clean URL: /journal/my-slug
+      var parts = window.location.pathname.split('/journal/');
+      if (parts.length > 1 && parts[1]) return parts[1].replace(/\/$/, '');
+      // Fallback: ?slug=my-slug
+      var params = new URLSearchParams(window.location.search);
+      return params.get('slug');
+    }
+
+    async function loadPost() {
+      var slug = getSlug();
+      if (!slug) { show404(); return; }
+      try {
+        var res = await fetch(SB_URL + '/rest/v1/blog_posts?select=*&slug=eq.' + encodeURIComponent(slug) + '&status=eq.published&limit=1', {
+          headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+        });
+        var posts = await res.json();
+        if (!posts || !posts.length) { show404(); return; }
+        renderPost(posts[0]);
+      } catch (e) {
+        show404();
+      }
+    }
+
+    function renderPost(post) {
+      // Update meta tags
+      var title = (post.meta_title || post.title) + ' — Christopher Cook Photography';
+      document.getElementById('page-title').textContent = title;
+      document.getElementById('og-title').setAttribute('content', title);
+      var desc = post.meta_description || post.excerpt || '';
+      document.getElementById('page-desc').setAttribute('content', desc);
+      document.getElementById('og-desc').setAttribute('content', desc);
+      if (post.featured_image_url) {
+        document.getElementById('og-image').setAttribute('content', post.featured_image_url);
+      }
+
+      var date = new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      var tagsHtml = (post.tags || []).map(function(t) { return '<span class="post-tag">' + t + '</span>'; }).join('');
+
+      document.getElementById('post-container').innerHTML = `
+        <section class="post-hero">
+          ${post.featured_image_url ? `<div class="post-hero-img" style="background-image:url('${post.featured_image_url}')"></div>` : ''}
+          <div class="post-hero-overlay"></div>
+          <div class="post-hero-content">
+            <p class="post-hero-date">${date}</p>
+            <h1 class="post-hero-title">${post.title}</h1>
+          </div>
+        </section>
+        <article class="post-body-wrap">
+          ${post.excerpt ? `<p class="post-excerpt">${post.excerpt}</p>` : ''}
+          <div class="post-content">${post.body}</div>
+          ${tagsHtml ? `<div class="post-tags">${tagsHtml}</div>` : ''}
+        </article>
+        <div class="post-back">
+          <a href="journal.html">← Back to Journal</a>
+        </div>
+      `;
+    }
+
+    function show404() {
+      document.getElementById('post-container').innerHTML = `
+        <div class="post-loading">
+          Post not found.<br />
+          <a href="journal.html" style="color:var(--accent);font-size:14px;margin-top:20px;display:inline-block;">← Back to Journal</a>
+        </div>
+      `;
+    }
+
+    loadPost();
+  </script>
+</body>
+</html>

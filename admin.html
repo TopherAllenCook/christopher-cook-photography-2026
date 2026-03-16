@@ -350,6 +350,202 @@
     #toast.error   { border-left: 3px solid var(--red); }
     #toast.info    { border-left: 3px solid var(--yellow); }
 
+    /* ── Journal / Blog ───────────────────────────────────────── */
+    .journal-toolbar {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
+    }
+    .journal-toolbar-title { font-size: 14px; font-weight: 600; letter-spacing: .06em; margin-bottom: 4px; }
+    .journal-toolbar-sub { font-size: 12px; color: var(--fg-mid); }
+    .journal-filters { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+    .journal-filter {
+      font-family: var(--sans); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+      padding: 8px 16px; cursor: pointer; background: var(--surface); color: var(--fg-mid);
+      border: none; border-right: 1px solid var(--border); transition: all .2s;
+    }
+    .journal-filter:last-child { border-right: none; }
+    .journal-filter:hover { color: var(--fg); }
+    .journal-filter.active { background: var(--accent); color: #fff; }
+    .btn-new-post {
+      font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; padding: 10px 24px; border-radius: 3px; cursor: pointer;
+      background: var(--accent); color: #fff; border: none; transition: opacity .2s;
+    }
+    .btn-new-post:hover { opacity: .85; }
+    .journal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+    .journal-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+      overflow: hidden; transition: border-color .2s, transform .15s; cursor: pointer;
+    }
+    .journal-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .journal-card-img { width: 100%; aspect-ratio: 16/9; background: #1a1a18; overflow: hidden; }
+    .journal-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+    .journal-card:hover .journal-card-img img { transform: scale(1.04); }
+    .journal-card-body { padding: 16px; }
+    .journal-card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+    .journal-card-excerpt { font-size: 12px; color: var(--fg-mid); line-height: 1.5; margin-bottom: 10px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .journal-card-meta { display: flex; align-items: center; justify-content: space-between; }
+    .journal-card-date { font-size: 11px; color: var(--fg-mid); }
+    .journal-card-status {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;
+      padding: 3px 8px; border-radius: 10px;
+    }
+    .journal-card-status.draft { background: rgba(245,200,66,.12); color: var(--yellow); }
+    .journal-card-status.published { background: rgba(62,207,142,.12); color: var(--green); }
+    .journal-empty { text-align: center; padding: 80px 20px; color: var(--fg-mid); font-size: 13px; }
+
+    /* Editor */
+    .editor-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
+    }
+    .editor-back {
+      font-family: var(--sans); font-size: 12px; color: var(--fg-mid); background: none;
+      border: 1px solid var(--border); padding: 8px 18px; border-radius: 3px;
+      cursor: pointer; transition: color .2s; letter-spacing: .04em;
+    }
+    .editor-back:hover { color: var(--fg); border-color: var(--fg-mid); }
+    .editor-actions { display: flex; align-items: center; gap: 10px; }
+    .autosave-indicator { font-size: 11px; color: var(--fg-mid); opacity: .6; }
+    .btn-save-draft {
+      font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 9px 20px; border-radius: 3px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--fg-mid); transition: all .2s;
+    }
+    .btn-save-draft:hover { color: var(--fg); border-color: var(--fg-mid); }
+    .btn-publish-post {
+      font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; padding: 9px 20px; border-radius: 3px; cursor: pointer;
+      background: var(--green); color: #0f0f0e; border: none; transition: opacity .2s;
+    }
+    .btn-publish-post:hover { opacity: .85; }
+    .btn-delete-post {
+      font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 9px 16px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(224,82,82,.3); background: rgba(224,82,82,.08); color: var(--red); transition: opacity .2s;
+    }
+    .btn-delete-post:hover { opacity: .7; }
+    .editor-body { max-width: 860px; }
+    .editor-title {
+      width: 100%; background: none; border: none; color: var(--fg);
+      font-family: var(--serif); font-size: 36px; font-weight: 300; font-style: italic;
+      padding: 0 0 12px; outline: none; border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .editor-slug-row {
+      display: flex; align-items: center; gap: 4px; margin-bottom: 20px;
+    }
+    .editor-slug-prefix { font-size: 12px; color: var(--fg-mid); }
+    .editor-slug {
+      background: none; border: none; border-bottom: 1px solid var(--border);
+      color: var(--accent); font-size: 12px; font-family: var(--sans);
+      padding: 4px 0; outline: none; flex: 1; max-width: 300px;
+    }
+    .editor-excerpt {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 13px;
+      padding: 10px 14px; border-radius: 3px; outline: none;
+      margin-bottom: 20px; resize: vertical; line-height: 1.5;
+    }
+    .editor-excerpt:focus { border-color: var(--accent); }
+    .editor-label {
+      display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--fg-mid); margin-bottom: 6px; font-weight: 500;
+    }
+    .editor-meta-row {
+      display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .editor-featured-wrap { width: 240px; flex-shrink: 0; }
+    .editor-featured-preview {
+      width: 100%; aspect-ratio: 16/9; background: var(--surface); border: 1px dashed var(--border);
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; overflow: hidden; transition: border-color .2s; color: var(--fg-mid); font-size: 12px;
+    }
+    .editor-featured-preview:hover { border-color: var(--accent); }
+    .editor-featured-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .editor-tags {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 13px;
+      padding: 10px 14px; border-radius: 3px; outline: none;
+    }
+    .editor-tags:focus { border-color: var(--accent); }
+    .editor-seo-toggle {
+      font-size: 12px; color: var(--fg-mid); cursor: pointer; user-select: none;
+    }
+    .editor-seo-toggle:hover { color: var(--fg); }
+    .editor-seo-toggle .chevron { font-size: 10px; display: inline-block; transition: transform .2s; }
+    .editor-meta-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 12px;
+      padding: 8px 12px; border-radius: 3px; outline: none; resize: vertical;
+    }
+    .editor-meta-input:focus { border-color: var(--accent); }
+    #quill-editor { background: var(--bg); border: 1px solid var(--border); border-radius: 0 0 3px 3px; min-height: 400px; color: var(--fg); font-size: 15px; line-height: 1.7; }
+    .ql-toolbar.ql-snow { background: var(--surface); border: 1px solid var(--border); border-radius: 3px 3px 0 0; }
+    .ql-snow .ql-stroke { stroke: var(--fg-mid); }
+    .ql-snow .ql-fill { fill: var(--fg-mid); }
+    .ql-snow .ql-picker-label { color: var(--fg-mid); }
+    .ql-snow .ql-picker-options { background: var(--surface); border-color: var(--border); }
+    .ql-snow .ql-active .ql-stroke { stroke: var(--accent); }
+    .ql-snow .ql-active .ql-fill { fill: var(--accent); }
+    .ql-snow .ql-active { color: var(--accent); }
+    .ql-editor.ql-blank::before { color: var(--fg-mid); opacity: .4; font-style: italic; }
+
+    /* ── Copy/Text Editing ─────────────────────────────────────── */
+    .copy-section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 48px; margin-bottom: 24px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .copy-section-header h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .copy-section-header .copy-count {
+      font-size: 11px; color: var(--fg-mid); font-weight: 400;
+    }
+    .copy-group {
+      margin-bottom: 32px;
+    }
+    .copy-group-toggle {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      background: none; border: none; color: var(--fg); font-family: var(--sans);
+      font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      padding: 8px 0; margin-bottom: 12px; width: 100%;
+    }
+    .copy-group-toggle:hover { color: var(--accent); }
+    .copy-group-toggle .chevron {
+      display: inline-block; transition: transform .2s; font-size: 10px; color: var(--fg-mid);
+    }
+    .copy-group-toggle .chevron.open { transform: rotate(90deg); }
+    .copy-group-body { display: grid; gap: 16px; }
+    .copy-group-body.collapsed { display: none; }
+    .copy-field {
+      position: relative; padding-left: 14px;
+      border-left: 3px solid transparent; transition: border-color .2s;
+    }
+    .copy-field.pending { border-left-color: var(--yellow); }
+    .copy-field label {
+      display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--fg-mid); margin-bottom: 6px; font-weight: 500;
+    }
+    .copy-field input[type="text"],
+    .copy-field textarea {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--fg); font-family: var(--sans); font-size: 13px;
+      padding: 10px 14px; border-radius: 3px; outline: none;
+      transition: border-color .2s; line-height: 1.5;
+    }
+    .copy-field input[type="text"]:focus,
+    .copy-field textarea:focus { border-color: var(--accent); }
+    .copy-field textarea { resize: vertical; min-height: 60px; }
+    .copy-field textarea.html-field { min-height: 100px; font-size: 12px; }
+    .copy-field .char-count {
+      position: absolute; right: 4px; bottom: 4px;
+      font-size: 10px; color: var(--fg-mid); opacity: .6;
+    }
+
     @media (max-width: 768px) {
       .topbar, .tab-nav { padding-left: 20px; padding-right: 20px; }
       .main { padding: 32px 20px; }
@@ -405,6 +601,7 @@
     <button class="tab-btn" onclick="showTab('services')">Services</button>
     <button class="tab-btn" onclick="showTab('experience')">Experience</button>
     <button class="tab-btn" onclick="showTab('contact')">Contact</button>
+    <button class="tab-btn" onclick="showTab('journal')">✏️ Journal</button>
     <button class="tab-btn" onclick="showTab('storage')">📷 Storage</button>
   </div>
 
@@ -601,6 +798,77 @@
     </div>
   </div>
 
+  <!-- ── Journal Tab ──────────────────────────────────────────── -->
+  <div class="tab-panel" id="panel-journal">
+    <div class="main">
+      <!-- Post list view -->
+      <div id="journal-list">
+        <div class="journal-toolbar">
+          <div>
+            <h2 class="journal-toolbar-title">Blog Posts</h2>
+            <p class="journal-toolbar-sub" id="journal-count">Loading…</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div class="journal-filters" id="journal-filters">
+              <button class="journal-filter active" data-filter="all" onclick="filterPosts('all')">All</button>
+              <button class="journal-filter" data-filter="published" onclick="filterPosts('published')">Published</button>
+              <button class="journal-filter" data-filter="draft" onclick="filterPosts('draft')">Drafts</button>
+            </div>
+            <button class="btn-new-post" onclick="openPostEditor()">+ New Post</button>
+          </div>
+        </div>
+        <div id="journal-grid" class="journal-grid"></div>
+      </div>
+      <!-- Post editor view (hidden by default) -->
+      <div id="journal-editor" style="display:none;">
+        <div class="editor-topbar">
+          <button class="editor-back" onclick="closePostEditor()">← Back to Posts</button>
+          <div class="editor-actions">
+            <span class="autosave-indicator" id="autosave-indicator"></span>
+            <button class="btn-save-draft" id="btn-save-draft" onclick="savePost('draft')">Save Draft</button>
+            <button class="btn-publish-post" id="btn-publish-post" onclick="savePost('published')">Publish</button>
+            <button class="btn-delete-post" id="btn-delete-post" onclick="deletePost()" style="display:none;">Delete</button>
+          </div>
+        </div>
+        <div class="editor-body">
+          <input type="text" class="editor-title" id="editor-title" placeholder="Post title…" oninput="onTitleInput()" />
+          <div class="editor-slug-row">
+            <span class="editor-slug-prefix">/journal/</span>
+            <input type="text" class="editor-slug" id="editor-slug" placeholder="post-slug" />
+          </div>
+          <textarea class="editor-excerpt" id="editor-excerpt" placeholder="Write a short excerpt…" rows="2"></textarea>
+          <div class="editor-meta-row">
+            <div class="editor-featured-wrap">
+              <label class="editor-label">Featured Image</label>
+              <div class="editor-featured-preview" id="editor-featured-preview" onclick="pickFeaturedImage()">
+                <span id="featured-img-text">Click to upload</span>
+                <img id="featured-img-preview" src="" alt="" style="display:none;" />
+              </div>
+              <input type="file" id="featured-img-input" accept="image/*" style="display:none;" onchange="handleFeaturedImage()" />
+            </div>
+            <div style="flex:1;">
+              <div style="margin-bottom:16px;">
+                <label class="editor-label">Tags (comma separated)</label>
+                <input type="text" class="editor-tags" id="editor-tags" placeholder="wedding, editorial, destination" />
+              </div>
+              <div class="editor-seo-toggle" onclick="toggleSeo()">
+                <span class="chevron" id="seo-chevron">▶</span> SEO Settings
+              </div>
+              <div id="editor-seo" style="display:none;margin-top:12px;">
+                <label class="editor-label">Meta Title</label>
+                <input type="text" class="editor-meta-input" id="editor-meta-title" placeholder="Custom SEO title (optional)" />
+                <label class="editor-label" style="margin-top:10px;">Meta Description</label>
+                <textarea class="editor-meta-input" id="editor-meta-desc" placeholder="Custom SEO description (optional)" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+          <label class="editor-label">Body</label>
+          <div id="quill-editor"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Storage Tab ──────────────────────────────────────────── -->
   <div class="tab-panel" id="panel-storage">
     <div class="main">
@@ -750,6 +1018,8 @@
   let pendingRemovals = {};
   let pendingHeroType = null;
   let orphanPaths     = [];
+  let contentData     = {};   // DB copy: { slot: { value, page, field_type } }
+  let pendingContent  = {};   // Staged:  { slot: newValue }
   let activeTab       = 'settings';
   const renderedTabs  = new Set();
 
@@ -775,7 +1045,7 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + tab).classList.add('active');
     const btns = document.querySelectorAll('.tab-btn');
-    const tabNames = ['settings','homepage','about','portfolio','services','experience','contact','storage'];
+    const tabNames = ['settings','homepage','about','portfolio','services','experience','contact','journal','storage'];
     const idx = tabNames.indexOf(tab);
     if (idx !== -1) btns[idx].classList.add('active');
     activeTab = tab;
@@ -790,6 +1060,14 @@
       container.innerHTML = '';
       (SLOTS[section] || []).forEach(slot => container.appendChild(makeCard(slot)));
     });
+    // Render copy/text fields for this tab
+    const panel = document.getElementById('panel-' + tab);
+    if (panel && COPY_SLOTS[tab]) {
+      // Remove any existing copy section
+      panel.querySelectorAll('.copy-section-header, .copy-group').forEach(el => el.remove());
+      const main = panel.querySelector('.main');
+      if (main) renderCopySection(tab, main);
+    }
     renderedTabs.add(tab);
   }
 
@@ -821,6 +1099,7 @@
     document.getElementById('app').style.display = 'block';
     await loadImages();
     await loadSiteSettings();
+    await loadContent();
     document.getElementById('loading').classList.remove('active');
     document.querySelectorAll('.tab-panel').forEach(p => {
       if (p.id !== 'panel-settings') p.style.display = '';
@@ -847,17 +1126,24 @@
     (data || []).forEach(({ key, value }) => { if (key === 'hero_type') heroType = value; });
   }
 
+  async function loadContent() {
+    const { data } = await sb.from('site_content').select('*');
+    contentData = {};
+    (data || []).forEach(row => { contentData[row.slot] = row; });
+  }
+
   // ── Pending state ───────────────────────────────────────────────
   function isDirty() {
     return Object.keys(pendingUploads).length > 0 ||
            Object.keys(pendingFocal).length > 0    ||
            Object.keys(pendingRemovals).length > 0 ||
-           pendingHeroType !== null;
+           pendingHeroType !== null ||
+           Object.keys(pendingContent).length > 0;
   }
 
   function pendingCount() {
     const slots = new Set([...Object.keys(pendingUploads), ...Object.keys(pendingFocal), ...Object.keys(pendingRemovals)]);
-    return slots.size + (pendingHeroType !== null ? 1 : 0);
+    return slots.size + (pendingHeroType !== null ? 1 : 0) + Object.keys(pendingContent).length;
   }
 
   function updatePublishBtn() {
@@ -891,7 +1177,7 @@
       experience:['experience-top','experience-feel','experience-process'],
       contact:  ['contact'],
     };
-    const btnOrder = ['settings','homepage','about','portfolio','services','experience','contact','storage'];
+    const btnOrder = ['settings','homepage','about','portfolio','services','experience','contact','journal','storage'];
     const btns = document.querySelectorAll('.tab-btn');
     Object.entries(tabSlotGroups).forEach(([tab, groups]) => {
       const allSlotsInTab = groups.flatMap(g => SLOTS[g] || []);
@@ -941,6 +1227,13 @@
         container.innerHTML = '';
         (SLOTS[section] || []).forEach(slot => container.appendChild(makeCard(slot)));
       });
+      // Re-render copy fields
+      const panel = document.getElementById('panel-' + tab);
+      if (panel && COPY_SLOTS[tab]) {
+        panel.querySelectorAll('.copy-section-header, .copy-group').forEach(el => el.remove());
+        const main = panel.querySelector('.main');
+        if (main) renderCopySection(tab, main);
+      }
     });
   }
 
@@ -1013,6 +1306,381 @@
       if (file) stageUpload(slot, file);
     });
     return card;
+  }
+
+  // ── Copy slot definitions ───────────────────────────────────────
+  const COPY_SLOTS = {
+    homepage: [
+      // Hero
+      { slot: 'home-hero-eyebrow', label: 'Hero Eyebrow', type: 'short', group: 'Hero' },
+      { slot: 'home-hero-title', label: 'Hero Title', type: 'short', group: 'Hero' },
+      { slot: 'home-hero-sub', label: 'Hero Subtitle', type: 'short', group: 'Hero' },
+      { slot: 'home-hero-btn', label: 'Hero Button Text', type: 'short', group: 'Hero' },
+      // Intro
+      { slot: 'home-intro-label', label: 'Intro Label', type: 'short', group: 'Intro' },
+      { slot: 'home-intro-heading', label: 'Intro Heading', type: 'short', group: 'Intro' },
+      { slot: 'home-intro-body1', label: 'Intro Paragraph 1', type: 'long', group: 'Intro' },
+      { slot: 'home-intro-body2', label: 'Intro Paragraph 2', type: 'long', group: 'Intro' },
+      { slot: 'home-intro-btn', label: 'Intro Button Text', type: 'short', group: 'Intro' },
+      // Gallery Strip
+      { slot: 'home-gallery-label', label: 'Gallery Label', type: 'short', group: 'Gallery Strip' },
+      // Experience Preview
+      { slot: 'home-exp-label', label: 'Section Label', type: 'short', group: 'Experience Preview' },
+      { slot: 'home-exp-heading', label: 'Section Heading', type: 'short', group: 'Experience Preview' },
+      { slot: 'home-exp-btn', label: 'Experience Button', type: 'short', group: 'Experience Preview' },
+      { slot: 'home-exp-pillar1-title', label: 'Pillar 1 Title', type: 'short', group: 'Experience Preview' },
+      { slot: 'home-exp-pillar1-body', label: 'Pillar 1 Body', type: 'long', group: 'Experience Preview' },
+      { slot: 'home-exp-pillar2-title', label: 'Pillar 2 Title', type: 'short', group: 'Experience Preview' },
+      { slot: 'home-exp-pillar2-body', label: 'Pillar 2 Body', type: 'long', group: 'Experience Preview' },
+      { slot: 'home-exp-pillar3-title', label: 'Pillar 3 Title', type: 'short', group: 'Experience Preview' },
+      { slot: 'home-exp-pillar3-body', label: 'Pillar 3 Body', type: 'long', group: 'Experience Preview' },
+      // Portfolio
+      { slot: 'home-portfolio-label', label: 'Section Label', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-heading', label: 'Section Heading', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-caption1-place', label: 'Photo 1 Place', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-caption1-type', label: 'Photo 1 Type', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-caption2-place', label: 'Photo 2 Place', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-caption2-type', label: 'Photo 2 Type', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-caption3-place', label: 'Photo 3 Place', type: 'short', group: 'Featured Work' },
+      { slot: 'home-portfolio-caption3-type', label: 'Photo 3 Type', type: 'short', group: 'Featured Work' },
+      // Testimonials
+      { slot: 'home-test-label', label: 'Section Label', type: 'short', group: 'Testimonials' },
+      { slot: 'home-test-heading', label: 'Section Heading', type: 'short', group: 'Testimonials' },
+      { slot: 'home-test-lead-quote', label: 'Lead Testimonial Quote', type: 'long', group: 'Testimonials' },
+      { slot: 'home-test-lead-author', label: 'Lead Testimonial Author', type: 'short', group: 'Testimonials' },
+      { slot: 'home-test-card1-quote', label: 'Card 1 Quote', type: 'long', group: 'Testimonials' },
+      { slot: 'home-test-card1-author', label: 'Card 1 Author', type: 'short', group: 'Testimonials' },
+      { slot: 'home-test-card2-quote', label: 'Card 2 Quote', type: 'long', group: 'Testimonials' },
+      { slot: 'home-test-card2-author', label: 'Card 2 Author', type: 'short', group: 'Testimonials' },
+      { slot: 'home-test-card3-quote', label: 'Card 3 Quote', type: 'long', group: 'Testimonials' },
+      { slot: 'home-test-card3-author', label: 'Card 3 Author', type: 'short', group: 'Testimonials' },
+      // Industry Praise
+      { slot: 'home-praise-label', label: 'Section Label', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise-heading', label: 'Section Heading', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise1-name', label: 'Planner 1 Name', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise1-role', label: 'Planner 1 Role', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise1-quote', label: 'Planner 1 Quote', type: 'long', group: 'Industry Praise' },
+      { slot: 'home-praise2-name', label: 'Planner 2 Name', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise2-role', label: 'Planner 2 Role', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise2-quote', label: 'Planner 2 Quote', type: 'long', group: 'Industry Praise' },
+      { slot: 'home-praise3-name', label: 'Planner 3 Name', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise3-role', label: 'Planner 3 Role', type: 'short', group: 'Industry Praise' },
+      { slot: 'home-praise3-quote', label: 'Planner 3 Quote', type: 'long', group: 'Industry Praise' },
+      // Approach
+      { slot: 'home-approach-heading', label: 'Approach Heading', type: 'short', group: 'The Approach' },
+      { slot: 'home-approach-eyebrow', label: 'Approach Eyebrow', type: 'short', group: 'The Approach' },
+      { slot: 'home-approach-body', label: 'Approach Body', type: 'long', group: 'The Approach' },
+      // CTA
+      { slot: 'home-cta-eyebrow', label: 'CTA Eyebrow', type: 'short', group: 'CTA' },
+      { slot: 'home-cta-heading', label: 'CTA Heading', type: 'short', group: 'CTA' },
+      { slot: 'home-cta-testimonial', label: 'CTA Testimonial', type: 'long', group: 'CTA' },
+      { slot: 'home-cta-btn', label: 'CTA Button Text', type: 'short', group: 'CTA' },
+      // Email Capture
+      { slot: 'home-email-heading', label: 'Email Heading', type: 'short', group: 'Email Capture' },
+      { slot: 'home-email-sub', label: 'Email Subtitle', type: 'long', group: 'Email Capture' },
+    ],
+    about: [
+      // Hero
+      { slot: 'about-hero-eyebrow', label: 'Hero Eyebrow', type: 'short', group: 'Hero' },
+      { slot: 'about-hero-title', label: 'Hero Title', type: 'short', group: 'Hero' },
+      { slot: 'about-hero-sub', label: 'Hero Subtitle', type: 'short', group: 'Hero' },
+      // Bio
+      { slot: 'about-bio-eyebrow', label: 'Bio Section Label', type: 'short', group: 'Bio' },
+      { slot: 'about-bio-heading', label: 'Bio Heading', type: 'short', group: 'Bio' },
+      { slot: 'about-bio-body1', label: 'Bio Paragraph 1', type: 'long', group: 'Bio' },
+      { slot: 'about-bio-body2', label: 'Bio Paragraph 2', type: 'long', group: 'Bio' },
+      { slot: 'about-bio-body3', label: 'Bio Paragraph 3', type: 'long', group: 'Bio' },
+      { slot: 'about-bio-aside', label: 'Bio Aside Quote', type: 'long', group: 'Bio' },
+      // Testimonials
+      { slot: 'about-dq1-text', label: 'Testimonial 1 Quote', type: 'long', group: 'Testimonials' },
+      { slot: 'about-dq1-author', label: 'Testimonial 1 Author', type: 'short', group: 'Testimonials' },
+      { slot: 'about-dq2-text', label: 'Testimonial 2 Quote', type: 'long', group: 'Testimonials' },
+      { slot: 'about-dq2-author', label: 'Testimonial 2 Author', type: 'short', group: 'Testimonials' },
+      // Aesthetic
+      { slot: 'about-aesthetic-eyebrow', label: 'Aesthetic Label', type: 'short', group: 'The Aesthetic' },
+      { slot: 'about-aesthetic-heading', label: 'Aesthetic Heading', type: 'short', group: 'The Aesthetic' },
+      { slot: 'about-aesthetic-body1', label: 'Aesthetic Paragraph 1', type: 'long', group: 'The Aesthetic' },
+      { slot: 'about-aesthetic-body2', label: 'Aesthetic Paragraph 2', type: 'long', group: 'The Aesthetic' },
+      // Philosophy
+      { slot: 'about-philosophy-eyebrow', label: 'Philosophy Label', type: 'short', group: 'Philosophy' },
+      { slot: 'about-philosophy-heading', label: 'Philosophy Heading', type: 'short', group: 'Philosophy' },
+      { slot: 'about-philosophy-body1', label: 'Philosophy Paragraph 1', type: 'long', group: 'Philosophy' },
+      { slot: 'about-philosophy-body2', label: 'Philosophy Paragraph 2', type: 'long', group: 'Philosophy' },
+      // Story
+      { slot: 'about-story-eyebrow', label: 'Story Label', type: 'short', group: 'The Story' },
+      { slot: 'about-story-heading', label: 'Story Heading', type: 'short', group: 'The Story' },
+      { slot: 'about-story-body1', label: 'Story Paragraph 1', type: 'long', group: 'The Story' },
+      { slot: 'about-story-body2', label: 'Story Paragraph 2', type: 'long', group: 'The Story' },
+      // Favorites
+      { slot: 'about-fav-destination', label: 'Fav Destination', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-season', label: 'Fav Season', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-moment', label: 'Fav Moment', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-film', label: 'Fav Film Stock', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-venue', label: 'Fav Venue', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-light', label: 'Fav Light', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-camera', label: 'Fav Camera', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-based', label: 'Based In', type: 'short', group: 'Favorites' },
+      { slot: 'about-fav-quote', label: 'Favorites Quote', type: 'long', group: 'Favorites' },
+      // Large Quote
+      { slot: 'about-large-quote-text', label: 'Large Quote Text', type: 'long', group: 'Large Quote' },
+      { slot: 'about-large-quote-author', label: 'Large Quote Author', type: 'short', group: 'Large Quote' },
+      // CTA
+      { slot: 'about-cta-eyebrow', label: 'CTA Eyebrow', type: 'short', group: 'CTA' },
+      { slot: 'about-cta-heading', label: 'CTA Heading', type: 'short', group: 'CTA' },
+    ],
+    portfolio: [
+      // Hero
+      { slot: 'portfolio-hero-eyebrow', label: 'Hero Eyebrow', type: 'short', group: 'Hero' },
+      { slot: 'portfolio-hero-title', label: 'Hero Title', type: 'short', group: 'Hero' },
+      // Intro
+      { slot: 'portfolio-intro-text', label: 'Intro Text', type: 'long', group: 'Intro' },
+      // Mid Quote
+      { slot: 'portfolio-mid-quote', label: 'Mid Quote Text', type: 'long', group: 'Quote' },
+      { slot: 'portfolio-mid-quote-author', label: 'Mid Quote Author', type: 'short', group: 'Quote' },
+      // Featured
+      { slot: 'portfolio-feat-eyebrow', label: 'Featured Eyebrow', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat-heading', label: 'Featured Heading', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat1-place', label: 'Story 1 Place', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat1-type', label: 'Story 1 Type', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat2-place', label: 'Story 2 Place', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat2-type', label: 'Story 2 Type', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat3-place', label: 'Story 3 Place', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat3-type', label: 'Story 3 Type', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat4-place', label: 'Story 4 Place', type: 'short', group: 'Featured Stories' },
+      { slot: 'portfolio-feat4-type', label: 'Story 4 Type', type: 'short', group: 'Featured Stories' },
+      // CTA
+      { slot: 'portfolio-cta-eyebrow', label: 'CTA Eyebrow', type: 'short', group: 'CTA' },
+      { slot: 'portfolio-cta-heading', label: 'CTA Heading', type: 'short', group: 'CTA' },
+    ],
+    services: [
+      // Hero
+      { slot: 'services-hero-eyebrow', label: 'Hero Eyebrow', type: 'short', group: 'Hero' },
+      { slot: 'services-hero-title', label: 'Hero Title', type: 'short', group: 'Hero' },
+      // Value Prop
+      { slot: 'services-value-heading', label: 'Value Heading', type: 'short', group: 'Value Proposition' },
+      { slot: 'services-value-body', label: 'Value Body', type: 'long', group: 'Value Proposition' },
+      // Known For
+      { slot: 'services-known-eyebrow', label: 'Known For Label', type: 'short', group: 'Known For' },
+      { slot: 'services-known-heading', label: 'Known For Heading', type: 'short', group: 'Known For' },
+      { slot: 'services-known1-heading', label: 'Card 1 Heading', type: 'short', group: 'Known For' },
+      { slot: 'services-known1-body', label: 'Card 1 Body', type: 'long', group: 'Known For' },
+      { slot: 'services-known2-heading', label: 'Card 2 Heading', type: 'short', group: 'Known For' },
+      { slot: 'services-known2-body', label: 'Card 2 Body', type: 'long', group: 'Known For' },
+      { slot: 'services-known3-heading', label: 'Card 3 Heading', type: 'short', group: 'Known For' },
+      { slot: 'services-known3-body', label: 'Card 3 Body', type: 'long', group: 'Known For' },
+      // Packages
+      { slot: 'services-pkg1-heading', label: 'Package 1 Heading', type: 'short', group: 'Packages' },
+      { slot: 'services-pkg1-desc', label: 'Package 1 Description', type: 'long', group: 'Packages' },
+      { slot: 'services-pkg1-list', label: 'Package 1 Features (one per line)', type: 'html', group: 'Packages' },
+      { slot: 'services-pkg2-heading', label: 'Package 2 Heading', type: 'short', group: 'Packages' },
+      { slot: 'services-pkg2-desc', label: 'Package 2 Description', type: 'long', group: 'Packages' },
+      { slot: 'services-pkg2-list', label: 'Package 2 Features (one per line)', type: 'html', group: 'Packages' },
+      { slot: 'services-pkg3-heading', label: 'Package 3 Heading', type: 'short', group: 'Packages' },
+      { slot: 'services-pkg3-desc', label: 'Package 3 Description', type: 'long', group: 'Packages' },
+      { slot: 'services-pkg3-list', label: 'Package 3 Features (one per line)', type: 'html', group: 'Packages' },
+      // Testimonial
+      { slot: 'services-testimonial-text', label: 'Testimonial Quote', type: 'long', group: 'Testimonial' },
+      { slot: 'services-testimonial-author', label: 'Testimonial Author', type: 'short', group: 'Testimonial' },
+      // A La Carte
+      { slot: 'services-alc-eyebrow', label: 'A La Carte Label', type: 'short', group: 'A La Carte' },
+      { slot: 'services-alc-heading', label: 'A La Carte Heading', type: 'short', group: 'A La Carte' },
+      { slot: 'services-alc1-heading', label: 'Engagement Heading', type: 'short', group: 'A La Carte' },
+      { slot: 'services-alc1-body', label: 'Engagement Body', type: 'long', group: 'A La Carte' },
+      { slot: 'services-alc2-heading', label: 'Editorial Heading', type: 'short', group: 'A La Carte' },
+      { slot: 'services-alc2-body', label: 'Editorial Body', type: 'long', group: 'A La Carte' },
+      { slot: 'services-alc3-heading', label: 'Film Add-On Heading', type: 'short', group: 'A La Carte' },
+      { slot: 'services-alc3-body', label: 'Film Add-On Body', type: 'long', group: 'A La Carte' },
+      // CTA
+      { slot: 'services-cta-heading', label: 'CTA Heading', type: 'short', group: 'CTA' },
+    ],
+    experience: [
+      // Hero
+      { slot: 'experience-hero-eyebrow', label: 'Hero Eyebrow', type: 'short', group: 'Hero' },
+      { slot: 'experience-hero-title', label: 'Hero Title', type: 'short', group: 'Hero' },
+      // Personal Note
+      { slot: 'experience-note-eyebrow', label: 'Note Eyebrow', type: 'short', group: 'Personal Note' },
+      { slot: 'experience-note-text', label: 'Note Text', type: 'long', group: 'Personal Note' },
+      // Portrait/Photographer
+      { slot: 'experience-portrait-eyebrow', label: 'Portrait Label', type: 'short', group: 'The Photographer' },
+      { slot: 'experience-portrait-heading', label: 'Portrait Heading', type: 'short', group: 'The Photographer' },
+      { slot: 'experience-portrait-body1', label: 'Portrait Paragraph 1', type: 'long', group: 'The Photographer' },
+      { slot: 'experience-portrait-body2', label: 'Portrait Paragraph 2', type: 'long', group: 'The Photographer' },
+      { slot: 'experience-portrait-body3', label: 'Portrait Paragraph 3', type: 'long', group: 'The Photographer' },
+      // Feel: Deeply Seen
+      { slot: 'experience-feel1-heading', label: 'Feel 1 Heading', type: 'short', group: 'What You\'ll Feel' },
+      { slot: 'experience-feel1-body1', label: 'Feel 1 Paragraph 1', type: 'long', group: 'What You\'ll Feel' },
+      { slot: 'experience-feel1-body2', label: 'Feel 1 Paragraph 2', type: 'long', group: 'What You\'ll Feel' },
+      // Feel: Unhurried
+      { slot: 'experience-feel2-heading', label: 'Feel 2 Heading', type: 'short', group: 'What You\'ll Feel' },
+      { slot: 'experience-feel2-body1', label: 'Feel 2 Paragraph 1', type: 'long', group: 'What You\'ll Feel' },
+      { slot: 'experience-feel2-body2', label: 'Feel 2 Paragraph 2', type: 'long', group: 'What You\'ll Feel' },
+      // Feel: Genuinely Moved
+      { slot: 'experience-feel3-heading', label: 'Feel 3 Heading', type: 'short', group: 'What You\'ll Feel' },
+      { slot: 'experience-feel3-body1', label: 'Feel 3 Paragraph 1', type: 'long', group: 'What You\'ll Feel' },
+      { slot: 'experience-feel3-body2', label: 'Feel 3 Paragraph 2', type: 'long', group: 'What You\'ll Feel' },
+      // Client Stories
+      { slot: 'experience-story1-text', label: 'Story 1 Quote', type: 'long', group: 'Client Stories' },
+      { slot: 'experience-story1-author', label: 'Story 1 Author', type: 'short', group: 'Client Stories' },
+      { slot: 'experience-story2-text', label: 'Story 2 Quote', type: 'long', group: 'Client Stories' },
+      { slot: 'experience-story2-author', label: 'Story 2 Author', type: 'short', group: 'Client Stories' },
+      { slot: 'experience-story3-text', label: 'Story 3 Quote', type: 'long', group: 'Client Stories' },
+      { slot: 'experience-story3-author', label: 'Story 3 Author', type: 'short', group: 'Client Stories' },
+      // Process
+      { slot: 'experience-process1-heading', label: 'Step 1 Heading', type: 'short', group: 'The Process' },
+      { slot: 'experience-process1-body1', label: 'Step 1 Paragraph 1', type: 'long', group: 'The Process' },
+      { slot: 'experience-process1-body2', label: 'Step 1 Paragraph 2', type: 'long', group: 'The Process' },
+      { slot: 'experience-process2-heading', label: 'Step 2 Heading', type: 'short', group: 'The Process' },
+      { slot: 'experience-process2-body1', label: 'Step 2 Paragraph 1', type: 'long', group: 'The Process' },
+      { slot: 'experience-process2-body2', label: 'Step 2 Paragraph 2', type: 'long', group: 'The Process' },
+      { slot: 'experience-process3-heading', label: 'Step 3 Heading', type: 'short', group: 'The Process' },
+      { slot: 'experience-process3-body1', label: 'Step 3 Paragraph 1', type: 'long', group: 'The Process' },
+      { slot: 'experience-process3-body2', label: 'Step 3 Paragraph 2', type: 'long', group: 'The Process' },
+      { slot: 'experience-process4-heading', label: 'Step 4 Heading', type: 'short', group: 'The Process' },
+      { slot: 'experience-process4-body1', label: 'Step 4 Paragraph 1', type: 'long', group: 'The Process' },
+      { slot: 'experience-process4-body2', label: 'Step 4 Paragraph 2', type: 'long', group: 'The Process' },
+      // Expectations
+      { slot: 'experience-expect1-heading', label: 'Expect 1 Heading', type: 'short', group: 'Expectations' },
+      { slot: 'experience-expect1-body', label: 'Expect 1 Body', type: 'long', group: 'Expectations' },
+      { slot: 'experience-expect2-heading', label: 'Expect 2 Heading', type: 'short', group: 'Expectations' },
+      { slot: 'experience-expect2-body', label: 'Expect 2 Body', type: 'long', group: 'Expectations' },
+      { slot: 'experience-expect3-heading', label: 'Expect 3 Heading', type: 'short', group: 'Expectations' },
+      { slot: 'experience-expect3-body', label: 'Expect 3 Body', type: 'long', group: 'Expectations' },
+      { slot: 'experience-expect4-heading', label: 'Expect 4 Heading', type: 'short', group: 'Expectations' },
+      { slot: 'experience-expect4-body', label: 'Expect 4 Body', type: 'long', group: 'Expectations' },
+      // CTA
+      { slot: 'experience-cta-eyebrow', label: 'CTA Eyebrow', type: 'short', group: 'CTA' },
+      { slot: 'experience-cta-heading', label: 'CTA Heading', type: 'short', group: 'CTA' },
+    ],
+    contact: [
+      // Hero
+      { slot: 'contact-hero-eyebrow', label: 'Hero Eyebrow', type: 'short', group: 'Hero' },
+      { slot: 'contact-hero-title', label: 'Hero Title', type: 'short', group: 'Hero' },
+      { slot: 'contact-hero-sub', label: 'Hero Subtitle', type: 'short', group: 'Hero' },
+      // Form
+      { slot: 'contact-form-heading', label: 'Form Heading', type: 'short', group: 'Contact Form' },
+      { slot: 'contact-form-sub', label: 'Form Subtitle', type: 'long', group: 'Contact Form' },
+      // FAQ
+      { slot: 'contact-faq-heading', label: 'FAQ Heading', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq-intro', label: 'FAQ Intro Text', type: 'long', group: 'FAQ' },
+      { slot: 'contact-faq1-q', label: 'FAQ 1 Question', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq1-a', label: 'FAQ 1 Answer', type: 'long', group: 'FAQ' },
+      { slot: 'contact-faq2-q', label: 'FAQ 2 Question', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq2-a', label: 'FAQ 2 Answer', type: 'long', group: 'FAQ' },
+      { slot: 'contact-faq3-q', label: 'FAQ 3 Question', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq3-a', label: 'FAQ 3 Answer', type: 'long', group: 'FAQ' },
+      { slot: 'contact-faq4-q', label: 'FAQ 4 Question', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq4-a', label: 'FAQ 4 Answer', type: 'long', group: 'FAQ' },
+      { slot: 'contact-faq5-q', label: 'FAQ 5 Question', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq5-a', label: 'FAQ 5 Answer', type: 'long', group: 'FAQ' },
+      { slot: 'contact-faq6-q', label: 'FAQ 6 Question', type: 'short', group: 'FAQ' },
+      { slot: 'contact-faq6-a', label: 'FAQ 6 Answer', type: 'long', group: 'FAQ' },
+      // Explore
+      { slot: 'contact-explore-card1-label', label: 'Explore Card 1 Label', type: 'short', group: 'Explore Cards' },
+      { slot: 'contact-explore-card1-title', label: 'Explore Card 1 Title', type: 'short', group: 'Explore Cards' },
+      { slot: 'contact-explore-card2-label', label: 'Explore Card 2 Label', type: 'short', group: 'Explore Cards' },
+      { slot: 'contact-explore-card2-title', label: 'Explore Card 2 Title', type: 'short', group: 'Explore Cards' },
+      { slot: 'contact-explore-card3-label', label: 'Explore Card 3 Label', type: 'short', group: 'Explore Cards' },
+      { slot: 'contact-explore-card3-title', label: 'Explore Card 3 Title', type: 'short', group: 'Explore Cards' },
+    ],
+  };
+
+  // ── Copy/Content helpers ────────────────────────────────────────
+  function slotToPage(slot) {
+    if (slot.startsWith('home-'))       return 'homepage';
+    if (slot.startsWith('about-'))      return 'about';
+    if (slot.startsWith('portfolio-'))   return 'portfolio';
+    if (slot.startsWith('services-'))    return 'services';
+    if (slot.startsWith('experience-'))  return 'experience';
+    if (slot.startsWith('contact-'))     return 'contact';
+    return 'homepage';
+  }
+
+  function makeCopyField(slot, label, type) {
+    const wrap = document.createElement('div');
+    wrap.className = 'copy-field' + (pendingContent[slot] !== undefined ? ' pending' : '');
+    wrap.dataset.copySlot = slot;
+
+    const currentValue = pendingContent[slot] !== undefined
+      ? pendingContent[slot]
+      : (contentData[slot]?.value || '');
+
+    const lbl = document.createElement('label');
+    lbl.textContent = label;
+    wrap.appendChild(lbl);
+
+    let input;
+    if (type === 'short') {
+      input = document.createElement('input');
+      input.type = 'text';
+      input.value = currentValue;
+    } else {
+      input = document.createElement('textarea');
+      input.value = currentValue;
+      input.className = type === 'html' ? 'html-field' : '';
+      input.rows = type === 'html' ? 6 : 3;
+    }
+    input.placeholder = label;
+    input.addEventListener('input', () => {
+      const original = contentData[slot]?.value || '';
+      if (input.value !== original) {
+        pendingContent[slot] = input.value;
+        wrap.classList.add('pending');
+      } else {
+        delete pendingContent[slot];
+        wrap.classList.remove('pending');
+      }
+      updatePublishBtn();
+    });
+    // Auto-resize textareas
+    if (type !== 'short') {
+      input.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+      });
+    }
+    wrap.appendChild(input);
+    return wrap;
+  }
+
+  function renderCopySection(tab, container) {
+    const slots = COPY_SLOTS[tab];
+    if (!slots || !slots.length) return;
+
+    const header = document.createElement('div');
+    header.className = 'copy-section-header';
+    header.innerHTML = `<h3>Text &amp; Copy</h3><span class="copy-count">${slots.length} fields</span>`;
+    container.appendChild(header);
+
+    // Group by group name
+    const groups = {};
+    slots.forEach(s => {
+      const g = s.group || 'General';
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(s);
+    });
+
+    Object.entries(groups).forEach(([groupName, fields]) => {
+      const groupDiv = document.createElement('div');
+      groupDiv.className = 'copy-group';
+
+      const toggle = document.createElement('button');
+      toggle.className = 'copy-group-toggle';
+      toggle.innerHTML = `<span class="chevron open">▶</span> ${groupName}`;
+      toggle.addEventListener('click', () => {
+        const body = groupDiv.querySelector('.copy-group-body');
+        const chev = toggle.querySelector('.chevron');
+        body.classList.toggle('collapsed');
+        chev.classList.toggle('open');
+      });
+      groupDiv.appendChild(toggle);
+
+      const body = document.createElement('div');
+      body.className = 'copy-group-body';
+      fields.forEach(f => body.appendChild(makeCopyField(f.slot, f.label, f.type)));
+      groupDiv.appendChild(body);
+
+      container.appendChild(groupDiv);
+    });
   }
 
   // ── File picker ─────────────────────────────────────────────────
@@ -1367,7 +2035,18 @@
         if (error) throw new Error('Hero type save failed: ' + error.message);
         heroType = pendingHeroType;
       }
-      pendingUploads = {}; pendingFocal = {}; pendingRemovals = {}; pendingHeroType = null; orphanPaths = [];
+      // Publish content/copy changes
+      const contentEntries = Object.entries(pendingContent);
+      if (contentEntries.length) {
+        const rows = contentEntries.map(([slot, value]) => {
+          const existing = contentData[slot] || {};
+          return { slot, value, page: existing.page || slotToPage(slot), field_type: existing.field_type || 'short' };
+        });
+        const { error } = await sb.from('site_content').upsert(rows, { onConflict: 'slot' });
+        if (error) throw new Error('Content save failed: ' + error.message);
+        rows.forEach(r => { contentData[r.slot] = { ...contentData[r.slot], ...r }; });
+      }
+      pendingUploads = {}; pendingFocal = {}; pendingRemovals = {}; pendingHeroType = null; pendingContent = {}; orphanPaths = [];
       updatePublishBtn();
       highlightHeroType(heroType);
       renderAllSections();
@@ -1384,7 +2063,7 @@
     if (!isDirty()) return;
     if (!confirm('Discard all staged changes?')) return;
     for (const path of orphanPaths) await sb.storage.from(BUCKET).remove([path]).catch(() => {});
-    pendingUploads = {}; pendingFocal = {}; pendingRemovals = {}; pendingHeroType = null; orphanPaths = [];
+    pendingUploads = {}; pendingFocal = {}; pendingRemovals = {}; pendingHeroType = null; pendingContent = {}; orphanPaths = [];
     updatePublishBtn();
     highlightHeroType(heroType);
     renderAllSections();
@@ -1401,6 +2080,340 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.className = '', 3500);
   }
+
+  // ── Journal / Blog ──────────────────────────────────────────────
+  let blogPosts = [];
+  let currentPostId = null;
+  let quillEditor = null;
+  let quillLoaded = false;
+  let autoSaveTimer = null;
+  let journalLoaded = false;
+  let currentFilter = 'all';
+  let editorFeaturedFile = null;
+  let editorFeaturedUrl = '';
+  let editorFeaturedPath = '';
+
+  function loadQuill(callback) {
+    if (quillLoaded) { callback(); return; }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.quilljs.com/1.3.7/quill.snow.css';
+    document.head.appendChild(link);
+    const s = document.createElement('script');
+    s.src = 'https://cdn.quilljs.com/1.3.7/quill.min.js';
+    s.onload = () => { quillLoaded = true; callback(); };
+    document.head.appendChild(s);
+  }
+
+  function initQuill() {
+    if (quillEditor) return;
+    quillEditor = new Quill('#quill-editor', {
+      theme: 'snow',
+      placeholder: 'Write your post…',
+      modules: {
+        toolbar: [
+          [{ header: [2, 3, false] }],
+          ['bold', 'italic'],
+          ['blockquote', 'link', 'image'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['clean']
+        ]
+      }
+    });
+    // Custom image handler for Supabase upload
+    quillEditor.getModule('toolbar').addHandler('image', () => {
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.click();
+      input.onchange = async () => {
+        const file = input.files[0];
+        if (!file) return;
+        const compressed = await compressImage(file, 'blog');
+        const path = `blog/${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, '-').toLowerCase()}`;
+        const { error } = await sb.storage.from(BUCKET).upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
+        if (error) { showToast('Image upload failed: ' + error.message, 'error'); return; }
+        const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+        const range = quillEditor.getSelection(true);
+        quillEditor.insertEmbed(range.index, 'image', urlData.publicUrl);
+        quillEditor.setSelection(range.index + 1);
+      };
+    });
+  }
+
+  async function loadJournalTab() {
+    if (journalLoaded) return;
+    const { data, error } = await sb.from('blog_posts').select('*').order('updated_at', { ascending: false });
+    if (error) { showToast('Failed to load posts: ' + error.message, 'error'); return; }
+    blogPosts = data || [];
+    journalLoaded = true;
+    renderPostList();
+  }
+
+  function renderPostList() {
+    const grid = document.getElementById('journal-grid');
+    const count = document.getElementById('journal-count');
+    const filtered = currentFilter === 'all' ? blogPosts : blogPosts.filter(p => p.status === currentFilter);
+
+    count.textContent = `${filtered.length} post${filtered.length !== 1 ? 's' : ''}` +
+      (currentFilter !== 'all' ? ` (${currentFilter})` : '');
+
+    if (!filtered.length) {
+      grid.innerHTML = `<div class="journal-empty" style="grid-column:1/-1;">
+        <p>No ${currentFilter === 'all' ? '' : currentFilter + ' '}posts yet.</p>
+        <p style="margin-top:8px;">Click <strong>+ New Post</strong> to create your first one.</p>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = '';
+    filtered.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'journal-card';
+      card.onclick = () => openPostEditor(post.id);
+      const date = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) :
+                   new Date(post.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      card.innerHTML = `
+        <div class="journal-card-img">
+          ${post.featured_image_url ? `<img src="${post.featured_image_url}" alt="${post.title}" loading="lazy" />` : ''}
+        </div>
+        <div class="journal-card-body">
+          <p class="journal-card-title">${post.title || 'Untitled'}</p>
+          <p class="journal-card-excerpt">${post.excerpt || ''}</p>
+          <div class="journal-card-meta">
+            <span class="journal-card-date">${date}</span>
+            <span class="journal-card-status ${post.status}">${post.status}</span>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterPosts(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.journal-filter').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+    renderPostList();
+  }
+
+  function openPostEditor(postId) {
+    loadQuill(() => {
+      initQuill();
+      document.getElementById('journal-list').style.display = 'none';
+      document.getElementById('journal-editor').style.display = 'block';
+
+      currentPostId = postId || null;
+      editorFeaturedFile = null;
+      editorFeaturedUrl = '';
+      editorFeaturedPath = '';
+
+      if (postId) {
+        const post = blogPosts.find(p => p.id === postId);
+        if (!post) return;
+        document.getElementById('editor-title').value = post.title || '';
+        document.getElementById('editor-slug').value = post.slug || '';
+        document.getElementById('editor-excerpt').value = post.excerpt || '';
+        document.getElementById('editor-tags').value = (post.tags || []).join(', ');
+        document.getElementById('editor-meta-title').value = post.meta_title || '';
+        document.getElementById('editor-meta-desc').value = post.meta_description || '';
+        quillEditor.root.innerHTML = post.body || '';
+        editorFeaturedUrl = post.featured_image_url || '';
+        editorFeaturedPath = post.featured_image_path || '';
+        if (editorFeaturedUrl) {
+          document.getElementById('featured-img-preview').src = editorFeaturedUrl;
+          document.getElementById('featured-img-preview').style.display = 'block';
+          document.getElementById('featured-img-text').style.display = 'none';
+        } else {
+          document.getElementById('featured-img-preview').style.display = 'none';
+          document.getElementById('featured-img-text').style.display = '';
+        }
+        document.getElementById('btn-delete-post').style.display = 'block';
+        document.getElementById('btn-publish-post').textContent = post.status === 'published' ? 'Update' : 'Publish';
+      } else {
+        document.getElementById('editor-title').value = '';
+        document.getElementById('editor-slug').value = '';
+        document.getElementById('editor-excerpt').value = '';
+        document.getElementById('editor-tags').value = '';
+        document.getElementById('editor-meta-title').value = '';
+        document.getElementById('editor-meta-desc').value = '';
+        quillEditor.root.innerHTML = '';
+        document.getElementById('featured-img-preview').style.display = 'none';
+        document.getElementById('featured-img-text').style.display = '';
+        document.getElementById('btn-delete-post').style.display = 'none';
+        document.getElementById('btn-publish-post').textContent = 'Publish';
+      }
+
+      // Start autosave
+      clearInterval(autoSaveTimer);
+      autoSaveTimer = setInterval(autoSave, 30000);
+    });
+  }
+
+  function closePostEditor() {
+    clearInterval(autoSaveTimer);
+    document.getElementById('journal-editor').style.display = 'none';
+    document.getElementById('journal-list').style.display = 'block';
+    currentPostId = null;
+    // Refresh list
+    journalLoaded = false;
+    loadJournalTab();
+  }
+
+  function generateSlug(title) {
+    return title.toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .substring(0, 80);
+  }
+
+  function onTitleInput() {
+    const title = document.getElementById('editor-title').value;
+    const slugEl = document.getElementById('editor-slug');
+    if (!currentPostId || !slugEl.value) {
+      slugEl.value = generateSlug(title);
+    }
+  }
+
+  function pickFeaturedImage() {
+    document.getElementById('featured-img-input').click();
+  }
+
+  async function handleFeaturedImage() {
+    const file = document.getElementById('featured-img-input').files[0];
+    if (!file) return;
+    editorFeaturedFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('featured-img-preview').src = e.target.result;
+      document.getElementById('featured-img-preview').style.display = 'block';
+      document.getElementById('featured-img-text').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function getEditorData() {
+    const title = document.getElementById('editor-title').value.trim();
+    const slug = document.getElementById('editor-slug').value.trim() || generateSlug(title);
+    const excerpt = document.getElementById('editor-excerpt').value.trim();
+    const body = quillEditor ? quillEditor.root.innerHTML : '';
+    const tags = document.getElementById('editor-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+    const meta_title = document.getElementById('editor-meta-title').value.trim();
+    const meta_description = document.getElementById('editor-meta-desc').value.trim();
+    return { title, slug, excerpt, body, tags, meta_title, meta_description };
+  }
+
+  async function savePost(status) {
+    const data = getEditorData();
+    if (!data.title) { showToast('Please enter a post title.', 'error'); return; }
+    if (!data.slug) { showToast('Please enter a URL slug.', 'error'); return; }
+
+    const btn = status === 'published' ? document.getElementById('btn-publish-post') : document.getElementById('btn-save-draft');
+    const origText = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    try {
+      // Upload featured image if new
+      if (editorFeaturedFile) {
+        const compressed = await compressImage(editorFeaturedFile, 'blog-featured');
+        const path = `blog/featured-${Date.now()}.jpg`;
+        const { error: upErr } = await sb.storage.from(BUCKET).upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
+        if (upErr) throw new Error('Featured image upload failed: ' + upErr.message);
+        const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+        editorFeaturedUrl = urlData.publicUrl;
+        editorFeaturedPath = path;
+        editorFeaturedFile = null;
+      }
+
+      const row = {
+        ...data, status,
+        featured_image_url: editorFeaturedUrl,
+        featured_image_path: editorFeaturedPath,
+        updated_at: new Date().toISOString(),
+      };
+      if (status === 'published' && !row.published_at) {
+        row.published_at = new Date().toISOString();
+      }
+
+      let result;
+      if (currentPostId) {
+        result = await sb.from('blog_posts').update(row).eq('id', currentPostId).select();
+      } else {
+        result = await sb.from('blog_posts').insert(row).select();
+      }
+      if (result.error) throw new Error(result.error.message);
+
+      if (result.data && result.data[0]) {
+        currentPostId = result.data[0].id;
+        document.getElementById('btn-delete-post').style.display = 'block';
+      }
+
+      showToast(status === 'published' ? 'Post published!' : 'Draft saved.', 'success');
+      journalLoaded = false;
+    } catch (err) {
+      showToast('Save failed: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = origText;
+    }
+  }
+
+  async function deletePost() {
+    if (!currentPostId) return;
+    if (!confirm('Delete this post? This cannot be undone.')) return;
+    try {
+      // Delete autosave first
+      await sb.from('blog_autosave').delete().eq('post_id', currentPostId);
+      const { error } = await sb.from('blog_posts').delete().eq('id', currentPostId);
+      if (error) throw new Error(error.message);
+      showToast('Post deleted.', 'success');
+      closePostEditor();
+    } catch (err) {
+      showToast('Delete failed: ' + err.message, 'error');
+    }
+  }
+
+  async function autoSave() {
+    if (!currentPostId || !quillEditor) return;
+    const data = getEditorData();
+    try {
+      await sb.from('blog_autosave').upsert({
+        post_id: currentPostId,
+        title: data.title,
+        body: data.body,
+        excerpt: data.excerpt,
+        saved_at: new Date().toISOString()
+      }, { onConflict: 'post_id' });
+      const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('autosave-indicator').textContent = `Autosaved at ${now}`;
+    } catch (e) { /* silent */ }
+  }
+
+  function toggleSeo() {
+    const el = document.getElementById('editor-seo');
+    const chev = document.getElementById('seo-chevron');
+    const open = el.style.display === 'none';
+    el.style.display = open ? 'block' : 'none';
+    chev.style.transform = open ? 'rotate(90deg)' : '';
+  }
+
+  // Extend showTab for journal
+  const _origShowTab = showTab;
+  showTab = function(tab) {
+    if (tab === 'journal') {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-journal').classList.add('active');
+      const btns = document.querySelectorAll('.tab-btn');
+      const tabNames = ['settings','homepage','about','portfolio','services','experience','contact','journal','storage'];
+      const idx = tabNames.indexOf('journal');
+      if (idx !== -1 && btns[idx]) btns[idx].classList.add('active');
+      activeTab = 'journal';
+      loadJournalTab();
+      return;
+    }
+    _origShowTab(tab);
+  };
 </script>
 </body>
 </html>

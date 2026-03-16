@@ -73,6 +73,16 @@ function applyImageData(data) {
   });
 }
 
+// ── Apply fetched copy/text data to the page ────────────────────
+function applyCopyData(data) {
+  if (!data || !data.length) return;
+  data.forEach(function (row) {
+    document.querySelectorAll('[data-copy="' + row.slot + '"]').forEach(function (el) {
+      el.innerHTML = row.value;
+    });
+  });
+}
+
 // ── Load images from Supabase (SDK or direct fetch fallback) ──
 function loadSupabaseImages() {
   // Try SDK first
@@ -92,6 +102,10 @@ function loadSupabaseImages() {
         var settings = {};
         res.data.forEach(function (r) { settings[r.key] = r.value; });
         window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
+      }).catch(function () {});
+
+      sb.from('site_content').select('slot, value').then(function (res) {
+        if (res.data && res.data.length) applyCopyData(res.data);
       }).catch(function () {});
       return;
     } catch (e) { /* fall through to fetch fallback */ }
@@ -118,6 +132,13 @@ function loadImagesFallback() {
     data.forEach(function (r) { settings[r.key] = r.value; });
     window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
   })
+  .catch(function () {});
+
+  fetch(SUPABASE_URL + '/rest/v1/site_content?select=slot,value', {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (data) { applyCopyData(data); })
   .catch(function () {});
 }
 

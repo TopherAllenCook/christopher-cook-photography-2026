@@ -2,13 +2,14 @@
   "redirects": [
     { "source": "/blog-home",    "destination": "/portfolio", "permanent": true },
     { "source": "/blog-home/",   "destination": "/portfolio", "permanent": true },
-    { "source": "/blog",         "destination": "/portfolio", "permanent": true },
-    { "source": "/blog/",        "destination": "/portfolio", "permanent": true },
+    { "source": "/blog",         "destination": "/journal",   "permanent": true },
+    { "source": "/blog/",        "destination": "/journal",   "permanent": true },
     { "source": "/2022/:path*",  "destination": "/portfolio", "permanent": true },
     { "source": "/2023/:path*",  "destination": "/portfolio", "permanent": true },
-    { "source": "/2024/:path*",  "destination": "/portfolio", "permanent": true },
-    { "source": "/journal",      "destination": "/experience", "permanent": true },
-    { "source": "/journal/",     "destination": "/experience", "permanent": true }
+    { "source": "/2024/:path*",  "destination": "/portfolio", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/journal/:slug", "destination": "/post.html" }
   ],
   "cleanUrls": true,
   "trailingSlash": false
