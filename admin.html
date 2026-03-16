@@ -641,6 +641,37 @@
           </div>
         </div>
       </div>
+
+      <!-- Instagram Feed -->
+      <div class="section" style="margin-top:40px;">
+        <p class="section-title">Instagram Feed</p>
+        <p class="section-desc">Connect your Instagram to show real posts on the homepage. You'll need a Meta (Facebook) App with Instagram Basic Display access.</p>
+        <div style="margin-top:16px;">
+          <label style="display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-mid);margin-bottom:6px;font-weight:500;">Instagram Access Token</label>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="password" id="ig-token-input" placeholder="Paste your long-lived access token…" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);font-family:var(--sans);font-size:13px;padding:10px 14px;border-radius:3px;outline:none;" />
+            <button onclick="saveIgToken()" style="padding:10px 20px;background:var(--accent);color:#000;border:none;border-radius:3px;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">Save</button>
+            <button onclick="testIgToken()" style="padding:10px 20px;background:transparent;color:var(--fg);border:1px solid var(--border);border-radius:3px;font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;">Test</button>
+          </div>
+          <div id="ig-token-status" style="margin-top:10px;font-size:12px;color:var(--fg-mid);"></div>
+          <div id="ig-preview-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:20px;border-radius:3px;overflow:hidden;"></div>
+        </div>
+        <details style="margin-top:20px;font-size:12px;color:var(--fg-mid);">
+          <summary style="cursor:pointer;color:var(--accent);font-weight:500;">How to get your Instagram token</summary>
+          <ol style="margin-top:12px;padding-left:20px;line-height:1.8;">
+            <li>Go to <strong>developers.facebook.com</strong> and create a Meta App (type: Consumer)</li>
+            <li>Add the <strong>Instagram Basic Display</strong> product</li>
+            <li>Under Basic Display → Add Instagram Tester, add your Instagram account</li>
+            <li>Accept the tester invite on Instagram (Settings → Apps and Websites)</li>
+            <li>Generate a token in the Basic Display settings panel</li>
+            <li>Exchange it for a <strong>long-lived token</strong> (valid 60 days) — the tool below can refresh it</li>
+          </ol>
+        </details>
+        <div style="margin-top:12px;">
+          <button onclick="refreshIgToken()" style="padding:8px 16px;background:transparent;color:var(--fg-mid);border:1px solid var(--border);border-radius:3px;font-size:11px;cursor:pointer;">🔄 Refresh Token (extends 60 days)</button>
+          <span id="ig-refresh-status" style="margin-left:10px;font-size:11px;color:var(--fg-mid);"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1134,9 +1165,18 @@
     (data || []).forEach(row => { imageData[row.slot] = row; });
   }
 
+  let igToken = '';
   async function loadSiteSettings() {
     const { data } = await sb.from('site_settings').select('key,value');
-    (data || []).forEach(({ key, value }) => { if (key === 'hero_type') heroType = value; });
+    (data || []).forEach(({ key, value }) => {
+      if (key === 'hero_type') heroType = value;
+      if (key === 'instagram_token') igToken = value;
+    });
+    // Populate IG token field
+    if (igToken) {
+      document.getElementById('ig-token-input').value = igToken;
+      document.getElementById('ig-token-status').textContent = 'Token loaded from database.';
+    }
   }
 
   async function loadContent() {
@@ -2105,6 +2145,63 @@
     t.textContent = msg; t.className = `show ${type}`;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.className = '', 3500);
+  }
+
+  // ── Instagram ──────────────────────────────────────────────────
+  async function saveIgToken() {
+    const token = document.getElementById('ig-token-input').value.trim();
+    if (!token) { showToast('Please enter a token.', 'error'); return; }
+    const { error } = await sb.from('site_settings').upsert({ key: 'instagram_token', value: token }, { onConflict: 'key' });
+    if (error) { showToast('Save failed: ' + error.message, 'error'); return; }
+    igToken = token;
+    showToast('Instagram token saved.', 'success');
+    document.getElementById('ig-token-status').textContent = 'Token saved successfully.';
+  }
+
+  async function testIgToken() {
+    const token = document.getElementById('ig-token-input').value.trim();
+    if (!token) { showToast('Enter a token first.', 'error'); return; }
+    const status = document.getElementById('ig-token-status');
+    status.textContent = 'Testing…';
+    try {
+      const res = await fetch(`https://graph.instagram.com/me/media?fields=id,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}&limit=6`);
+      const json = await res.json();
+      if (json.error) { status.innerHTML = `<span style="color:#e85c5c;">Error: ${json.error.message}</span>`; return; }
+      const posts = json.data || [];
+      status.innerHTML = `<span style="color:#7ecf8a;">Connected — ${posts.length} recent posts found.</span>`;
+      // Show preview grid
+      const grid = document.getElementById('ig-preview-grid');
+      grid.innerHTML = '';
+      posts.slice(0, 6).forEach(post => {
+        const img = document.createElement('div');
+        const url = post.media_type === 'VIDEO' ? post.thumbnail_url : post.media_url;
+        img.style.cssText = `aspect-ratio:1;background:url('${url}') center/cover;border-radius:2px;`;
+        grid.appendChild(img);
+      });
+    } catch (e) {
+      status.innerHTML = `<span style="color:#e85c5c;">Request failed: ${e.message}</span>`;
+    }
+  }
+
+  async function refreshIgToken() {
+    const token = document.getElementById('ig-token-input').value.trim();
+    if (!token) { showToast('Enter a token first.', 'error'); return; }
+    const status = document.getElementById('ig-refresh-status');
+    status.textContent = 'Refreshing…';
+    try {
+      const res = await fetch(`https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${token}`);
+      const json = await res.json();
+      if (json.error) { status.innerHTML = `<span style="color:#e85c5c;">${json.error.message}</span>`; return; }
+      document.getElementById('ig-token-input').value = json.access_token;
+      // Auto-save the new token
+      const { error } = await sb.from('site_settings').upsert({ key: 'instagram_token', value: json.access_token }, { onConflict: 'key' });
+      if (error) { status.innerHTML = `<span style="color:#e85c5c;">Refresh ok but save failed.</span>`; return; }
+      igToken = json.access_token;
+      const expiry = new Date(Date.now() + json.expires_in * 1000).toLocaleDateString();
+      status.innerHTML = `<span style="color:#7ecf8a;">Refreshed! New expiry: ~${expiry}</span>`;
+    } catch (e) {
+      status.innerHTML = `<span style="color:#e85c5c;">Refresh failed: ${e.message}</span>`;
+    }
   }
 
   // ── Journal / Blog ──────────────────────────────────────────────

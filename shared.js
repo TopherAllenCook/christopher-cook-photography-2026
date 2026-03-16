@@ -142,6 +142,43 @@ function loadImagesFallback() {
   .catch(function () {});
 }
 
+// ── Instagram Feed ───────────────────────────────────────────
+function loadInstagramFeed(token) {
+  if (!token) return;
+  var grid = document.querySelector('.instagram-grid-placeholder');
+  if (!grid) return;
+  fetch('https://graph.instagram.com/me/media?fields=id,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=' + token + '&limit=6')
+    .then(function (r) { return r.json(); })
+    .then(function (json) {
+      if (json.error || !json.data) return;
+      grid.innerHTML = '';
+      json.data.slice(0, 6).forEach(function (post) {
+        var a = document.createElement('a');
+        a.href = post.permalink;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.style.cssText = 'display:block;aspect-ratio:1;overflow:hidden;';
+        var url = post.media_type === 'VIDEO' ? post.thumbnail_url : post.media_url;
+        var img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Instagram post';
+        img.loading = 'lazy';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;transition:transform .4s ease;';
+        a.addEventListener('mouseenter', function () { img.style.transform = 'scale(1.05)'; });
+        a.addEventListener('mouseleave', function () { img.style.transform = ''; });
+        a.appendChild(img);
+        grid.appendChild(a);
+      });
+    })
+    .catch(function () { /* keep placeholder */ });
+}
+
+window.addEventListener('siteSettingsLoaded', function (e) {
+  if (e.detail && e.detail.instagram_token) {
+    loadInstagramFeed(e.detail.instagram_token);
+  }
+});
+
 // ── Scroll fade-in ────────────────────────────────────────────
 function initFadeIn(selector) {
   const els = document.querySelectorAll(selector);
