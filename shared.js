@@ -2,8 +2,8 @@
    Christopher Cook Photography — Shared JS
    ═══════════════════════════════════════════════════════════════ */
 
-const SUPABASE_URL      = 'https://qxdtidacdmkdueudjkiu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHRpZGFjZG1rZHVldWRqa2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NTE1NjEsImV4cCI6MjA4OTEyNzU2MX0.Fh4uOTSXlwRAuPNGNrg02M-bbioJ0HNLl_nOfqaSg7Q';
+const SUPABASE_URL      = 'https://mmvyplpghfnuacglwhou.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tdnlwbHBnaGZudWFjZ2x3aG91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjcxMTAsImV4cCI6MjA4OTAwMzExMH0.R9OjlUSUVZph7rhh9oR_8e3wUuSPl5gE9WROIejzTPs';
 
 // ── Nav scroll behavior ───────────────────────────────────────
 (function () {
