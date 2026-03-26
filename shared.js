@@ -83,63 +83,29 @@ function applyCopyData(data) {
   });
 }
 
-// ── Load images from Supabase (SDK or direct fetch fallback) ──
-function loadSupabaseImages() {
-  // Try SDK first
-  if (typeof supabase !== 'undefined') {
-    try {
-      var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      sb.from('site_images').select('slot, url, focal_x, focal_y, zoom').then(function (res) {
-        if (res.data && res.data.length) {
-          applyImageData(res.data);
-        } else {
-          loadImagesFallback();
-        }
-      }).catch(function () { loadImagesFallback(); });
+// ── Load data from Supabase via direct REST API fetch ─────────
+function loadSupabaseData() {
+  var headers = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
 
-      sb.from('site_settings').select('key, value').then(function (res) {
-        if (!res.data) return;
-        var settings = {};
-        res.data.forEach(function (r) { settings[r.key] = r.value; });
-        window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
-      }).catch(function () {});
+  fetch(SUPABASE_URL + '/rest/v1/site_images?select=slot,url,focal_x,focal_y,zoom', { headers: headers })
+    .then(function (r) { return r.json(); })
+    .then(function (data) { applyImageData(data); })
+    .catch(function (e) { console.error('Image load failed:', e); });
 
-      sb.from('site_content').select('slot, value').then(function (res) {
-        if (res.data && res.data.length) applyCopyData(res.data);
-      }).catch(function () {});
-      return;
-    } catch (e) { /* fall through to fetch fallback */ }
-  }
-  loadImagesFallback();
-}
+  fetch(SUPABASE_URL + '/rest/v1/site_settings?select=key,value', { headers: headers })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data || !data.length) return;
+      var settings = {};
+      data.forEach(function (r) { settings[r.key] = r.value; });
+      window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
+    })
+    .catch(function () {});
 
-// ── Direct fetch fallback (no SDK needed) ─────────────────────
-function loadImagesFallback() {
-  fetch(SUPABASE_URL + '/rest/v1/site_images?select=slot,url,focal_x,focal_y,zoom', {
-    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
-  })
-  .then(function (r) { return r.json(); })
-  .then(function (data) { applyImageData(data); })
-  .catch(function (e) { console.error('Image load failed:', e); });
-
-  fetch(SUPABASE_URL + '/rest/v1/site_settings?select=key,value', {
-    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
-  })
-  .then(function (r) { return r.json(); })
-  .then(function (data) {
-    if (!data || !data.length) return;
-    var settings = {};
-    data.forEach(function (r) { settings[r.key] = r.value; });
-    window.dispatchEvent(new CustomEvent('siteSettingsLoaded', { detail: settings }));
-  })
-  .catch(function () {});
-
-  fetch(SUPABASE_URL + '/rest/v1/site_content?select=slot,value', {
-    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
-  })
-  .then(function (r) { return r.json(); })
-  .then(function (data) { applyCopyData(data); })
-  .catch(function () {});
+  fetch(SUPABASE_URL + '/rest/v1/site_content?select=slot,value', { headers: headers })
+    .then(function (r) { return r.json(); })
+    .then(function (data) { applyCopyData(data); })
+    .catch(function () {});
 }
 
 // ── Instagram Feed ───────────────────────────────────────────
@@ -200,32 +166,5 @@ function initFadeIn(selector) {
   });
 }
 
-// ── Lazy-load GSAP + ScrollTrigger after first paint ──────────
-function loadGSAP(callback) {
-  if (typeof gsap !== 'undefined') { callback(); return; }
-  var s1 = document.createElement('script');
-  s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
-  s1.onload = function () {
-    var s2 = document.createElement('script');
-    s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js';
-    s2.onload = callback;
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s1);
-}
-
-// ── Boot: wait for async Supabase SDK then load images ────────
-function boot() {
-  if (typeof supabase !== 'undefined') {
-    loadSupabaseImages();
-  } else {
-    var attempts = 0;
-    var poll = setInterval(function () {
-      attempts++;
-      if (typeof supabase !== 'undefined') { clearInterval(poll); loadSupabaseImages(); }
-      else if (attempts > 30) { clearInterval(poll); loadImagesFallback(); } // fallback after 3s
-    }, 100);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', boot);
+// ── Boot ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', loadSupabaseData);
