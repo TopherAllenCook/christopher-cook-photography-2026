@@ -4,19 +4,24 @@
 
 /* ─── Variables ─────────────────────────────────────────────── */
 :root {
-  --cream:   #f9f9f5;
-  --dark:    #070707;
-  --forest:  #1e2c1a;
-  --accent:  #9b7b5a;
+  /* Brand palette */
+  --cream:     #f2ede0;
+  --dark:      #1e0d08;
+  --forest:    #3d4220;
+  --accent:    #9e9060;
+  --burgundy:  #8b1a2c;
+  --blush:     #cdb5a5;
+  --olive:     #3d4220;
+  --espresso:  #1e0d08;
   --serif:   'Cormorant Garamond', Georgia, serif;
   --sans:    'Inter', sans-serif;
   --caps:    'Cinzel', serif;
-  --page-bg:         #f5f0eb;
-  --page-fg:         #070707;
-  --page-fg-mid:     #3a3a3a;
-  --page-border:     #e8e0d6;
-  --page-nav-bg:     rgba(245,240,235,.97);
-  --page-nav-border: rgba(0,0,0,.07);
+  --page-bg:         #f2ede0;
+  --page-fg:         #1e0d08;
+  --page-fg-mid:     #4a3a2e;
+  --page-border:     #cdb5a5;
+  --page-nav-bg:     rgba(242,237,224,.97);
+  --page-nav-border: rgba(30,13,8,.07);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────── */

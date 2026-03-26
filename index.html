@@ -28,22 +28,26 @@
     /* ─── Reset & Base ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      /* Fixed palette — used in always-dark sections */
-      --cream:   #f9f9f5;
-      --dark:    #070707;
-      --forest:  #1e2c1a;
-      --accent:  #9b7b5a;
+      /* Brand palette */
+      --cream:     #f2ede0;
+      --dark:      #1e0d08;
+      --forest:    #3d4220;
+      --accent:    #9e9060;
+      --burgundy:  #8b1a2c;
+      --blush:     #cdb5a5;
+      --olive:     #3d4220;
+      --espresso:  #1e0d08;
       --serif:   'Cormorant Garamond', Georgia, serif;
       --sans:    'Inter', sans-serif;
       --caps:    'Cinzel', serif;
 
       /* Theme-aware tokens — light mode defaults */
-      --page-bg:         #f5f0eb;
-      --page-fg:         #070707;
-      --page-fg-mid:     #3a3a3a;
-      --page-border:     #e8e0d6;
-      --page-nav-bg:     rgba(245,240,235,.97);
-      --page-nav-border: rgba(0,0,0,.07);
+      --page-bg:         #f2ede0;
+      --page-fg:         #1e0d08;
+      --page-fg-mid:     #4a3a2e;
+      --page-border:     #cdb5a5;
+      --page-nav-bg:     rgba(242,237,224,.97);
+      --page-nav-border: rgba(30,13,8,.07);
     }
 
 
@@ -516,9 +520,9 @@
     .testimonial-img {
       height: 320px; overflow: hidden; margin-bottom: 28px;
     }
-    .ti1 { background: linear-gradient(145deg, #d4c8b8 0%, #c4b8a8 100%); }
-    .ti2 { background: linear-gradient(145deg, #cec4b8 0%, #beb5a8 100%); }
-    .ti3 { background: linear-gradient(145deg, #c8bfb8 0%, #b8b0a8 100%); }
+    .ti1 { background: linear-gradient(145deg, #cdb5a5 0%, #bfa898 100%); }
+    .ti2 { background: linear-gradient(145deg, #c4b09e 0%, #b5a393 100%); }
+    .ti3 { background: linear-gradient(145deg, #baa898 0%, #ab9b8b 100%); }
     .testimonial-quote-mark {
       font-family: var(--serif); font-size: 60px; line-height: .8;
       color: var(--accent); opacity: .4; margin-bottom: 16px;
@@ -583,7 +587,7 @@
       background: rgba(7,7,7,.4);
     }
     .cta-content { position: relative; z-index: 2; max-width: 700px; padding: 0 40px; }
-    .cta-eyebrow { font-family: var(--sans); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 24px; }
+    .cta-eyebrow { font-family: var(--sans); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; font-weight: 500; color: var(--burgundy); margin-bottom: 24px; }
     .cta-heading { font-family: var(--serif); font-size: clamp(38px, 4vw, 68px); font-weight: 300; line-height: 1.15; margin-bottom: 40px; }
     .cta-heading em { font-style: italic; }
     .cta-testimonial {
