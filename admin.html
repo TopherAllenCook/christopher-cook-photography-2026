@@ -1613,16 +1613,18 @@
   <div class="login-card">
     <div class="login-logo">Christopher Cook</div>
     <p class="login-sub">Admin Panel · Sign in to continue</p>
-    <div class="field">
-      <label for="login-email">Email</label>
-      <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
-    </div>
-    <div class="field">
-      <label for="login-password">Password</label>
-      <input type="password" id="login-password" autocomplete="current-password" />
-    </div>
-    <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
-    <p id="login-error"></p>
+    <form id="login-form" autocomplete="on" method="post" action="javascript:void(0)">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" name="email" placeholder="you@example.com" autocomplete="username" autofocus />
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" name="password" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-primary" id="login-btn">Sign In</button>
+      <p id="login-error"></p>
+    </form>
   </div>
 </div>
 
@@ -2422,7 +2424,9 @@
     if (statPending) statPending.textContent = pending;
   }
 
-  // ── Login ───────────────────────────────────────────────────────
+  // ── Login (form submit — Enter key + browser credential save) ──
+  document.getElementById('login-form').addEventListener('submit', function(e) { e.preventDefault(); doLogin(); });
+
   async function doLogin() {
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const pass  = document.getElementById('login-password').value;
