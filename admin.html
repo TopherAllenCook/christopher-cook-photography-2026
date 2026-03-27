@@ -1940,6 +1940,13 @@
           <div class="slot-grid wide" id="slots-hero"></div>
         </div>
 
+        <p class="page-label">Intro Section</p>
+        <div class="section">
+          <p class="section-title">About Christopher Images</p>
+          <p class="section-desc">3 images next to the intro text on the homepage.</p>
+          <div class="slot-grid" id="slots-intro"></div>
+        </div>
+
         <p class="page-label">Gallery Strip</p>
         <div class="section">
           <p class="section-title">Scrolling Gallery</p>
@@ -2274,6 +2281,7 @@
     'hero':                    ['hero-1','hero-2','hero-3'],
     'gallery':                 ['gallery-1','gallery-2','gallery-3','gallery-4','gallery-5','gallery-6'],
     'portfolio':               ['portfolio-1','portfolio-2','portfolio-3'],
+    'intro':                   ['intro-img-1','intro-img-2','intro-img-3'],
     'testimonials':            ['testimonial-1','testimonial-2','testimonial-3'],
     'about':                   ['about-portrait'],
     'editorial-approach':      ['ed-approach-1','ed-approach-2'],
@@ -2301,6 +2309,7 @@
 
   // Compute readable label from slot key; manual overrides for non-obvious names
   const LABEL_OVERRIDES = {
+    'intro-img-1':'Intro — Large Left','intro-img-2':'Intro — Top Right','intro-img-3':'Intro — Bottom Right',
     'about-portrait':'Bio Portrait','ed-quote-avatar':'Quote Avatar',
     'ed-approach-1':'Approach — Left (tall)','ed-approach-2':'Approach — Right (short)',
     'ed-explore-1':'Explore 1 (tall)','about-dark-img':'About — Dark Split',
@@ -2342,7 +2351,7 @@
 
   // Tab → slot groups mapping (drives lazy rendering)
   const TAB_SLOT_GROUPS = {
-    homepage:   ['hero','gallery','portfolio','testimonials','about','editorial-approach','editorial-explore','editorial-quote'],
+    homepage:   ['hero','intro','gallery','portfolio','testimonials','about','editorial-approach','editorial-explore','editorial-quote'],
     about:      ['about-gallery','about-splits','about-bio'],
     portfolio:  ['portfolio-hero','portfolio-gallery','portfolio-featured'],
     services:   ['services-top','services-detail','services-alacarte'],
