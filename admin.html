@@ -595,7 +595,13 @@
     /* ═══════════════════════════════════════════════════════════════
        SECTION HEADINGS
     ═══════════════════════════════════════════════════════════════ */
-    .section { margin-bottom: 56px; }
+    .section {
+      margin-bottom: 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+    }
     .section-title {
       font-size: 11px;
       letter-spacing: .2em;
@@ -610,17 +616,20 @@
       margin-bottom: 24px;
     }
     .page-label {
-      font-size: 10px;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      opacity: .35;
-      margin-bottom: 32px;
-      font-weight: 600;
-      margin-top: 16px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
+      font-family: var(--serif);
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--fg);
+      margin-bottom: 20px;
+      margin-top: 48px;
+      padding-top: 0;
+      border-top: none;
+      letter-spacing: 0;
+      text-transform: none;
+      opacity: 1;
     }
-    .page-label:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+    .page-label:first-child { margin-top: 0; }
 
     /* Panel heading (within tab) */
     .panel-heading {
@@ -679,11 +688,11 @@
     ═══════════════════════════════════════════════════════════════ */
     .slot-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
     }
     .slot-grid.wide {
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     }
 
     .slot-card {
@@ -1554,14 +1563,16 @@
     ═══════════════════════════════════════════════════════════════ */
     .copy-section-wrap {
       margin-bottom: 48px;
-      padding-bottom: 32px;
-      border-bottom: 2px solid var(--accent);
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
     }
     .copy-section-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-top: 48px;
+      margin-top: 0;
       margin-bottom: 24px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
@@ -1600,7 +1611,8 @@
       color: var(--fg-mid);
     }
     .copy-group-toggle .chevron.open { transform: rotate(90deg); }
-    .copy-group-body { display: grid; gap: 16px; }
+    .copy-group-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 24px; }
+    .copy-group-body .copy-field:has(textarea) { grid-column: 1 / -1; }
     .copy-group-body.collapsed { display: none; }
     .copy-field {
       position: relative;
