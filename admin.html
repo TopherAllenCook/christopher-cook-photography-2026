@@ -2436,9 +2436,17 @@
     if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
     btn.disabled = true; btn.textContent = 'Signing in…';
     try {
-      const authClient = supabase.createClient(SB_URL, SB_ANON_KEY);
-      const { data, error } = await authClient.auth.signInWithPassword({ email, password: pass });
-      if (error) throw new Error(error.message);
+      // Use direct REST call to avoid SDK GoTrue schema issues
+      const res = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SB_ANON_KEY
+        },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error_description || result.msg || 'Incorrect email or password.');
       sb = supabase.createClient(SB_URL, SB_KEY);
       sessionStorage.setItem('admin_auth', '1');
       showApp();
