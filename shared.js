@@ -25,12 +25,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   window.closeOverlay = () => overlay.classList.remove('open');
 })();
 
+// ── Optimized image URL (resize + WebP via Supabase transform) ──
+function optimizeUrl(url, width) {
+  if (!url || url.indexOf('/storage/v1/object/public/') === -1) return url;
+  // Supabase image transform: resize + convert to WebP
+  var w = width || 1920;
+  return url.replace('/object/public/', '/object/public/') + '?width=' + w + '&format=webp&quality=80';
+}
+
 // ── Apply image to a background-image element ─────────────────
-function applyImage(el, url, focalX, focalY, zoom) {
+function applyImage(el, url, focalX, focalY, zoom, width) {
   var x = focalX != null ? focalX : 50;
   var y = focalY != null ? focalY : 50;
   var z = zoom   != null ? zoom   : 100;
-  el.style.backgroundImage    = "url('" + url + "')";
+  var optimized = optimizeUrl(url, width);
+  el.style.backgroundImage    = "url('" + optimized + "')";
   el.style.backgroundSize     = z > 100 ? z + '%' : 'cover';
   el.style.backgroundPosition = x + '% ' + y + '%';
 }
@@ -42,13 +51,21 @@ function applyImageData(data) {
   var map = {};
   data.forEach(function (row) { map[row.slot] = row; });
 
-  // 1 — Priority: load hero images instantly
-  PRIORITY_SLOTS.forEach(function (slot) {
-    if (!map[slot]) return;
-    var r = map[slot];
-    document.querySelectorAll('[data-slot="' + slot + '"]').forEach(function (el) { applyImage(el, r.url, r.focal_x, r.focal_y, r.zoom); });
-    document.querySelectorAll('[data-slot-dup="' + slot + '"]').forEach(function (el) { applyImage(el, r.url, r.focal_x, r.focal_y, r.zoom); });
-  });
+  // 1 — Priority: load hero-1 instantly at full width, defer hero-2/3
+  var first = map['hero-1'];
+  if (first) {
+    document.querySelectorAll('[data-slot="hero-1"]').forEach(function (el) { applyImage(el, first.url, first.focal_x, first.focal_y, first.zoom, 1920); });
+    document.querySelectorAll('[data-slot-dup="hero-1"]').forEach(function (el) { applyImage(el, first.url, first.focal_x, first.focal_y, first.zoom, 1920); });
+  }
+  // Preload hero-2/3 after a short delay so hero-1 paints first
+  setTimeout(function () {
+    ['hero-2', 'hero-3'].forEach(function (slot) {
+      if (!map[slot]) return;
+      var r = map[slot];
+      document.querySelectorAll('[data-slot="' + slot + '"]').forEach(function (el) { applyImage(el, r.url, r.focal_x, r.focal_y, r.zoom, 1920); });
+      document.querySelectorAll('[data-slot-dup="' + slot + '"]').forEach(function (el) { applyImage(el, r.url, r.focal_x, r.focal_y, r.zoom, 1920); });
+    });
+  }, 100);
 
   // 2 — Everything else: lazy load when 800px from viewport
   var lazySlots = data.filter(function (r) { return PRIORITY_SLOTS.indexOf(r.slot) === -1; });
@@ -64,7 +81,9 @@ function applyImageData(data) {
       seen.add(el);
       obs.unobserve(el);
       var row = map[slot];
-      if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom);
+      // Size images based on their role: full-width bg = 1920, cards/thumbs = 800
+      var w = (slot.indexOf('hero') > -1 || slot.indexOf('cta-bg') > -1 || slot.indexOf('hero-bg') > -1) ? 1920 : 800;
+      if (row) applyImage(el, row.url, row.focal_x, row.focal_y, row.zoom, w);
     });
   }, { rootMargin: '800px 0px' });
 
