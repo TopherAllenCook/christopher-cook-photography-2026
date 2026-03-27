@@ -14,12 +14,12 @@
       theme: {
         extend: {
           colors: {
-            bg:       '#0f0f0e',
-            surface:  '#1a1a18',
-            surface2: '#222220',
-            border:   '#2a2a27',
-            fg:       '#f0ede8',
-            'fg-mid': '#888480',
+            bg:       '#f5f3ee',
+            surface:  '#ffffff',
+            surface2: '#ebe8e2',
+            border:   '#ddd9d1',
+            fg:       '#2c2a26',
+            'fg-mid': '#8a8680',
             accent:   '#9b7b5a',
             green:    '#3ecf8e',
             red:      '#e05252',
@@ -37,12 +37,12 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:        #0f0f0e;
-      --surface:   #1a1a18;
-      --surface2:  #222220;
-      --border:    #2a2a27;
-      --fg:        #f0ede8;
-      --fg-mid:    #888480;
+      --bg:        #f5f3ee;
+      --surface:   #ffffff;
+      --surface2:  #ebe8e2;
+      --border:    #ddd9d1;
+      --fg:        #2c2a26;
+      --fg-mid:    #8a8680;
       --accent:    #9b7b5a;
       --green:     #3ecf8e;
       --red:       #e05252;
@@ -94,8 +94,8 @@
     .login-card {
       width: 100%;
       max-width: 420px;
-      background: rgba(26,26,24,.85);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(0,0,0,.08);
       padding: 52px 44px;
       border-radius: 20px;
       backdrop-filter: blur(24px);
@@ -146,8 +146,8 @@
     textarea,
     select {
       width: 100%;
-      background: rgba(15,15,14,.5);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(0,0,0,.03);
+      border: 1px solid rgba(0,0,0,.08);
       color: var(--fg);
       font-family: var(--sans);
       font-size: 13px;
@@ -226,7 +226,7 @@
       position: fixed;
       inset: 0;
       z-index: 299;
-      background: rgba(0,0,0,.7);
+      background: rgba(0,0,0,.1);
     }
     .sidebar-backdrop.open { display: block; }
 
@@ -237,7 +237,7 @@
       width: var(--sidebar-w);
       z-index: 300;
       background: var(--surface);
-      border-right: 1px solid rgba(42,42,39,.4);
+      border-right: 1px solid rgba(0,0,0,.06);
       display: flex;
       flex-direction: column;
       overflow-y: auto;
@@ -245,7 +245,7 @@
     }
     .sidebar-head {
       padding: 28px 20px 20px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(0,0,0,.06);
       flex-shrink: 0;
     }
     .sidebar-brand {
@@ -292,12 +292,12 @@
     }
     .nav-item:hover {
       color: var(--fg);
-      background: rgba(255,255,255,.06);
+      background: rgba(0,0,0,.06);
     }
     .nav-item.active {
       color: var(--fg);
       font-weight: 500;
-      background: rgba(255,255,255,.1);
+      background: rgba(0,0,0,.07);
     }
     .nav-item svg {
       flex-shrink: 0;
@@ -317,14 +317,14 @@
     }
     .nav-divider {
       height: 1px;
-      background: rgba(255,255,255,.06);
+      background: rgba(0,0,0,.06);
       margin: 8px 14px;
     }
 
     /* Sidebar footer */
     .sidebar-footer {
       padding: 12px 12px 20px;
-      border-top: 1px solid rgba(255,255,255,.06);
+      border-top: 1px solid rgba(0,0,0,.06);
       flex-shrink: 0;
     }
     .sidebar-footer a,
@@ -369,7 +369,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(26,26,24,.92);
+      background: rgba(245,243,238,.92);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -496,8 +496,8 @@
       margin-bottom: 40px;
     }
     .stat-card {
-      background: rgba(26,26,24,.6);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.08);
       border-radius: 12px;
       padding: 24px 22px;
       display: flex;
@@ -601,8 +601,8 @@
     ═══════════════════════════════════════════════════════════════ */
     .section {
       margin-bottom: 40px;
-      background: rgba(26,26,24,.6);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.08);
       border-radius: 12px;
       padding: 24px;
     }
@@ -662,15 +662,15 @@
       flex: 1;
       min-width: 160px;
       max-width: 220px;
-      background: rgba(26,26,24,.6);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.08);
       border-radius: 12px;
       padding: 20px 16px;
       cursor: pointer;
       transition: border-color .25s, transform .2s, box-shadow .25s;
       text-align: center;
     }
-    .hero-type-card:hover { border-color: rgba(155,123,90,.3); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,.3); }
+    .hero-type-card:hover { border-color: rgba(155,123,90,.3); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,.08); }
     .hero-type-card.active { border-color: rgba(155,123,90,.4); background: rgba(155,123,90,.08); }
     .hero-type-card.pending { border-color: var(--yellow) !important; }
     .hero-type-icon {
@@ -700,8 +700,8 @@
     }
 
     .slot-card {
-      background: rgba(26,26,24,.6);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.08);
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
@@ -710,7 +710,7 @@
     }
     .slot-card:hover {
       border-color: rgba(155,123,90,.3);
-      box-shadow: 0 4px 20px rgba(0,0,0,.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
       transform: translateY(-1px);
     }
     .slot-card:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -1151,7 +1151,7 @@
       height: 16px;
       border-radius: 50%;
       border: 2px solid #fff;
-      box-shadow: 0 0 0 1px rgba(0,0,0,.4);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.1);
       pointer-events: none;
       background: rgba(155,123,90,.5);
     }
@@ -1573,8 +1573,8 @@
     .copy-section-wrap {
       margin-bottom: 40px;
       padding: 24px;
-      background: rgba(26,26,24,.6);
-      border: 1px solid rgba(42,42,39,.5);
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.08);
       border-radius: 12px;
     }
     .copy-section-header {
@@ -1626,8 +1626,8 @@
     .copy-field {
       position: relative;
       padding: 14px 16px;
-      background: rgba(15,15,14,.4);
-      border: 1px solid rgba(42,42,39,.4);
+      background: rgba(0,0,0,.02);
+      border: 1px solid rgba(0,0,0,.06);
       border-radius: 12px;
       border-left: 3px solid transparent;
       transition: border-color .2s;
@@ -1747,7 +1747,7 @@
       border-left-color: var(--accent);
     }
     .nav-item:hover {
-      background: rgba(255,255,255,.03);
+      background: rgba(0,0,0,.03);
     }
 
     /* Sidebar footer link enhancements */
@@ -1792,7 +1792,7 @@
       border-radius: 6px;
     }
     .slot-card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
     }
 
     /* Storage card polish */
@@ -1800,7 +1800,7 @@
       border-radius: 6px;
     }
     .storage-card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
     }
 
     /* Journal card polish */
@@ -1841,7 +1841,7 @@
     /* Toast refinement */
     #toast {
       border-radius: 6px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,.1);
     }
 
     /* Pending banner icon */
@@ -1870,7 +1870,7 @@
 
     /* Storage toolbar glass effect */
     .storage-toolbar {
-      background: rgba(26,26,24,.6);
+      background: rgba(255,255,255,.7);
       backdrop-filter: blur(8px);
       border: 1px solid var(--border);
       border-radius: 6px;
