@@ -1561,6 +1561,7 @@
     .copy-field textarea:focus { border-color: var(--accent); }
     .copy-field textarea { resize: vertical; min-height: 60px; }
     .copy-field textarea.html-field { min-height: 100px; font-size: 12px; }
+    .field-hint { display: block; font-size: 11px; color: var(--fg-mid); opacity: .6; margin-top: 4px; font-style: italic; }
     .copy-field .char-count {
       position: absolute;
       right: 4px;
@@ -2984,6 +2985,21 @@
     return 'homepage';
   }
 
+  // Convert HTML to plain text for editing (line breaks shown as ↵)
+  function htmlToPlain(html) {
+    return (html || '')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<em>/gi, '*')
+      .replace(/<\/em>/gi, '*')
+      .replace(/<[^>]+>/g, '');
+  }
+  // Convert plain text back to HTML
+  function plainToHtml(text) {
+    return (text || '')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br />');
+  }
+
   function makeCopyField(slot, label, type) {
     const wrap = document.createElement('div');
     wrap.className = 'copy-field' + (pendingContent[slot] !== undefined ? ' pending' : '');
@@ -2997,22 +3013,48 @@
     lbl.textContent = label;
     wrap.appendChild(lbl);
 
+    // Check if this field has HTML formatting
+    const hasHtml = /<(br|em|strong|span|li)\b/i.test(currentValue);
+    const isRich = type === 'short' && hasHtml;
+
     let input;
-    if (type === 'short') {
+    if (type === 'html') {
+      // HTML list fields — keep as textarea with syntax hint
+      input = document.createElement('textarea');
+      input.value = currentValue;
+      input.className = 'html-field';
+      input.rows = 6;
+      const hint = document.createElement('span');
+      hint.className = 'field-hint';
+      hint.textContent = 'HTML list items — use <li> tags';
+      wrap.appendChild(hint);
+    } else if (isRich) {
+      // Rich short fields — editable with *italic* and Enter for line breaks
+      input = document.createElement('textarea');
+      input.value = htmlToPlain(currentValue);
+      input.rows = 2;
+      input.style.minHeight = '40px';
+      const hint = document.createElement('span');
+      hint.className = 'field-hint';
+      hint.textContent = 'Use *asterisks* for italic, Enter for line breaks';
+      wrap.appendChild(hint);
+    } else if (type === 'short') {
       input = document.createElement('input');
       input.type = 'text';
       input.value = currentValue;
     } else {
       input = document.createElement('textarea');
       input.value = currentValue;
-      input.className = type === 'html' ? 'html-field' : '';
-      input.rows = type === 'html' ? 6 : 3;
+      input.rows = 3;
     }
+
     input.placeholder = label;
     input.addEventListener('input', () => {
       const original = contentData[slot]?.value || '';
-      if (input.value !== original) {
-        pendingContent[slot] = input.value;
+      // Convert back to HTML if this is a rich field
+      const newVal = isRich ? plainToHtml(input.value) : input.value;
+      if (newVal !== original) {
+        pendingContent[slot] = newVal;
         wrap.classList.add('pending');
       } else {
         delete pendingContent[slot];
@@ -3021,11 +3063,13 @@
       updatePublishBtn();
     });
     // Auto-resize textareas
-    if (type !== 'short') {
-      input.addEventListener('input', function() {
+    if (type !== 'short' || isRich) {
+      const autoResize = function() {
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
-      });
+      };
+      input.addEventListener('input', autoResize);
+      setTimeout(() => autoResize.call(input), 0);
     }
     wrap.appendChild(input);
     return wrap;
