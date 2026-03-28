@@ -24,6 +24,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="preconnect" href="https://mmvyplpghfnuacglwhou.supabase.co" />
+  <link rel="preconnect" href="https://wsrv.nl" />
+  <script>
+// Preload hero image as early as possible
+(function(){
+  var SB='https://mmvyplpghfnuacglwhou.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tdnlwbHBnaGZudWFjZ2x3aG91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjcxMTAsImV4cCI6MjA4OTAwMzExMH0.R9OjlUSUVZph7rhh9oR_8e3wUuSPl5gE9WROIejzTPs';
+  fetch(SB+'/rest/v1/site_images?select=url&slot=eq.hero-1&limit=1',{headers:{'apikey':KEY}})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d&&d[0]&&d[0].url){
+        var link=document.createElement('link');
+        link.rel='preload';link.as='image';link.type='image/webp';
+        link.href='https://wsrv.nl/?url='+encodeURIComponent(d[0].url)+'&w=1920&output=webp&q=80';
+        document.head.appendChild(link);
+      }
+    }).catch(function(){});
+})();
+</script>
   <link rel="stylesheet" href="shared.css" />
 </head>
 <body>
@@ -61,7 +79,7 @@
   <!-- ═══ HERO ════════════════════════════════════════════════════ -->
   <section class="hero">
     <div class="hero-slides">
-      <div class="hero-slide active hero-slide-1" data-slot="hero-1"></div>
+      <div class="hero-slide active hero-slide-1" data-slot="hero-1" data-fetchpriority="high"></div>
       <div class="hero-slide hero-slide-2" data-slot="hero-2"></div>
       <div class="hero-slide hero-slide-3" data-slot="hero-3"></div>
     </div>
@@ -443,7 +461,7 @@
       <div class="footer-bottom-links">
         <a href="#">Privacy Policy</a>
         <a href="#">Terms</a>
-        <a href="/admin">Admin</a>
+        <a href="admin.html">Admin</a>
       </div>
     </div>
   </footer>
@@ -530,7 +548,7 @@
     });
 
   </script>
-  <script src="shared.js"></script>
+  <script src="shared.js" defer></script>
 
   <!-- ─── Editorial Section Animations ──────────────────────────── -->
   <script>

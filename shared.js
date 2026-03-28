@@ -25,12 +25,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   window.closeOverlay = () => overlay.classList.remove('open');
 })();
 
-// ── Optimized image URL (resize + WebP via Supabase transform) ──
+// ── Optimized image URL (resize + WebP via wsrv.nl free CDN proxy) ──
 function optimizeUrl(url, width) {
-  if (!url || url.indexOf('/storage/v1/object/public/') === -1) return url;
-  // Supabase image transform: resize + convert to WebP
+  if (!url) return url;
   var w = width || 1920;
-  return url.replace('/object/public/', '/object/public/') + '?width=' + w + '&format=webp&quality=80';
+  return 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=' + w + '&output=webp&q=80';
 }
 
 // ── Apply image to a background-image element ─────────────────
