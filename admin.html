@@ -1362,210 +1362,543 @@
     .journal-card-status.published { background: rgba(62,207,142,.12); color: var(--green); }
     .journal-empty { text-align: center; padding: 80px 20px; color: var(--fg-mid); font-size: 13px; }
 
-    /* Editor */
-    .editor-topbar {
+    /* ═══════════════════════════════════════════════════════════════
+       EDITORIAL STORY BUILDER — EDITOR
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* When editor is open, the journal panel drops its normal padding
+       and the canvas + inspector lay out side-by-side */
+    #panel-journal.editor-open {
+      display: flex;
+      flex-direction: column;
+    }
+    #panel-journal.editor-open .main {
+      padding: 0 !important;
+      max-width: none !important;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    #journal-editor {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: calc(100vh - 56px);
+      background: var(--bg);
+    }
+
+    /* ── Top bar ─────────────────────────────────────────────────── */
+    .ed-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
+      padding: 0 28px;
+      height: 56px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
-    .editor-back {
+    .ed-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-family: var(--sans);
       font-size: 12px;
       color: var(--fg-mid);
       background: none;
-      border: 1px solid var(--border);
-      padding: 8px 18px;
-      border-radius: 3px;
+      border: none;
       cursor: pointer;
+      padding: 6px 0;
       transition: color .2s;
-      letter-spacing: .04em;
+      flex-shrink: 0;
+      letter-spacing: .03em;
     }
-    .editor-back:hover { color: var(--fg); border-color: var(--fg-mid); }
-    .editor-actions { display: flex; align-items: center; gap: 10px; }
-    .autosave-indicator { font-size: 11px; color: var(--fg-mid); opacity: .6; }
+    .ed-back:hover { color: var(--fg); }
+    .ed-back-arrow {
+      font-size: 16px;
+      line-height: 1;
+      margin-top: -1px;
+    }
+    .ed-topbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    .ed-topbar-title {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--serif);
+      font-size: 17px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--fg);
+      padding: 0;
+      min-width: 0;
+    }
+    .ed-topbar-title::placeholder { color: var(--fg-mid); opacity: .5; }
+    .autosave-indicator {
+      font-size: 11px;
+      color: var(--fg-mid);
+      opacity: .55;
+      flex-shrink: 0;
+      letter-spacing: .02em;
+    }
     .btn-save-draft {
       font-family: var(--sans);
       font-size: 11px;
-      letter-spacing: .1em;
+      letter-spacing: .09em;
       text-transform: uppercase;
-      padding: 9px 20px;
+      padding: 8px 18px;
       border-radius: 3px;
       cursor: pointer;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--fg-mid);
       transition: all .2s;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .btn-save-draft:hover { color: var(--fg); border-color: var(--fg-mid); }
     .btn-publish-post {
       font-family: var(--sans);
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: .1em;
+      letter-spacing: .09em;
       text-transform: uppercase;
-      padding: 9px 20px;
+      padding: 8px 20px;
       border-radius: 3px;
       cursor: pointer;
-      background: var(--green);
-      color: #0f0f0e;
+      background: var(--accent);
+      color: #fff;
       border: none;
       transition: opacity .2s;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .btn-publish-post:hover { opacity: .85; }
+
+    /* ── Two-column layout beneath topbar ────────────────────────── */
+    .ed-workspace {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── Left: scrollable canvas column ─────────────────────────── */
+    .ed-canvas-col {
+      flex: 1;
+      overflow-y: auto;
+      padding: 48px 24px 80px;
+      position: relative;
+    }
+
+    /* ── Canvas card ─────────────────────────────────────────────── */
+    .ed-canvas {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.07);
+      border-radius: 4px;
+      box-shadow: 0 2px 24px rgba(0,0,0,.05);
+      overflow: hidden;
+    }
+
+    /* Canvas header: location/date + title + divider */
+    .ed-canvas-header {
+      padding: 52px 60px 0;
+      text-align: center;
+    }
+    .ed-location-input {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .ed-location-input::placeholder { color: var(--accent); opacity: .4; }
+    .ed-title {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--serif);
+      font-size: clamp(30px, 5vw, 46px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--fg);
+      text-align: center;
+      line-height: 1.2;
+      padding: 0;
+      resize: none;
+      overflow: hidden;
+    }
+    .ed-title::placeholder { color: var(--fg-mid); opacity: .35; }
+    .ed-canvas-divider {
+      margin: 28px auto 0;
+      width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: .4;
+    }
+
+    /* Canvas hero image */
+    .ed-hero-wrap {
+      margin: 0;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: #f0ede8;
+    }
+    .ed-hero-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity .3s;
+    }
+    .ed-hero-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--fg-mid);
+      font-family: var(--sans);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .55;
+      transition: opacity .2s;
+    }
+    .ed-hero-placeholder-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .ed-hero-wrap:hover .ed-hero-placeholder { opacity: .9; }
+    .ed-hero-wrap:hover img { opacity: .9; }
+    .ed-hero-caption-wrap {
+      padding: 10px 60px 0;
+    }
+    .ed-hero-caption {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--sans);
+      font-size: 11px;
+      color: var(--fg-mid);
+      text-align: center;
+      font-style: italic;
+      letter-spacing: .03em;
+      padding: 6px 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color .2s;
+    }
+    .ed-hero-caption::placeholder { opacity: .4; }
+    .ed-hero-caption:focus { border-bottom-color: var(--border); }
+
+    /* Canvas body */
+    .ed-body-wrap {
+      padding: 40px 60px 52px;
+      position: relative;
+    }
+
+    /* Block insert toolbar (left gutter) */
+    .ed-block-toolbar {
+      position: absolute;
+      left: 12px;
+      top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .ed-body-wrap:hover .ed-block-toolbar,
+    .ed-block-toolbar:hover { opacity: 1; }
+    .ed-block-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--fg-mid);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .ed-block-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .ed-block-btn title { display: none; }
+
+    /* Quill editorial styling */
+    #quill-editor {
+      background: transparent;
+      border: none !important;
+      border-radius: 0;
+      min-height: 320px;
+      color: var(--fg);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+    .ql-toolbar.ql-snow {
+      background: rgba(245,243,238,.9);
+      border: 1px solid var(--border) !important;
+      border-radius: 3px;
+      padding: 6px 10px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+    }
+    .ql-snow .ql-stroke         { stroke: var(--fg-mid); }
+    .ql-snow .ql-fill           { fill: var(--fg-mid); }
+    .ql-snow .ql-picker-label   { color: var(--fg-mid); }
+    .ql-snow .ql-picker-options {
+      background: var(--surface);
+      border-color: var(--border);
+      border-radius: 3px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    }
+    .ql-snow .ql-active .ql-stroke { stroke: var(--accent); }
+    .ql-snow .ql-active .ql-fill   { fill: var(--accent); }
+    .ql-snow .ql-active            { color: var(--accent) !important; }
+    .ql-editor.ql-blank::before    {
+      color: var(--fg-mid);
+      opacity: .35;
+      font-style: italic;
+      font-family: var(--serif);
+      font-size: 18px;
+    }
+    .ql-editor {
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--fg);
+      padding: 0;
+    }
+    /* Drop cap on first paragraph */
+    .ql-editor p:first-of-type::first-letter {
+      float: left;
+      font-size: 4.2em;
+      line-height: .78;
+      margin: 4px 8px 0 0;
+      font-family: var(--serif);
+      font-weight: 300;
+      color: var(--accent);
+    }
+    .ql-editor h2 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--fg);
+      margin: 2em 0 .5em;
+      line-height: 1.3;
+    }
+    .ql-editor h3 {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 1.8em 0 .5em;
+    }
+    .ql-editor blockquote {
+      border-left: 2px solid var(--accent);
+      padding: 4px 0 4px 24px;
+      margin: 2em 0;
+      font-style: italic;
+      color: var(--fg-mid);
+      font-size: 20px;
+    }
+    .ql-editor a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    .ql-editor img { max-width: 100%; height: auto; border-radius: 2px; }
+    .ql-editor p { margin-bottom: .9em; }
+
+    /* ── Right inspector panel ───────────────────────────────────── */
+    .ed-inspector {
+      width: 280px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      background: #faf9f6;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .ed-inspector-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .ed-inspector-section {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ed-inspector-section:last-child { border-bottom: none; }
+    .ed-insp-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--fg-mid);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .ed-insp-input,
+    .ed-insp-textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-family: var(--sans);
+      font-size: 12px;
+      padding: 7px 10px;
+      border-radius: 3px;
+      outline: none;
+      transition: border-color .2s;
+      line-height: 1.5;
+    }
+    .ed-insp-input:focus,
+    .ed-insp-textarea:focus { border-color: var(--accent); }
+    .ed-insp-textarea { resize: vertical; min-height: 64px; }
+    .ed-insp-row { margin-bottom: 14px; }
+    .ed-insp-row:last-child { margin-bottom: 0; }
+
+    /* SEO snippet preview */
+    .ed-seo-preview {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+    .ed-seo-preview-url {
+      font-size: 11px;
+      color: #1a73e8;
+      margin-bottom: 3px;
+      word-break: break-all;
+    }
+    .ed-seo-preview-title {
+      font-size: 14px;
+      color: #1a0dab;
+      margin-bottom: 4px;
+      line-height: 1.3;
+      font-family: arial, sans-serif;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .ed-seo-preview-desc {
+      font-size: 12px;
+      color: #545454;
+      line-height: 1.5;
+      font-family: arial, sans-serif;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Featured image focal preview */
+    .ed-featured-mini {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg);
+      border: 1px dashed var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fg-mid);
+      font-size: 11px;
+      font-family: var(--sans);
+      transition: border-color .2s;
+      margin-bottom: 6px;
+    }
+    .ed-featured-mini:hover { border-color: var(--accent); }
+    .ed-featured-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Inspector action buttons */
+    .ed-insp-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
     .btn-delete-post {
       font-family: var(--sans);
       font-size: 11px;
-      letter-spacing: .1em;
+      letter-spacing: .08em;
       text-transform: uppercase;
       padding: 9px 16px;
       border-radius: 3px;
       cursor: pointer;
       border: 1px solid rgba(224,82,82,.3);
-      background: rgba(224,82,82,.08);
+      background: rgba(224,82,82,.06);
       color: var(--red);
       transition: opacity .2s;
+      width: 100%;
+      text-align: center;
     }
     .btn-delete-post:hover { opacity: .7; }
-    .editor-body { max-width: 860px; }
-    .editor-title {
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--fg);
-      font-family: var(--serif);
-      font-size: 36px;
-      font-weight: 300;
-      font-style: italic;
-      padding: 0 0 12px;
-      outline: none;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 8px;
+
+    /* Hidden inputs wired to JS */
+    .ed-hidden-fields { display: none; }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .ed-inspector { display: none; }
+      .ed-canvas-header { padding: 40px 32px 0; }
+      .ed-body-wrap { padding: 32px 32px 48px; }
+      .ed-hero-caption-wrap { padding: 10px 32px 0; }
+      .ed-block-toolbar { display: none; }
     }
-    .editor-slug-row {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 20px;
+    @media (max-width: 640px) {
+      .ed-topbar { padding: 0 16px; gap: 10px; }
+      .ed-canvas-col { padding: 20px 12px 60px; }
+      .ed-canvas-header { padding: 32px 20px 0; }
+      .ed-body-wrap { padding: 24px 20px 40px; }
+      .ed-hero-caption-wrap { padding: 10px 20px 0; }
+      .ql-editor, .ql-editor.ql-blank::before { font-size: 16px; }
     }
-    .editor-slug-prefix { font-size: 12px; color: var(--fg-mid); }
-    .editor-slug {
-      background: none;
-      border: none;
-      border-bottom: 1px solid var(--border);
-      color: var(--accent);
-      font-size: 12px;
-      font-family: var(--sans);
-      padding: 4px 0;
-      outline: none;
-      flex: 1;
-      max-width: 300px;
-    }
-    .editor-excerpt {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--fg);
-      font-family: var(--sans);
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: 3px;
-      outline: none;
-      margin-bottom: 20px;
-      resize: vertical;
-      line-height: 1.5;
-    }
-    .editor-excerpt:focus { border-color: var(--accent); }
-    .editor-label {
-      display: block;
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--fg-mid);
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-    .editor-meta-row {
-      display: flex;
-      gap: 24px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .editor-featured-wrap { width: 240px; flex-shrink: 0; }
-    .editor-featured-preview {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      overflow: hidden;
-      transition: border-color .2s;
-      color: var(--fg-mid);
-      font-size: 12px;
-    }
-    .editor-featured-preview:hover { border-color: var(--accent); }
-    .editor-featured-preview img { width: 100%; height: 100%; object-fit: cover; }
-    .editor-tags {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--fg);
-      font-family: var(--sans);
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: 3px;
-      outline: none;
-    }
-    .editor-tags:focus { border-color: var(--accent); }
-    .editor-seo-toggle {
-      font-size: 12px;
-      color: var(--fg-mid);
-      cursor: pointer;
-      user-select: none;
-    }
-    .editor-seo-toggle:hover { color: var(--fg); }
-    .editor-seo-toggle .chevron { font-size: 10px; display: inline-block; transition: transform .2s; }
-    .editor-meta-input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--fg);
-      font-family: var(--sans);
-      font-size: 12px;
-      padding: 8px 12px;
-      border-radius: 3px;
-      outline: none;
-      resize: vertical;
-    }
-    .editor-meta-input:focus { border-color: var(--accent); }
-    #quill-editor {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 0 0 3px 3px;
-      min-height: 400px;
-      color: var(--fg);
-      font-size: 15px;
-      line-height: 1.7;
-    }
-    .ql-toolbar.ql-snow {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 3px 3px 0 0;
-    }
-    .ql-snow .ql-stroke         { stroke: var(--fg-mid); }
-    .ql-snow .ql-fill           { fill: var(--fg-mid); }
-    .ql-snow .ql-picker-label   { color: var(--fg-mid); }
-    .ql-snow .ql-picker-options { background: var(--surface); border-color: var(--border); }
-    .ql-snow .ql-active .ql-stroke { stroke: var(--accent); }
-    .ql-snow .ql-active .ql-fill   { fill: var(--accent); }
-    .ql-snow .ql-active            { color: var(--accent); }
-    .ql-editor.ql-blank::before    { color: var(--fg-mid); opacity: .4; font-style: italic; }
 
     /* ═══════════════════════════════════════════════════════════════
        COPY / TEXT EDITING
@@ -2379,51 +2712,130 @@
 
         <!-- Post editor view (hidden by default) -->
         <div id="journal-editor" style="display:none;">
-          <div class="editor-topbar">
-            <button class="editor-back" onclick="closePostEditor()">&#8592; Back to Posts</button>
-            <div class="editor-actions">
-              <span class="autosave-indicator" id="autosave-indicator"></span>
-              <button class="btn-save-draft" id="btn-save-draft" onclick="savePost('draft')">Save Draft</button>
-              <button class="btn-publish-post" id="btn-publish-post" onclick="savePost('published')">Publish</button>
-              <button class="btn-delete-post" id="btn-delete-post" onclick="deletePost()" style="display:none;">Delete</button>
-            </div>
+
+          <!-- Top bar -->
+          <div class="ed-topbar">
+            <button class="ed-back" onclick="closePostEditor()">
+              <span class="ed-back-arrow">&#8592;</span>
+              Posts
+            </button>
+            <div class="ed-topbar-divider"></div>
+            <!-- Title mirrors the canvas title for quick reference -->
+            <input type="text" class="ed-topbar-title" id="ed-topbar-title-mirror" placeholder="Untitled post…" readonly tabindex="-1" aria-hidden="true" />
+            <span class="autosave-indicator" id="autosave-indicator"></span>
+            <button class="btn-save-draft" id="btn-save-draft" onclick="savePost('draft')">Save Draft</button>
+            <button class="btn-publish-post" id="btn-publish-post" onclick="savePost('published')">Publish</button>
           </div>
-          <div class="editor-body">
-            <input type="text" class="editor-title" id="editor-title" placeholder="Post title…" oninput="onTitleInput()" />
-            <div class="editor-slug-row">
-              <span class="editor-slug-prefix">/journal/</span>
-              <input type="text" class="editor-slug" id="editor-slug" placeholder="post-slug" />
-            </div>
-            <textarea class="editor-excerpt" id="editor-excerpt" placeholder="Write a short excerpt…" rows="2"></textarea>
-            <div class="editor-meta-row">
-              <div class="editor-featured-wrap">
-                <label class="editor-label">Featured Image</label>
-                <div class="editor-featured-preview" id="editor-featured-preview" onclick="pickFeaturedImage()">
-                  <span id="featured-img-text">Click to upload</span>
+
+          <!-- Workspace: canvas + inspector -->
+          <div class="ed-workspace">
+
+            <!-- Scrollable canvas column -->
+            <div class="ed-canvas-col">
+              <div class="ed-canvas">
+
+                <!-- Canvas header -->
+                <div class="ed-canvas-header">
+                  <input type="text" class="ed-location-input" id="editor-location" placeholder="Location &middot; Date" />
+                  <textarea class="ed-title" id="editor-title" placeholder="Your Story Title" rows="2" oninput="onTitleInput(); autoResizeTitle(this);"></textarea>
+                  <div class="ed-canvas-divider"></div>
+                </div>
+
+                <!-- Hero image (full bleed within canvas) -->
+                <div class="ed-hero-wrap" id="ed-hero-wrap" onclick="pickFeaturedImage()">
+                  <div class="ed-hero-placeholder" id="ed-hero-placeholder">
+                    <span class="ed-hero-placeholder-icon">[+]</span>
+                    <span>Click to add hero image</span>
+                  </div>
                   <img id="featured-img-preview" src="" alt="" style="display:none;" />
+                </div>
+                <div class="ed-hero-caption-wrap">
+                  <input type="text" class="ed-hero-caption" id="ed-hero-caption" placeholder="Caption (optional)" />
+                </div>
+
+                <!-- Body content -->
+                <div class="ed-body-wrap">
+                  <!-- Block insert toolbar -->
+                  <div class="ed-block-toolbar" title="Insert block">
+                    <button class="ed-block-btn" onclick="insertQuillBlock('image')" title="Add Image">&#128444;</button>
+                    <button class="ed-block-btn" onclick="insertQuillBlock('blockquote')" title="Add Quote">&#8220;</button>
+                    <button class="ed-block-btn" onclick="insertQuillBlock('divider')" title="Add Divider">&mdash;</button>
+                    <button class="ed-block-btn" onclick="insertQuillBlock('heading')" title="Add Heading">H</button>
+                  </div>
+                  <div id="quill-editor"></div>
+                </div>
+              </div><!-- /.ed-canvas -->
+            </div><!-- /.ed-canvas-col -->
+
+            <!-- Right inspector panel -->
+            <aside class="ed-inspector" id="ed-inspector">
+              <div class="ed-inspector-header">Post Settings</div>
+
+              <!-- Metadata -->
+              <div class="ed-inspector-section">
+                <div class="ed-insp-row">
+                  <label class="ed-insp-label">URL Slug</label>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <span style="font-size:11px;color:var(--fg-mid);flex-shrink:0;">/journal/</span>
+                    <input type="text" class="ed-insp-input" id="editor-slug" placeholder="post-slug" style="flex:1;min-width:0;" />
+                  </div>
+                </div>
+                <div class="ed-insp-row">
+                  <label class="ed-insp-label">Tags</label>
+                  <input type="text" class="ed-insp-input" id="editor-tags" placeholder="wedding, editorial…" />
+                </div>
+                <div class="ed-insp-row">
+                  <label class="ed-insp-label">Excerpt</label>
+                  <textarea class="ed-insp-textarea" id="editor-excerpt" placeholder="Short teaser shown in card view…" rows="3"></textarea>
+                </div>
+              </div>
+
+              <!-- Featured image -->
+              <div class="ed-inspector-section">
+                <label class="ed-insp-label">Featured Image</label>
+                <div class="ed-featured-mini" id="editor-featured-preview" onclick="pickFeaturedImage()">
+                  <img id="featured-img-mini" src="" alt="" style="display:none;" />
+                  <span id="featured-img-text" style="padding:8px;text-align:center;">Click to upload</span>
                 </div>
                 <input type="file" id="featured-img-input" accept="image/*" style="display:none;" onchange="handleFeaturedImage()" />
               </div>
-              <div style="flex:1;">
-                <div style="margin-bottom:16px;">
-                  <label class="editor-label">Tags (comma separated)</label>
-                  <input type="text" class="editor-tags" id="editor-tags" placeholder="wedding, editorial, destination" />
+
+              <!-- SEO -->
+              <div class="ed-inspector-section">
+                <label class="ed-insp-label" style="margin-bottom:12px;">SEO</label>
+                <div class="ed-insp-row">
+                  <label class="ed-insp-label">Meta Title</label>
+                  <input type="text" class="ed-insp-input" id="editor-meta-title" placeholder="Custom SEO title" />
                 </div>
-                <div class="editor-seo-toggle" onclick="toggleSeo()">
-                  <span class="chevron" id="seo-chevron">&#9658;</span> SEO Settings
+                <div class="ed-insp-row">
+                  <label class="ed-insp-label">Meta Description</label>
+                  <textarea class="ed-insp-textarea" id="editor-meta-desc" placeholder="Custom SEO description" rows="3"></textarea>
                 </div>
-                <div id="editor-seo" style="display:none;margin-top:12px;">
-                  <label class="editor-label">Meta Title</label>
-                  <input type="text" class="editor-meta-input" id="editor-meta-title" placeholder="Custom SEO title (optional)" />
-                  <label class="editor-label" style="margin-top:10px;">Meta Description</label>
-                  <textarea class="editor-meta-input" id="editor-meta-desc" placeholder="Custom SEO description (optional)" rows="2"></textarea>
+                <!-- Google snippet preview -->
+                <div class="ed-seo-preview" id="ed-seo-preview">
+                  <div class="ed-seo-preview-url" id="ed-seo-preview-url">christophercook.co/journal/…</div>
+                  <div class="ed-seo-preview-title" id="ed-seo-preview-title">Post title</div>
+                  <div class="ed-seo-preview-desc" id="ed-seo-preview-desc">Meta description will appear here…</div>
                 </div>
               </div>
-            </div>
-            <label class="editor-label">Body</label>
-            <div id="quill-editor"></div>
+
+              <!-- Actions -->
+              <div class="ed-inspector-section" style="margin-top:auto;">
+                <div class="ed-insp-actions">
+                  <button class="btn-delete-post" id="btn-delete-post" onclick="deletePost()" style="display:none;">Delete Post</button>
+                </div>
+              </div>
+
+            </aside><!-- /.ed-inspector -->
+          </div><!-- /.ed-workspace -->
+
+          <!-- Hidden fields preserved for JS compatibility -->
+          <div class="ed-hidden-fields">
+            <!-- editor-title is now the canvas textarea above -->
+            <!-- editor-slug, editor-excerpt, editor-tags, editor-meta-title, editor-meta-desc are in inspector -->
           </div>
-        </div>
+
+        </div><!-- /#journal-editor -->
       </div>
     </div>
 
@@ -3953,7 +4365,14 @@
     loadQuill(() => {
       initQuill();
       document.getElementById('journal-list').style.display = 'none';
-      document.getElementById('journal-editor').style.display = 'block';
+      document.getElementById('journal-editor').style.display = 'flex';
+      document.getElementById('journal-editor').style.flexDirection = 'column';
+      // Mark panel so CSS removes padding
+      const panel = document.getElementById('panel-journal');
+      if (panel) panel.classList.add('editor-open');
+      // Remove padding from .main wrapper so editor fills full width
+      const mainWrap = document.querySelector('#panel-journal .main');
+      if (mainWrap) { mainWrap.style.padding = '0'; mainWrap.style.maxWidth = 'none'; }
 
       currentPostId = postId || null;
       editorFeaturedFile = null;
@@ -3963,7 +4382,9 @@
       if (postId) {
         const post = blogPosts.find(p => p.id === postId);
         if (!post) return;
-        document.getElementById('editor-title').value = post.title || '';
+        const titleEl = document.getElementById('editor-title');
+        titleEl.value = post.title || '';
+        autoResizeTitle(titleEl);
         document.getElementById('editor-slug').value = post.slug || '';
         document.getElementById('editor-excerpt').value = post.excerpt || '';
         document.getElementById('editor-tags').value = (post.tags || []).join(', ');
@@ -3972,29 +4393,33 @@
         quillEditor.root.innerHTML = post.body || '';
         editorFeaturedUrl = post.featured_image_url || '';
         editorFeaturedPath = post.featured_image_path || '';
-        if (editorFeaturedUrl) {
-          document.getElementById('featured-img-preview').src = editorFeaturedUrl;
-          document.getElementById('featured-img-preview').style.display = 'block';
-          document.getElementById('featured-img-text').style.display = 'none';
-        } else {
-          document.getElementById('featured-img-preview').style.display = 'none';
-          document.getElementById('featured-img-text').style.display = '';
-        }
+        setEditorFeaturedPreview(editorFeaturedUrl);
         document.getElementById('btn-delete-post').style.display = 'block';
         document.getElementById('btn-publish-post').textContent = post.status === 'published' ? 'Update' : 'Publish';
       } else {
-        document.getElementById('editor-title').value = '';
+        const titleEl = document.getElementById('editor-title');
+        titleEl.value = '';
+        autoResizeTitle(titleEl);
         document.getElementById('editor-slug').value = '';
         document.getElementById('editor-excerpt').value = '';
         document.getElementById('editor-tags').value = '';
         document.getElementById('editor-meta-title').value = '';
         document.getElementById('editor-meta-desc').value = '';
         quillEditor.root.innerHTML = '';
-        document.getElementById('featured-img-preview').style.display = 'none';
-        document.getElementById('featured-img-text').style.display = '';
+        setEditorFeaturedPreview('');
         document.getElementById('btn-delete-post').style.display = 'none';
         document.getElementById('btn-publish-post').textContent = 'Publish';
       }
+
+      // Sync topbar mirror + SEO preview
+      syncEditorTopbar();
+      updateSeoPreview();
+
+      // Wire live-update of SEO preview
+      ['editor-meta-title','editor-meta-desc','editor-slug'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', updateSeoPreview);
+      });
 
       // Start autosave
       clearInterval(autoSaveTimer);
@@ -4006,10 +4431,96 @@
     clearInterval(autoSaveTimer);
     document.getElementById('journal-editor').style.display = 'none';
     document.getElementById('journal-list').style.display = 'block';
+    const panel = document.getElementById('panel-journal');
+    if (panel) panel.classList.remove('editor-open');
+    const mainWrap = document.querySelector('#panel-journal .main');
+    if (mainWrap) { mainWrap.style.padding = ''; mainWrap.style.maxWidth = ''; }
     currentPostId = null;
     // Refresh list
     journalLoaded = false;
     loadJournalTab();
+  }
+
+  // Sync the read-only topbar title mirror
+  function syncEditorTopbar() {
+    const titleVal = (document.getElementById('editor-title') || {}).value || '';
+    const mirror = document.getElementById('ed-topbar-title-mirror');
+    if (mirror) mirror.value = titleVal || 'Untitled post…';
+  }
+
+  // Auto-resize the canvas title textarea
+  function autoResizeTitle(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+    syncEditorTopbar();
+  }
+
+  // Show/hide featured image across both hero and inspector mini preview
+  function setEditorFeaturedPreview(url) {
+    // Hero wrap
+    const heroImg = document.getElementById('featured-img-preview');
+    const heroPlaceholder = document.getElementById('ed-hero-placeholder');
+    if (heroImg && heroPlaceholder) {
+      if (url) {
+        heroImg.src = url;
+        heroImg.style.display = 'block';
+        heroPlaceholder.style.display = 'none';
+      } else {
+        heroImg.src = '';
+        heroImg.style.display = 'none';
+        heroPlaceholder.style.display = 'flex';
+      }
+    }
+    // Inspector mini
+    const miniImg = document.getElementById('featured-img-mini');
+    const miniText = document.getElementById('featured-img-text');
+    if (miniImg && miniText) {
+      if (url) {
+        miniImg.src = url;
+        miniImg.style.display = 'block';
+        miniText.style.display = 'none';
+      } else {
+        miniImg.src = '';
+        miniImg.style.display = 'none';
+        miniText.style.display = '';
+      }
+    }
+  }
+
+  // Update Google snippet preview in inspector
+  function updateSeoPreview() {
+    const slug  = (document.getElementById('editor-slug') || {}).value || '';
+    const title = (document.getElementById('editor-meta-title') || {}).value ||
+                  (document.getElementById('editor-title') || {}).value || 'Post title';
+    const desc  = (document.getElementById('editor-meta-desc') || {}).value ||
+                  (document.getElementById('editor-excerpt') || {}).value || 'Meta description will appear here…';
+    const urlEl   = document.getElementById('ed-seo-preview-url');
+    const titleEl = document.getElementById('ed-seo-preview-title');
+    const descEl  = document.getElementById('ed-seo-preview-desc');
+    if (urlEl)   urlEl.textContent   = 'christophercook.co/journal/' + (slug || '…');
+    if (titleEl) titleEl.textContent = title;
+    if (descEl)  descEl.textContent  = desc;
+  }
+
+  // Insert a formatting block into Quill
+  function insertQuillBlock(type) {
+    if (!quillEditor) return;
+    const range = quillEditor.getSelection(true) || { index: quillEditor.getLength(), length: 0 };
+    const idx = range.index;
+    if (type === 'image') {
+      quillEditor.getModule('toolbar').handlers['image'].call(quillEditor.getModule('toolbar'));
+    } else if (type === 'blockquote') {
+      quillEditor.insertText(idx, '\n', 'user');
+      quillEditor.formatLine(idx + 1, 1, 'blockquote', true);
+      quillEditor.setSelection(idx + 1, 0);
+    } else if (type === 'divider') {
+      quillEditor.insertEmbed(idx, 'hr', true, 'user');
+      quillEditor.setSelection(idx + 1, 0);
+    } else if (type === 'heading') {
+      quillEditor.insertText(idx, '\n', 'user');
+      quillEditor.formatLine(idx + 1, 1, 'header', 2);
+      quillEditor.setSelection(idx + 1, 0);
+    }
   }
 
   function generateSlug(title) {
@@ -4027,6 +4538,8 @@
     if (!currentPostId || !slugEl.value) {
       slugEl.value = generateSlug(title);
     }
+    syncEditorTopbar();
+    updateSeoPreview();
   }
 
   function pickFeaturedImage() {
@@ -4039,9 +4552,7 @@
     editorFeaturedFile = file;
     const reader = new FileReader();
     reader.onload = e => {
-      document.getElementById('featured-img-preview').src = e.target.result;
-      document.getElementById('featured-img-preview').style.display = 'block';
-      document.getElementById('featured-img-text').style.display = 'none';
+      setEditorFeaturedPreview(e.target.result);
     };
     reader.readAsDataURL(file);
   }
@@ -4143,11 +4654,7 @@
   }
 
   function toggleSeo() {
-    const el   = document.getElementById('editor-seo');
-    const chev = document.getElementById('seo-chevron');
-    const open = el.style.display === 'none';
-    el.style.display = open ? 'block' : 'none';
-    chev.style.transform = open ? 'rotate(90deg)' : '';
+    // SEO settings are now always-visible in the inspector panel; no-op kept for compatibility
   }
 </script>
 </body>
