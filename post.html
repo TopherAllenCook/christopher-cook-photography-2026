@@ -135,6 +135,19 @@
       height: auto;
       margin-top: 48px; margin-bottom: 48px;
     }
+    /* Blog gallery blocks (from editor) */
+    .post-content .blog-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      margin: 48px -80px;
+    }
+    .post-content .blog-gallery img {
+      width: 100% !important; height: 100% !important;
+      object-fit: cover; aspect-ratio: 2/3;
+      margin: 0 !important;
+      border-radius: 0;
+    }
     .post-content a {
       color: var(--accent);
       border-bottom: 1px solid var(--accent);
@@ -291,6 +304,11 @@
       }
       .post-gallery {
         grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+      }
+      .post-content .blog-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        margin: 32px -24px;
         gap: 2px;
       }
       .post-tags { padding: 0 24px 40px; }
