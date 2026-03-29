@@ -17,106 +17,287 @@
   <link rel="stylesheet" href="shared.css" />
   <link rel="preconnect" href="https://mmvyplpghfnuacglwhou.supabase.co" />
   <style>
-    /* ─── Post Hero ──────────────────────────────────────────── */
+    /* ─── Full-Bleed Hero ─────────────────────────────────── */
     .post-hero {
-      position: relative; min-height: 480px;
-      display: flex; align-items: flex-end; justify-content: center;
-      color: var(--cream); overflow: hidden;
-      background: linear-gradient(135deg, #1a1512 0%, #2a2018 50%, #1a1512 100%);
+      position: relative;
+      height: 85vh; min-height: 600px; max-height: 1000px;
+      overflow: hidden;
     }
     .post-hero-img {
-      position: absolute; inset: 0; background-size: cover; background-position: center;
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      will-change: transform;
     }
-    .post-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,7,7,.7) 0%, rgba(7,7,7,.2) 50%, rgba(7,7,7,.3) 100%); }
-    .post-hero-content {
-      position: relative; z-index: 2; max-width: 800px; padding: 120px 40px 60px;
-      text-align: center; width: 100%;
+    .post-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 40%, rgba(0,0,0,.2) 100%);
     }
-    .post-hero-date {
-      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
-      text-transform: uppercase; font-weight: 500; color: var(--accent); margin-bottom: 20px;
-    }
-    .post-hero-title {
-      font-family: var(--serif); font-size: clamp(36px, 5vw, 64px);
-      font-weight: 300; line-height: 1.15;
-    }
-    .post-hero-title em { font-style: italic; }
 
-    /* ─── Post Body ──────────────────────────────────────────── */
-    .post-body-wrap {
-      max-width: 740px; margin: 0 auto; padding: 64px 40px 80px;
+    /* ─── Title Block (below hero, on cream) ───────────── */
+    .post-title-block {
+      text-align: center;
+      padding: 80px 40px 60px;
+      max-width: 800px; margin: 0 auto;
     }
-    .post-excerpt {
-      font-family: var(--serif); font-size: 20px; font-weight: 300;
-      font-style: italic; line-height: 1.7; color: var(--page-fg-mid);
-      margin-bottom: 40px; padding-bottom: 40px;
-      border-bottom: 1px solid var(--page-border);
+    .post-date {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .35em;
+      text-transform: uppercase; font-weight: 500; color: var(--accent);
+      margin-bottom: 28px;
     }
-    .post-content {
-      font-size: 16px; line-height: 1.85; font-weight: 300;
+    .post-title {
+      font-family: var(--serif);
+      font-size: clamp(38px, 5.5vw, 72px);
+      font-weight: 300; font-style: italic;
+      line-height: 1.05; letter-spacing: -.01em;
       color: var(--page-fg);
     }
+    .post-title-rule {
+      width: 48px; height: 1px;
+      background: var(--accent); opacity: .5;
+      margin: 36px auto 0;
+    }
+
+    /* ─── Excerpt / Intro Text ─────────────────────────── */
+    .post-intro {
+      max-width: 680px; margin: 0 auto;
+      padding: 0 40px 64px;
+      text-align: center;
+    }
+    .post-excerpt {
+      font-family: var(--serif);
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 300; font-style: italic;
+      line-height: 1.55;
+      color: var(--page-fg-mid);
+    }
+
+    /* ─── Post Body ────────────────────────────────────── */
+    .post-body-wrap {
+      max-width: 660px; margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+    .post-content {
+      font-size: 14px; line-height: 1.9;
+      font-weight: 300; color: var(--page-fg);
+      text-align: justify;
+    }
+    /* Drop cap on first paragraph */
+    .post-content > p:first-of-type::first-letter {
+      float: left;
+      font-family: var(--serif);
+      font-size: 5.2rem; line-height: .78;
+      padding-top: .45rem; padding-right: .65rem;
+      color: var(--forest);
+      font-weight: 300;
+    }
+    .post-content p { margin-bottom: 28px; }
     .post-content h2 {
-      font-family: var(--serif); font-size: 28px; font-weight: 300;
-      margin: 48px 0 20px; line-height: 1.3;
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 300; font-style: italic;
+      margin: 72px 0 24px; line-height: 1.15;
+      text-align: center;
     }
     .post-content h3 {
-      font-family: var(--serif); font-size: 22px; font-weight: 400;
-      margin: 36px 0 16px; line-height: 1.3;
+      font-family: var(--sans);
+      font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; font-weight: 500;
+      margin: 48px 0 16px; color: var(--accent);
     }
-    .post-content p { margin-bottom: 24px; }
-    .post-content blockquote {
-      font-family: var(--serif); font-size: 20px; font-style: italic;
-      font-weight: 300; line-height: 1.7; color: var(--page-fg-mid);
-      border-left: 3px solid var(--accent); padding-left: 24px;
-      margin: 32px 0;
-    }
-    .post-content img {
-      width: 100%; height: auto; border-radius: 4px;
-      margin: 32px 0;
-    }
-    .post-content a { color: var(--accent); border-bottom: 1px solid var(--accent); }
-    .post-content ul, .post-content ol {
-      margin: 16px 0 24px 24px;
-    }
-    .post-content li { margin-bottom: 8px; }
 
-    /* Tags */
+    /* Pull quote — centered, large italic serif */
+    .post-content blockquote {
+      font-family: var(--serif);
+      font-size: clamp(22px, 2.8vw, 34px);
+      font-style: italic; font-weight: 300;
+      line-height: 1.45;
+      color: var(--forest);
+      text-align: center;
+      border: none; padding: 0;
+      margin: 72px auto;
+      max-width: 580px;
+      position: relative;
+    }
+    .post-content blockquote::before {
+      content: '\201C';
+      display: block;
+      font-family: var(--serif);
+      font-size: 72px; line-height: .5;
+      color: var(--accent); opacity: .3;
+      margin-bottom: 16px;
+    }
+
+    /* Images inside body — full bleed out of column */
+    .post-content img {
+      display: block;
+      width: calc(100% + 160px);
+      margin-left: -80px;
+      height: auto;
+      margin-top: 48px; margin-bottom: 48px;
+    }
+    .post-content a {
+      color: var(--accent);
+      border-bottom: 1px solid var(--accent);
+    }
+    .post-content ul, .post-content ol {
+      margin: 16px 0 28px 24px;
+    }
+    .post-content li { margin-bottom: 10px; }
+
+    /* ─── Masonry Gallery (injected from body images) ── */
+    .post-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      margin: 0 0 80px;
+    }
+    .post-gallery img {
+      width: 100%; height: 100%;
+      object-fit: cover; aspect-ratio: 2/3;
+      display: block;
+      transition: opacity .4s ease;
+    }
+    .post-gallery img:hover { opacity: .88; }
+
+    /* ─── Tags ─────────────────────────────────────────── */
     .post-tags {
       display: flex; flex-wrap: wrap; gap: 8px;
-      margin-top: 48px; padding-top: 32px;
-      border-top: 1px solid var(--page-border);
+      justify-content: center;
+      max-width: 660px; margin: 0 auto;
+      padding: 0 40px 48px;
     }
     .post-tag {
-      font-family: var(--sans); font-size: 10px; letter-spacing: .15em;
+      font-family: var(--sans); font-size: 9px; letter-spacing: .18em;
       text-transform: uppercase; font-weight: 500;
-      padding: 6px 16px; border: 1px solid var(--page-border);
-      border-radius: 20px; color: var(--page-fg-mid);
+      padding: 7px 18px; border: 1px solid var(--page-border);
+      color: var(--page-fg-mid);
+      transition: all .3s;
+    }
+    .post-tag:hover {
+      border-color: var(--accent); color: var(--accent);
     }
 
-    /* Back link */
+    /* ─── Closing CTA ──────────────────────────────────── */
+    .post-cta {
+      background: var(--forest); color: var(--cream);
+      text-align: center;
+      padding: 100px 40px;
+    }
+    .post-cta-eyebrow {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; font-weight: 500;
+      color: var(--blush); margin-bottom: 24px;
+    }
+    .post-cta-heading {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 300; font-style: italic;
+      line-height: 1.15; margin-bottom: 36px;
+    }
+    .post-cta .btn {
+      color: var(--cream); border-color: var(--cream);
+    }
+    .post-cta .btn:hover {
+      background: var(--cream); color: var(--forest);
+    }
+
+    /* ─── Back Link ────────────────────────────────────── */
     .post-back {
-      max-width: 740px; margin: 0 auto; padding: 0 40px 60px;
+      text-align: center;
+      padding: 48px 40px 80px;
     }
     .post-back a {
-      font-family: var(--sans); font-size: 11px; letter-spacing: .18em;
-      text-transform: uppercase; font-weight: 500; color: var(--accent);
+      font-family: var(--sans); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; font-weight: 500;
+      color: var(--accent);
+      transition: opacity .3s;
     }
-    .post-back a:hover { opacity: .7; }
+    .post-back a:hover { opacity: .6; }
 
-    /* Loading / Error */
+    /* ─── More Stories ─────────────────────────────────── */
+    .post-more {
+      padding: 0 80px 100px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .post-more-heading {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 42px);
+      font-weight: 300; font-style: italic;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .post-more-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .post-more-card {
+      display: block; text-decoration: none; color: inherit;
+      transition: transform .5s ease;
+    }
+    .post-more-card:hover { transform: translateY(-4px); }
+    .post-more-card-img {
+      aspect-ratio: 2/3; overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .post-more-card-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .8s ease;
+    }
+    .post-more-card:hover .post-more-card-img img {
+      transform: scale(1.03);
+    }
+    .post-more-card-title {
+      font-family: var(--serif); font-size: 18px;
+      font-weight: 300; font-style: italic;
+      line-height: 1.3;
+    }
+    .post-more-card-date {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--page-fg-mid);
+      margin-top: 6px;
+    }
+
+    /* ─── Loading / Error ──────────────────────────────── */
     .post-loading {
-      text-align: center; padding: 160px 40px; font-family: var(--serif);
-      font-size: 24px; color: var(--page-fg-mid); font-weight: 300; font-style: italic;
+      text-align: center; padding: 200px 40px;
+      font-family: var(--serif);
+      font-size: 24px; color: var(--page-fg-mid);
+      font-weight: 300; font-style: italic;
     }
 
+    /* ─── Fade-in on scroll ────────────────────────────── */
+    .post-fade {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .post-fade.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ─── Responsive ───────────────────────────────────── */
     @media (max-width: 768px) {
       .nav { padding: 20px 24px; }
       .nav-links { display: none; }
       .nav-inquire { display: none; }
       .nav-hamburger { display: flex; }
-      .post-body-wrap { padding: 48px 20px 60px; }
-      .post-back { padding: 0 20px 40px; }
+      .post-hero { height: 60vh; min-height: 400px; }
+      .post-title-block { padding: 60px 24px 40px; }
+      .post-intro { padding: 0 24px 48px; }
+      .post-body-wrap { padding: 0 24px 60px; }
+      .post-content { text-align: left; }
+      .post-content img {
+        width: calc(100% + 48px);
+        margin-left: -24px;
+      }
+      .post-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+      }
+      .post-tags { padding: 0 24px 40px; }
+      .post-cta { padding: 72px 24px; }
+      .post-more { padding: 0 24px 72px; }
+      .post-more-grid { grid-template-columns: 1fr; gap: 40px; }
+      .post-back { padding: 32px 24px 60px; }
     }
   </style>
 </head>
@@ -209,10 +390,8 @@
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tdnlwbHBnaGZudWFjZ2x3aG91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjcxMTAsImV4cCI6MjA4OTAwMzExMH0.R9OjlUSUVZph7rhh9oR_8e3wUuSPl5gE9WROIejzTPs';
 
     function getSlug() {
-      // Try clean URL: /journal/my-slug
       var parts = window.location.pathname.split('/journal/');
       if (parts.length > 1 && parts[1]) return parts[1].replace(/\/$/, '');
-      // Fallback: ?slug=my-slug
       var params = new URLSearchParams(window.location.search);
       return params.get('slug');
     }
@@ -227,6 +406,7 @@
         var posts = await res.json();
         if (!posts || !posts.length) { show404(); return; }
         renderPost(posts[0]);
+        loadMorePosts(posts[0].slug);
       } catch (e) {
         show404();
       }
@@ -247,33 +427,141 @@
       var date = new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       var tagsHtml = (post.tags || []).map(function(t) { return '<span class="post-tag">' + t + '</span>'; }).join('');
 
-      document.getElementById('post-container').innerHTML = `
-        <section class="post-hero">
-          ${post.featured_image_url ? `<div class="post-hero-img" style="background-image:url('${post.featured_image_url}')"></div>` : ''}
-          <div class="post-hero-overlay"></div>
-          <div class="post-hero-content">
-            <p class="post-hero-date">${date}</p>
-            <h1 class="post-hero-title">${post.title}</h1>
-          </div>
-        </section>
-        <article class="post-body-wrap">
-          ${post.excerpt ? `<p class="post-excerpt">${post.excerpt}</p>` : ''}
-          <div class="post-content">${post.body}</div>
-          ${tagsHtml ? `<div class="post-tags">${tagsHtml}</div>` : ''}
-        </article>
-        <div class="post-back">
-          <a href="journal.html">← Back to Journal</a>
-        </div>
-      `;
+      // Extract inline images from body for gallery
+      var bodyHtml = post.body || '';
+      var imgRegex = /<img[^>]+src="([^"]+)"[^>]*>/gi;
+      var galleryImgs = [];
+      var match;
+      while ((match = imgRegex.exec(bodyHtml)) !== null) {
+        galleryImgs.push(match[1]);
+      }
+      // Remove images from body text (they'll go in the gallery)
+      var cleanBody = bodyHtml.replace(/<img[^>]*>/gi, '');
+      // Remove empty paragraphs left behind
+      cleanBody = cleanBody.replace(/<p>\s*<\/p>/gi, '');
+
+      // Build gallery HTML
+      var galleryHtml = '';
+      if (galleryImgs.length >= 3) {
+        galleryHtml = '<div class="post-gallery post-fade">' +
+          galleryImgs.map(function(src) {
+            return '<img src="' + src + '" alt="" loading="lazy" />';
+          }).join('') +
+          '</div>';
+      }
+
+      document.getElementById('post-container').innerHTML =
+        // Hero
+        '<section class="post-hero">' +
+          (post.featured_image_url ? '<div class="post-hero-img" style="background-image:url(\'' + post.featured_image_url + '\')"></div>' : '') +
+          '<div class="post-hero-overlay"></div>' +
+        '</section>' +
+
+        // Title block
+        '<div class="post-title-block post-fade">' +
+          '<p class="post-date">' + date + '</p>' +
+          '<h1 class="post-title">' + post.title + '</h1>' +
+          '<div class="post-title-rule"></div>' +
+        '</div>' +
+
+        // Excerpt
+        (post.excerpt ? '<div class="post-intro post-fade"><p class="post-excerpt">' + post.excerpt + '</p></div>' : '') +
+
+        // Body
+        '<article class="post-body-wrap post-fade">' +
+          '<div class="post-content">' + cleanBody + '</div>' +
+        '</article>' +
+
+        // Gallery
+        galleryHtml +
+
+        // Tags
+        (tagsHtml ? '<div class="post-tags post-fade">' + tagsHtml + '</div>' : '') +
+
+        // CTA
+        '<section class="post-cta post-fade">' +
+          '<p class="post-cta-eyebrow">Your Story Next</p>' +
+          '<h2 class="post-cta-heading">Let\'s create something<br />worth keeping</h2>' +
+          '<a href="contact.html" class="btn btn-light">Start Your Inquiry</a>' +
+        '</section>' +
+
+        // More stories placeholder
+        '<div id="more-stories"></div>' +
+
+        // Back
+        '<div class="post-back">' +
+          '<a href="journal.html">\u2190 Back to Journal</a>' +
+        '</div>';
+
+      // Trigger fade-in animations
+      requestAnimationFrame(function() {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.post-fade').forEach(function(el) {
+          observer.observe(el);
+        });
+      });
+
+      // Parallax on hero
+      var heroImg = document.querySelector('.post-hero-img');
+      if (heroImg) {
+        window.addEventListener('scroll', function() {
+          var scrolled = window.pageYOffset;
+          if (scrolled < window.innerHeight) {
+            heroImg.style.transform = 'translateY(' + (scrolled * 0.3) + 'px) scale(1.05)';
+          }
+        }, { passive: true });
+      }
+    }
+
+    async function loadMorePosts(currentSlug) {
+      try {
+        var res = await fetch(SB_URL + '/rest/v1/blog_posts?select=title,slug,featured_image_url,published_at&status=eq.published&slug=neq.' + encodeURIComponent(currentSlug) + '&order=published_at.desc&limit=3', {
+          headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+        });
+        var posts = await res.json();
+        if (!posts || !posts.length) return;
+        var container = document.getElementById('more-stories');
+        if (!container) return;
+        var cards = posts.map(function(p) {
+          var d = new Date(p.published_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+          return '<a class="post-more-card" href="post.html?slug=' + p.slug + '">' +
+            '<div class="post-more-card-img">' +
+              (p.featured_image_url ? '<img src="' + p.featured_image_url + '" alt="" loading="lazy" />' : '') +
+            '</div>' +
+            '<p class="post-more-card-title">' + p.title + '</p>' +
+            '<p class="post-more-card-date">' + d + '</p>' +
+          '</a>';
+        }).join('');
+        container.innerHTML = '<div class="post-more post-fade">' +
+          '<h2 class="post-more-heading">More Stories</h2>' +
+          '<div class="post-more-grid">' + cards + '</div>' +
+          '</div>';
+        // Observe new fade elements
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        container.querySelectorAll('.post-fade').forEach(function(el) { observer.observe(el); });
+      } catch (e) {}
     }
 
     function show404() {
-      document.getElementById('post-container').innerHTML = `
-        <div class="post-loading">
-          Post not found.<br />
-          <a href="journal.html" style="color:var(--accent);font-size:14px;margin-top:20px;display:inline-block;">← Back to Journal</a>
-        </div>
-      `;
+      document.getElementById('post-container').innerHTML =
+        '<div class="post-loading">' +
+          'Post not found.<br />' +
+          '<a href="journal.html" style="color:var(--accent);font-size:14px;margin-top:20px;display:inline-block;">\u2190 Back to Journal</a>' +
+        '</div>';
     }
 
     loadPost();
