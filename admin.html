@@ -1845,7 +1845,7 @@
     .ql-editor .blog-gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 0;
       margin: 2em -72px;
     }
     .ql-editor .blog-gallery img {
@@ -1853,6 +1853,8 @@
       object-fit: cover; aspect-ratio: 2/3;
       margin: 0; border-radius: 0;
     }
+    /* Fallback: consecutive images not in a gallery div */
+    .ql-editor p + p > img { margin-top: 0 !important; }
     @media (max-width: 900px) {
       .ql-editor .blog-gallery { margin: 2em -36px; grid-template-columns: repeat(2, 1fr); }
     }
@@ -4743,13 +4745,31 @@
       }
       document.getElementById('gallery-fill').style.width = '100%';
       document.getElementById('gallery-status').textContent = 'Inserting gallery…';
-      // Build gallery HTML and insert into Quill
+      // Insert gallery directly into Quill's DOM (bypasses sanitizer that strips divs)
       if (urls.length) {
-        const galleryHtml = '<div class="blog-gallery">' +
-          urls.map(u => '<img src="' + u + '" alt="" />').join('') +
-          '</div><p><br></p>';
-        const range = quillEditor.getSelection(true) || { index: quillEditor.getLength(), length: 0 };
-        quillEditor.clipboard.dangerouslyPasteHTML(range.index, galleryHtml);
+        const editor = quillEditor.root;
+        const galleryDiv = document.createElement('div');
+        galleryDiv.className = 'blog-gallery';
+        galleryDiv.contentEditable = 'false';
+        urls.forEach(u => {
+          const img = document.createElement('img');
+          img.src = u;
+          img.alt = '';
+          galleryDiv.appendChild(img);
+        });
+        // Insert at cursor or at end
+        const sel = window.getSelection();
+        let insertBefore = null;
+        if (sel && sel.rangeCount) {
+          let node = sel.getRangeAt(0).startContainer;
+          while (node && node.parentNode !== editor) node = node.parentNode;
+          if (node) insertBefore = node.nextSibling;
+        }
+        editor.insertBefore(galleryDiv, insertBefore);
+        // Add a paragraph after so user can keep typing
+        const p = document.createElement('p');
+        p.innerHTML = '<br>';
+        editor.insertBefore(p, galleryDiv.nextSibling);
         showToast(urls.length + ' images added to gallery', 'success');
       }
       setTimeout(() => overlay.remove(), 400);

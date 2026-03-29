@@ -135,11 +135,11 @@
       height: auto;
       margin-top: 48px; margin-bottom: 48px;
     }
-    /* Blog gallery blocks (from editor) */
+    /* Blog gallery blocks (from editor — Ratta Studio style) */
     .post-content .blog-gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 0;
       margin: 48px -80px;
     }
     .post-content .blog-gallery img {
@@ -147,6 +147,7 @@
       object-fit: cover; aspect-ratio: 2/3;
       margin: 0 !important;
       border-radius: 0;
+      display: block;
     }
     .post-content a {
       color: var(--accent);
@@ -161,7 +162,7 @@
     .post-gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 0;
       margin: 0 0 80px;
     }
     .post-gallery img {
