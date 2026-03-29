@@ -31,7 +31,27 @@
       padding: 180px 80px 100px;
       text-align: center;
       background: var(--page-bg);
+      position: relative;
     }
+    .page-hero.has-bg {
+      min-height: 70vh;
+      display: flex; align-items: center; justify-content: center;
+      background: #1a1a1a;
+    }
+    .page-hero-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+    }
+    .page-hero-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.4);
+    }
+    .page-hero-content {
+      position: relative; z-index: 1;
+    }
+    .page-hero.has-bg .page-hero-eyebrow { color: var(--blush); }
+    .page-hero.has-bg .page-hero-title { color: var(--cream); }
+    .page-hero.has-bg .page-hero-sub { color: rgba(249,249,245,.7); }
     .page-hero-eyebrow {
       font-family: var(--sans); font-size: 10px; letter-spacing: .3em;
       text-transform: uppercase; font-weight: 500; color: var(--accent);
@@ -212,10 +232,14 @@
 
 
   <!-- ═══ PAGE HERO ════════════════════════════════════════════ -->
-  <section class="page-hero">
-    <p class="page-hero-eyebrow" data-copy="about-hero-eyebrow">The Photographer</p>
-    <h1 class="page-hero-title" data-copy="about-hero-title">About<br /><em>Christopher</em></h1>
-    <p class="page-hero-sub" data-copy="about-hero-sub">Park City, Utah &nbsp;·&nbsp; Destinations Worldwide</p>
+  <section class="page-hero has-bg">
+    <div class="page-hero-bg" data-slot="about-hero-bg"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+      <p class="page-hero-eyebrow" data-copy="about-hero-eyebrow">The Photographer</p>
+      <h1 class="page-hero-title" data-copy="about-hero-title">About<br /><em>Christopher</em></h1>
+      <p class="page-hero-sub" data-copy="about-hero-sub">Park City, Utah &nbsp;·&nbsp; Destinations Worldwide</p>
+    </div>
   </section>
 
 

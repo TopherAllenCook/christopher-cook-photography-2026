@@ -2523,6 +2523,7 @@
     'editorial-explore':       ['ed-explore-1','ed-explore-2','ed-explore-3'],
     'editorial-quote':         ['ed-quote-avatar'],
     // About
+    'about-hero':              ['about-hero-bg'],
     'about-gallery':           ['about-gallery-1','about-gallery-2','about-gallery-3'],
     'about-splits':            ['about-dark-img','about-light-img','about-story-img','about-cta-bg'],
     'about-bio':               ['about-bio-img'],
@@ -2545,7 +2546,7 @@
   // Compute readable label from slot key; manual overrides for non-obvious names
   const LABEL_OVERRIDES = {
     'intro-img-1':'Intro — Large Left','intro-img-2':'Intro — Top Right','intro-img-3':'Intro — Bottom Right',
-    'about-portrait':'Bio Portrait','ed-quote-avatar':'Quote Avatar',
+    'about-hero-bg':'About Hero Background','about-portrait':'Bio Portrait','ed-quote-avatar':'Quote Avatar',
     'ed-approach-1':'Approach — Left (tall)','ed-approach-2':'Approach — Right (short)',
     'ed-explore-1':'Explore 1 (tall)','about-dark-img':'About — Dark Split',
     'about-light-img':'About — Light Split','about-story-img':'About — Story Split',
@@ -2587,7 +2588,7 @@
   // Tab → slot groups mapping (drives lazy rendering)
   const TAB_SLOT_GROUPS = {
     homepage:   ['hero','intro','gallery','portfolio','testimonials','about','editorial-approach','editorial-explore','editorial-quote'],
-    about:      ['about-gallery','about-splits','about-bio'],
+    about:      ['about-hero','about-gallery','about-splits','about-bio'],
     portfolio:  ['portfolio-hero','portfolio-gallery','portfolio-featured'],
     services:   ['services-top','services-detail','services-alacarte'],
     experience: ['experience-top','experience-feel','experience-process'],
@@ -2794,7 +2795,7 @@
   function updateTabBadges() {
     const tabSlotGroups = {
       homepage:   ['hero','gallery','portfolio','testimonials','about','editorial-approach','editorial-explore','editorial-quote'],
-      about:      ['about-gallery','about-splits','about-bio'],
+      about:      ['about-hero','about-gallery','about-splits','about-bio'],
       portfolio:  ['portfolio-hero','portfolio-gallery','portfolio-featured'],
       services:   ['services-top','services-detail','services-alacarte'],
       experience: ['experience-top','experience-feel','experience-process'],
