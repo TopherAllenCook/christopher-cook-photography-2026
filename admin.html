@@ -3172,11 +3172,10 @@
       const encoder = new TextEncoder();
       const hashBuf = await crypto.subtle.digest('SHA-256', encoder.encode(email + ':' + pass));
       const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-      // Stored hash of hello@christophercook.co:LeoColterLaney91!
       const VALID_HASH = 'd97c47e7da29156ddb40d2230d703d00f9ec3f0d400c6055490e2df584a4bb4d';
       if (hashHex !== VALID_HASH) throw new Error('Incorrect email or password.');
       sb = supabase.createClient(SB_URL, SB_KEY);
-      sessionStorage.setItem('admin_auth', '1');
+      sessionStorage.setItem('admin_auth', hashHex);
       showApp();
     } catch(err) {
       errEl.textContent = err.message;
@@ -3200,7 +3199,7 @@
     updateTabBadges();
   }
 
-  if (sessionStorage.getItem('admin_auth') === '1') {
+  if (sessionStorage.getItem('admin_auth') === 'd97c47e7da29156ddb40d2230d703d00f9ec3f0d400c6055490e2df584a4bb4d') {
     sb = supabase.createClient(SB_URL, SB_KEY);
     showApp();
   }
