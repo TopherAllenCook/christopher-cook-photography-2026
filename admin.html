@@ -1624,43 +1624,62 @@
       position: relative;
     }
 
-    /* Block insert toolbar (left gutter) */
-    .ed-block-toolbar {
-      position: absolute;
-      left: 12px;
-      top: 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      opacity: 0;
-      transition: opacity .3s;
-    }
-    .ed-body-wrap:hover .ed-block-toolbar,
-    .ed-block-toolbar:hover { opacity: 1; }
-    .ed-block-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 3px;
-      border: 1px solid rgba(0,0,0,.1);
-      background: #faf8f4;
-      color: var(--fg-mid);
-      font-family: var(--sans);
-      font-size: 14px;
-      line-height: 1;
-      cursor: pointer;
+    /* Insert block bar (always visible, between hero and body) */
+    .ed-insert-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all .3s;
-      flex-shrink: 0;
-      padding: 0;
+      gap: 6px;
+      padding: 14px 72px;
+      border-top: 1px solid rgba(0,0,0,.06);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      background: #f5f3ee;
+      flex-wrap: wrap;
     }
-    .ed-block-btn:hover {
+    .ed-insert-label {
+      font-family: var(--sans);
+      font-size: 9px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--fg-mid);
+      margin-right: 6px;
+      font-weight: 600;
+    }
+    .ed-insert-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .04em;
+      color: var(--fg-mid);
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.1);
+      border-radius: 3px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all .3s;
+      white-space: nowrap;
+    }
+    .ed-insert-btn:hover {
       background: var(--forest);
-      color: #faf8f4;
+      color: #fff;
       border-color: var(--forest);
     }
-    .ed-block-btn title { display: none; }
+    .ed-insert-icon {
+      font-size: 13px;
+      line-height: 1;
+      opacity: .6;
+    }
+    .ed-insert-btn:hover .ed-insert-icon { opacity: 1; }
+    .ed-insert-gallery {
+      font-weight: 600;
+      border-color: var(--forest);
+      color: var(--forest);
+    }
+    .ed-insert-gallery:hover {
+      background: var(--forest);
+      color: #fff;
+    }
 
     /* Quill editorial styling */
     #quill-editor {
@@ -1960,7 +1979,8 @@
       .ed-body-wrap { padding: 32px 36px 48px; }
       .ed-hero-wrap { margin: 0 -36px; }
       .ed-hero-caption-wrap { padding: 10px 36px 0; }
-      .ed-block-toolbar { display: none; }
+      .ed-insert-bar { padding: 12px 36px; }
+      .ed-insert-btn { padding: 5px 10px; font-size: 10px; }
     }
     @media (max-width: 640px) {
       .ed-topbar { padding: 0 16px; gap: 10px; }
@@ -2825,16 +2845,28 @@
                   <input type="text" class="ed-hero-caption" id="ed-hero-caption" placeholder="Caption (optional)" />
                 </div>
 
+                <!-- Insert block bar (always visible) -->
+                <div class="ed-insert-bar">
+                  <span class="ed-insert-label">Insert</span>
+                  <button class="ed-insert-btn" onclick="insertQuillBlock('image')">
+                    <span class="ed-insert-icon">&#128444;</span> Image
+                  </button>
+                  <button class="ed-insert-btn ed-insert-gallery" onclick="insertGalleryBlock()">
+                    <span class="ed-insert-icon">&#9638;&#9638;</span> Gallery
+                  </button>
+                  <button class="ed-insert-btn" onclick="insertQuillBlock('blockquote')">
+                    <span class="ed-insert-icon">&#8220;</span> Quote
+                  </button>
+                  <button class="ed-insert-btn" onclick="insertQuillBlock('divider')">
+                    <span class="ed-insert-icon">&mdash;</span> Divider
+                  </button>
+                  <button class="ed-insert-btn" onclick="insertQuillBlock('heading')">
+                    <span class="ed-insert-icon">H</span> Heading
+                  </button>
+                </div>
+
                 <!-- Body content -->
                 <div class="ed-body-wrap">
-                  <!-- Block insert toolbar -->
-                  <div class="ed-block-toolbar" title="Insert block">
-                    <button class="ed-block-btn" onclick="insertQuillBlock('image')" title="Add Image">&#128444;</button>
-                    <button class="ed-block-btn" onclick="insertGalleryBlock()" title="Add Gallery">&#9638;</button>
-                    <button class="ed-block-btn" onclick="insertQuillBlock('blockquote')" title="Add Quote">&#8220;</button>
-                    <button class="ed-block-btn" onclick="insertQuillBlock('divider')" title="Add Divider">&mdash;</button>
-                    <button class="ed-block-btn" onclick="insertQuillBlock('heading')" title="Add Heading">H</button>
-                  </div>
                   <div id="quill-editor"></div>
                 </div>
               </div><!-- /.ed-canvas -->
