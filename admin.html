@@ -42,7 +42,7 @@
       --surface2:  #ebe8e2;
       --border:    #ddd9d1;
       --fg:        #2c2a26;
-      --fg-mid:    #6b6762;
+      --fg-mid:    #524e49;
       --accent:    #9b7b5a;
       --forest:    #3d4220;
       --green:     #3ecf8e;
@@ -1595,7 +1595,69 @@
       line-height: 1;
     }
     .ed-hero-wrap:hover .ed-hero-placeholder { opacity: .9; }
-    .ed-hero-wrap:hover img { opacity: .9; }
+    .ed-hero-wrap:hover img { opacity: .95; }
+    /* Focal point dot */
+    .ed-focal-dot {
+      position: absolute;
+      width: 18px; height: 18px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: rgba(61,66,32,.7);
+      box-shadow: 0 0 0 3px rgba(0,0,0,.3), 0 2px 8px rgba(0,0,0,.3);
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      pointer-events: none;
+      transition: left .15s, top .15s;
+    }
+    .ed-focal-hint {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.35);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 13px;
+      letter-spacing: .06em;
+      font-weight: 500;
+      z-index: 4;
+      cursor: crosshair;
+    }
+    .ed-hero-wrap.focal-mode { cursor: crosshair; }
+    .ed-hero-wrap.focal-mode img { opacity: .8; }
+    /* Action buttons below hero */
+    .ed-hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 72px;
+    }
+    .ed-hero-action-btn {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--fg-mid);
+      cursor: pointer;
+      transition: all .3s;
+    }
+    .ed-hero-action-btn:hover {
+      border-color: var(--forest);
+      color: var(--forest);
+    }
+    .ed-hero-focal-btn.active {
+      background: var(--forest);
+      color: #fff;
+      border-color: var(--forest);
+    }
+    .ed-focal-coords {
+      font-family: var(--sans);
+      font-size: 10px;
+      color: var(--fg-mid);
+      letter-spacing: .03em;
+    }
     .ed-hero-caption-wrap {
       padding: 10px 72px 0;
     }
@@ -2834,12 +2896,19 @@
                 </div>
 
                 <!-- Hero image (full bleed within canvas) -->
-                <div class="ed-hero-wrap" id="ed-hero-wrap" onclick="pickFeaturedImage()">
+                <div class="ed-hero-wrap" id="ed-hero-wrap" onclick="heroWrapClick(event)">
                   <div class="ed-hero-placeholder" id="ed-hero-placeholder">
                     <span class="ed-hero-placeholder-icon">[+]</span>
                     <span>Click to add hero image</span>
                   </div>
                   <img id="featured-img-preview" src="" alt="" style="display:none;" />
+                  <div class="ed-focal-dot" id="ed-focal-dot" style="display:none;"></div>
+                  <div class="ed-focal-hint" id="ed-focal-hint" style="display:none;">Click to set focal point</div>
+                </div>
+                <div class="ed-hero-actions" id="ed-hero-actions" style="display:none;">
+                  <button class="ed-hero-action-btn" onclick="pickFeaturedImage()">Replace Image</button>
+                  <button class="ed-hero-action-btn ed-hero-focal-btn" id="ed-focal-toggle" onclick="toggleFocalMode()">Set Position</button>
+                  <span class="ed-focal-coords" id="ed-focal-coords"></span>
                 </div>
                 <div class="ed-hero-caption-wrap">
                   <input type="text" class="ed-hero-caption" id="ed-hero-caption" placeholder="Caption (optional)" />
@@ -4360,6 +4429,9 @@
   let editorFeaturedFile = null;
   let editorFeaturedUrl = '';
   let editorFeaturedPath = '';
+  let editorFocalX = 50;
+  let editorFocalY = 50;
+  let focalModeActive = false;
 
   function loadQuill(callback) {
     if (quillLoaded) { callback(); return; }
@@ -4482,6 +4554,9 @@
       editorFeaturedFile = null;
       editorFeaturedUrl = '';
       editorFeaturedPath = '';
+      editorFocalX = 50;
+      editorFocalY = 50;
+      focalModeActive = false;
 
       if (postId) {
         const post = blogPosts.find(p => p.id === postId);
@@ -4497,6 +4572,8 @@
         quillEditor.root.innerHTML = post.body || '';
         editorFeaturedUrl = post.featured_image_url || '';
         editorFeaturedPath = post.featured_image_path || '';
+        editorFocalX = post.featured_image_focal_x ?? 50;
+        editorFocalY = post.featured_image_focal_y ?? 50;
         setEditorFeaturedPreview(editorFeaturedUrl);
         document.getElementById('btn-delete-post').style.display = 'block';
         document.getElementById('btn-publish-post').textContent = post.status === 'published' ? 'Update' : 'Publish';
@@ -4561,18 +4638,23 @@
 
   // Show/hide featured image across both hero and inspector mini preview
   function setEditorFeaturedPreview(url) {
-    // Hero wrap
     const heroImg = document.getElementById('featured-img-preview');
     const heroPlaceholder = document.getElementById('ed-hero-placeholder');
+    const heroActions = document.getElementById('ed-hero-actions');
     if (heroImg && heroPlaceholder) {
       if (url) {
         heroImg.src = url;
         heroImg.style.display = 'block';
         heroPlaceholder.style.display = 'none';
+        if (heroActions) heroActions.style.display = 'flex';
+        updateFocalDot();
+        updateHeroPreviewPosition();
       } else {
         heroImg.src = '';
         heroImg.style.display = 'none';
         heroPlaceholder.style.display = 'flex';
+        if (heroActions) heroActions.style.display = 'none';
+        document.getElementById('ed-focal-dot').style.display = 'none';
       }
     }
     // Inspector mini
@@ -4693,6 +4775,54 @@
     updateSeoPreview();
   }
 
+  function heroWrapClick(e) {
+    if (focalModeActive) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      editorFocalX = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+      editorFocalY = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+      updateFocalDot();
+      updateHeroPreviewPosition();
+      return;
+    }
+    if (!document.getElementById('featured-img-preview').src || document.getElementById('featured-img-preview').style.display === 'none') {
+      pickFeaturedImage();
+    }
+  }
+
+  function toggleFocalMode() {
+    focalModeActive = !focalModeActive;
+    const wrap = document.getElementById('ed-hero-wrap');
+    const btn = document.getElementById('ed-focal-toggle');
+    const hint = document.getElementById('ed-focal-hint');
+    if (focalModeActive) {
+      wrap.classList.add('focal-mode');
+      btn.classList.add('active');
+      btn.textContent = 'Done';
+      hint.style.display = 'flex';
+    } else {
+      wrap.classList.remove('focal-mode');
+      btn.classList.remove('active');
+      btn.textContent = 'Set Position';
+      hint.style.display = 'none';
+    }
+  }
+
+  function updateFocalDot() {
+    const dot = document.getElementById('ed-focal-dot');
+    const coords = document.getElementById('ed-focal-coords');
+    dot.style.display = 'block';
+    dot.style.left = editorFocalX + '%';
+    dot.style.top = editorFocalY + '%';
+    coords.textContent = editorFocalX + '% / ' + editorFocalY + '%';
+  }
+
+  function updateHeroPreviewPosition() {
+    const img = document.getElementById('featured-img-preview');
+    if (img) {
+      img.style.objectPosition = editorFocalX + '% ' + editorFocalY + '%';
+    }
+  }
+
   function pickFeaturedImage() {
     document.getElementById('featured-img-input').click();
   }
@@ -4745,6 +4875,8 @@
         ...data, status,
         featured_image_url: editorFeaturedUrl,
         featured_image_path: editorFeaturedPath,
+        featured_image_focal_x: editorFocalX,
+        featured_image_focal_y: editorFocalY,
         updated_at: new Date().toISOString(),
       };
       if (status === 'published' && !row.published_at) {

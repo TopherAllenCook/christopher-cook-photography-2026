@@ -471,7 +471,7 @@
       document.getElementById('post-container').innerHTML =
         // Hero
         '<section class="post-hero">' +
-          (post.featured_image_url ? '<div class="post-hero-img" style="background-image:url(\'' + post.featured_image_url + '\')"></div>' : '') +
+          (post.featured_image_url ? '<div class="post-hero-img" style="background-image:url(\'' + post.featured_image_url + '\');background-position:' + (post.featured_image_focal_x || 50) + '% ' + (post.featured_image_focal_y || 50) + '%"></div>' : '') +
           '<div class="post-hero-overlay"></div>' +
         '</section>' +
 
